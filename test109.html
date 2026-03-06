@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>컴퓨팅 시스템 대단원 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+            /* Allow line breaks in the question text */
+            white-space: pre-line;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>컴퓨팅 시스템 대단원 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        // Remove the question number for cleaner speech
+        const cleanText = text.substring(text.indexOf('.') + 1).trim();
+        const utterThis = new SpeechSynthesisUtterance(cleanText);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "컴퓨팅 시스템은 하드웨어와 소프트웨어만으로 구성된다.",
+            answer: "X",
+            explanation: "현대의 컴퓨팅 시스템은 하드웨어, 소프트웨어뿐만 아니라, 이들을 연결하는 네트워크와 그 위에서 흐르는 데이터까지 포함하는 포괄적인 개념입니다."
+        },
+        {
+            type: 'ox',
+            question: "IoT 에이전트의 액추에이터(Actuator)는 주변 환경의 정보를 수집하는 역할을 한다.",
+            answer: "X",
+            explanation: "정보를 수집하는 것은 센서(Sensor)의 역할입니다. 액추에이터는 제어 신호를 받아 실제 물리적인 '행동'을 수행하는 장치입니다."
+        },
+        {
+            type: 'ox',
+            question: "문제 분해는 복잡한 문제를 작고 관리하기 쉬운 단위로 나누는 컴퓨팅 사고의 한 과정이다.",
+            answer: "O",
+            explanation: "이는 문제 분해의 정확한 정의이며, 복잡한 시스템을 설계하고 구현하는 첫걸음입니다."
+        },
+        {
+            type: 'ox',
+            question: "프로토콜(Protocol)은 네트워크에 연결된 장치끼리 통신하기 위한 약속 또는 규칙이다.",
+            answer: "O",
+            explanation: "서로 다른 회사에서 만든 장치들이 문제없이 데이터를 주고받을 수 있는 것은 TCP/IP와 같은 공통된 프로토콜을 따르기 때문입니다."
+        },
+        {
+            type: 'ox',
+            question: "소프트웨어 개발 생명 주기(SDLC)에서 '구현(코딩)'은 '설계'보다 먼저 수행되어야 한다.",
+            answer: "X",
+            explanation: "일반적으로 '무엇을 만들지(요구사항 분석)'와 '어떻게 만들지(설계)'를 먼저 결정한 후에, 그 설계도에 따라 '실제로 만드는(구현)' 작업을 수행합니다."
+        },
+        {
+            type: 'ox',
+            question: "PEAS 명세에서 P는 문제(Problem)를 의미한다.",
+            answer: "X",
+            explanation: "PEAS에서 P는 성능 측정(Performance Measure)을 의미합니다. 에이전트의 행동이 얼마나 성공적인지를 평가하는 기준입니다."
+        },
+        {
+            type: 'ox',
+            question: "IP 주소는 하드웨어에 고유하게 부여된 물리적 주소이며, MAC 주소는 네트워크에 따라 변할 수 있는 논리적 주소이다.",
+            answer: "X",
+            explanation: "반대로 설명되었습니다. MAC 주소가 하드웨어에 부여된 고유한 물리적 주소이며, IP 주소가 네트워크 환경에 따라 할당되는 논리적 주소입니다."
+        },
+        {
+            type: 'ox',
+            question: "'하향식 설계'는 전체 시스템의 큰 그림부터 설계하고 점차 세부적으로 구체화하는 방식이다.",
+            answer: "O",
+            explanation: "이는 하향식 설계(Top-Down Design)의 정확한 정의입니다. 숲을 먼저 보고 나무를 보는 접근법입니다."
+        },
+        {
+            type: 'ox',
+            question: "버전 관리 시스템(VCS)은 코드의 변경 이력을 관리하여 협업과 유지보수를 용이하게 하는 도구이다.",
+            answer: "O",
+            explanation: "Git과 같은 VCS는 누가, 언제, 무엇을 수정했는지 모든 기록을 남겨, 문제가 발생했을 때 원인을 찾거나 이전 상태로 되돌리는 것을 쉽게 만들어 줍니다."
+        },
+        {
+            type: 'ox',
+            question: "객체지향 프로그래밍에서 클래스는 '실제 제품', 객체는 '설계도'에 해당한다.",
+            answer: "X",
+            explanation: "반대로 설명되었습니다. 클래스가 '설계도'이고, 그 설계도를 바탕으로 만들어진 실제 메모리에 생성된 실체가 '객체(인스턴스)'입니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "스마트폰 앱에서 버튼을 눌러 집 안의 전등을 켜는 IoT 시스템이 있다. 이 과정의 데이터/명령 흐름으로 가장 올바른 것은?",
+            options: ["앱 → 전등 → 플랫폼", "전등 → 플랫폼 → 앱", "앱 → 플랫폼 → 전등", "플랫폼 → 앱 → 전등", "전등 → 앱 → 플랫폼"],
+            answer: 2, 
+            explanation: "사용자(앱)의 명령은 인터넷을 통해 중앙 서버(플랫폼)로 전송됩니다. 플랫폼은 이 명령을 해석하여, 해당하는 기기(전등)에 제어 신호를 보냅니다. 이는 '하향링크(Downlink)' 통신의 대표적인 예입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 '문제 해결 절차'를 가장 올바른 순서로 나열한 것은?",
+            options: ["구현 → 설계 → 문제 정의 → 테스트", "문제 정의 → 설계 → 구현 → 테스트", "설계 → 문제 정의 → 구현 → 테스트", "문제 정의 → 구현 → 설계 → 테스트", "테스트 → 설계 → 구현 → 문제 정의"],
+            answer: 1,
+            explanation: "먼저 '무엇을 풀지(문제 정의)' 결정하고, '어떻게 풀지(설계)' 계획한 뒤, '실제로 만들고(구현)', '제대로 동작하는지 확인(테스트)'하는 것이 가장 논리적이고 표준적인 절차입니다."
+        },
+        {
+            type: 'mcq',
+            question: "자율주행 자동차의 PEAS 명세 중, '카메라, LiDAR, GPS, 레이더'는 어디에 해당하는가?",
+            options: ["Performance Measure", "Environment", "Actuators", "Sensors", "Algorithm"],
+            answer: 3,
+            explanation: "이것들은 모두 주변 환경(도로, 다른 차, 보행자, 신호등)의 정보를 인식하고 수집하기 위한 장치이므로 센서(Sensors)에 해당합니다."
+        },
+        {
+            type: 'mcq',
+            question: "'사용자 관리 프로그램'을 개발할 때, '로그인 기능', '회원가입 기능', '정보 수정 기능' 등으로 나누어 개발하는 것은 컴퓨팅 사고력의 어떤 요소와 가장 관련이 깊은가?",
+            options: ["추상화", "패턴 인식", "분해", "알고리즘", "자동화"],
+            answer: 2,
+            explanation: "하나의 큰 '사용자 관리'라는 문제를 기능별로 작고 관리하기 쉬운 단위로 나누는 것은 '분해(Decomposition)'의 전형적인 예시입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 컴퓨팅 시스템의 '네트워크' 계층에 대한 설명으로 가장 적절한 것은?",
+            options: ["CPU, 메모리 등 물리적인 계산 장치를 의미한다.", "운영체제나 응용 소프트웨어를 의미한다.", "데이터의 의미와 가치를 분석하여 새로운 인사이트를 도출한다.", "분산된 시스템 구성 요소 간의 데이터 교환을 위한 규칙과 통로를 제공한다.", "사용자가 직접 상호작용하는 화면 인터페이스를 제공한다."],
+            answer: 3,
+            explanation: "네트워크는 컴퓨터 시스템의 각 부분들이 서로 떨어져 있더라도, TCP/IP와 같은 프로토콜을 통해 데이터를 주고받을 수 있도록 연결하는 역할을 합니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT 시스템의 '플랫폼'이 수행하는 역할로 가장 거리가 먼 것은?",
+            options: ["수많은 장치의 연결 상태 관리 및 인증", "센서로부터 수집된 대규모 데이터 저장 및 처리", "주변의 온도, 습도 등 물리량 직접 측정", "데이터 분석 및 규칙 엔진을 통한 자동화된 의사결정", "스마트폰 앱이 데이터를 조회할 수 있도록 API 제공"],
+            answer: 2,
+            explanation: "물리량을 직접 측정하는 것은 '센서'의 역할이며, 이는 감지 계층에 속합니다. IoT 플랫폼은 이렇게 측정된 '디지털 데이터'를 받아서 처리하고 관리하는 중앙 서버의 역할을 합니다."
+        },
+        // *** FIX: Added the missing comma here. ***
+        {
+            type: 'mcq',
+            // *** FIX: Replaced line breaks with \n for valid JavaScript string. ***
+            question: "객체지향 프로그래밍에서 '클래스'와 '객체'의 관계에 대한 설명으로 옳은 것을 모두 고른 것은? \n가. 클래스는 객체를 만들기 위한 설계도이다.\n나. 하나의 클래스로부터 여러 개의 객체를 만들 수 있다.\n다. 객체는 클래스의 한 종류이다.\n라. 객체는 속성과 메서드를 가지며, 클래스는 그렇지 않다.",
+            options: ["가, 나", "가, 다", "나, 라", "가, 나, 다", "가, 나, 다, 라"],
+            answer: 0,
+            explanation: "'가'와 '나'는 클래스와 객체의 관계를 가장 정확하게 설명한 문장입니다. '다'는 반대로, 객체가 클래스의 '인스턴스(실체)'입니다. '라'는 클래스가 바로 속성과 메서드를 '정의'하는 곳이므로 틀렸습니다."
+        },
+        {
+            type: 'mcq',
+            question: "\"만약 거실의 CO2 농도가 1000ppm을 초과하면, 환풍기를 켜라\" 라는 로직은 어떤 구조를 활용한 것인가?",
+            options: ["순차 구조", "선택 구조", "반복 구조", "재귀 구조", "자료 구조"],
+            answer: 1,
+            explanation: "\"만약 ~하면, ~하라\"는 형태는 주어진 조건에 따라 실행할 코드를 결정하는 전형적인 '선택 구조(if문)'입니다."
+        },
+        {
+            type: 'mcq',
+            question: "소프트웨어 개발 프로젝트의 '유지보수' 단계에 대한 설명으로 가장 올바른 것은?",
+            options: ["소프트웨어의 아이디어를 처음 구상하는 단계이다.", "소프트웨어를 사용자 컴퓨터에 설치하는 단계이다.", "소프트웨어의 설계도를 작성하는 단계이다.", "소프트웨어 배포 후 발생하는 오류를 수정하고 기능을 개선하는 단계이다.", "소프트웨어가 요구사항대로 동작하는지 검증하는 단계이다."],
+            answer: 3,
+            explanation: "유지보수는 소프트웨어의 생명 주기가 배포로 끝나는 것이 아니라, 사용되는 동안 지속적으로 관리되고 발전해야 함을 보여주는 중요한 단계입니다."
+        },
+        {
+            type: 'mcq',
+            question: "컴퓨팅 시스템을 이용한 문제 해결 과정에서, '추상화'가 중요한 이유는?",
+            options: ["문제 해결에 걸리는 시간을 정확히 측정할 수 있다.", "문제의 본질과 관련 없는 불필요한 세부 사항을 제거하여 문제에 더 집중할 수 있게 한다.", "모든 가능한 해결책을 빠짐없이 탐색할 수 있다.", "프로그램 코드의 줄 수를 물리적으로 줄여준다.", "데이터의 보안 수준을 높여준다."],
+            answer: 1,
+            explanation: "추상화의 핵심은 '복잡성 관리'입니다. 우리가 자동차를 운전할 때 엔진 내부를 신경 쓰지 않듯이, 문제의 핵심적인 부분만 남기고 나머지를 단순화함으로써, 더 큰 그림을 보고 효과적인 해결책을 설계하는 데 집중할 수 있습니다."
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak(this.parentElement.firstChild.textContent)" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            const cleanQuestion = q.question.replace(/\n/g, '\n');
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${cleanQuestion}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer"> &lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        // Set filename as requested
+        const filename = `${studentId}_${studentName}_109_${finalScore}점_${timestamp}.txt`;
+        
+        resultText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n` + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>IoT 기술로 인한 삶과 사회의 변화 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>IoT 기술로 인한 삶과 사회의 변화 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "스마트 팩토리의 예지보전 기술은 기계가 고장 난 후에 빠르게 수리하는 것을 목표로 한다.",
+            answer: "X",
+            explanation: "예지보전(Predictive Maintenance)은 센서 데이터를 분석하여 기계가 고장 나기 '전'에 이상 징후를 미리 예측하고 정비하여, 고장으로 인한 가동 중단을 사전에 방지하는 것을 목표로 합니다."
+        },
+        {
+            type: 'ox',
+            question: "IoT 환경에서는 수많은 기기가 네트워크에 연결되기 때문에 해킹의 위험이 증가한다.",
+            answer: "O",
+            explanation: "연결된 기기의 수가 많아질수록 해커가 침투할 수 있는 잠재적인 공격 지점(Attack Vector)도 늘어나므로, 보안의 중요성이 더욱 커집니다."
+        },
+        {
+            type: 'ox',
+            question: "디지털 트윈(Digital Twin)은 현실의 물리적 자산을 가상 공간에 동일하게 복제한 모델을 의미한다.",
+            answer: "O",
+            explanation: "디지털 트윈은 현실의 기계, 공장, 도시 등을 가상 모델로 만들고, 현실에서 수집된 데이터를 실시간으로 반영하여 시뮬레이션, 분석, 예측 등에 활용하는 기술입니다."
+        },
+        {
+            type: 'ox',
+            question: "사물 인터넷의 발전은 모든 사람에게 동등한 혜택을 주며 사회적 불평등을 자연스럽게 해소한다.",
+            answer: "X",
+            explanation: "기술에 대한 접근성이나 활용 능력에 따라 새로운 정보 격차(Digital Divide)가 발생할 수 있으며, 자동화로 인한 일자리 변화 등이 특정 계층에 어려움을 주어 오히려 사회적 불평등을 심화시킬 수도 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "스마트 시티는 교통, 환경, 에너지 등 도시의 자원을 효율적으로 관리하기 위해 IoT 기술을 활용한다.",
+            answer: "O",
+            explanation: "스마트 시티는 도시 곳곳에 설치된 센서와 기기들을 연결하여 데이터를 수집하고, 이를 분석하여 교통 흐름 최적화, 에너지 사용량 절감 등 도시 문제를 해결하고 시민의 삶의 질을 높이는 것을 목표로 합니다."
+        },
+        {
+            type: 'ox',
+            question: "IoT 기기가 수집하는 개인의 생활 습관 데이터는 사생활(프라이버시) 문제와 관련이 깊다.",
+            answer: "O",
+            explanation: "언제 자고 일어나는지, 어떤 음식을 먹는지, 집을 비우는 시간은 언제인지 등 개인의 모든 생활 데이터는 매우 민감한 사생활 정보이므로, 수집과 활용에 있어 신중한 접근과 강력한 보호 조치가 필요합니다."
+        },
+        {
+            type: 'ox',
+            question: "스마트 팜은 농업에 IoT 기술을 접목하여, 노동력에만 의존하던 전통 방식보다 생산성을 높일 수 있다.",
+            answer: "O",
+            explanation: "스마트 팜은 온도, 습도, 일조량 등을 센서로 측정하고, 데이터에 기반하여 물과 영양분을 자동으로 공급함으로써 최적의 생육 환경을 유지하여 노동력을 절감하고 생산량과 품질을 향상시킵니다."
+        },
+        {
+            type: 'ox',
+            question: "IoT 기술의 확산으로 인해 발생하는 막대한 양의 낡은 기기들은 전자 폐기물(E-waste) 문제를 야기할 수 있다.",
+            answer: "O",
+            explanation: "기술 발전 속도가 빠르고 제품 수명이 짧아지면서, 더 이상 사용되지 않는 IoT 기기들이 대량으로 버려져 환경 오염을 유발하는 전자 폐기물 문제가 새로운 사회적 과제로 떠오르고 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "IoT 데이터 분석은 항상 완벽하고 공정하므로, 그 결과를 무조건 신뢰해야 한다.",
+            answer: "X",
+            explanation: "데이터를 수집하는 과정이나 분석하는 AI 알고리즘에 편향성(bias)이 개입될 수 있습니다. 예를 들어, 특정 인종이나 성별의 데이터만으로 학습된 AI는 다른 집단에 대해 불공정한 판단을 내릴 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "스마트 홈 기술은 사용자가 직접 명령을 내릴 때만 작동하며, 스스로 환경을 조절하지는 않는다.",
+            answer: "X",
+            explanation: "스마트 홈의 핵심 가치 중 하나는 '자동화'입니다. 사용자의 생활 패턴을 학습하거나, 센서 데이터(온도, 밝기 등)를 기반으로 사용자의 명령 없이도 시스템이 스스로 판단하여 최적의 환경을 조성합니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "스마트 팩토리에서 기계의 진동, 소음, 온도 등을 센서로 분석하여 고장 시점을 예측하는 기술을 무엇이라고 하는가?",
+            options: ["디지털 트윈 (Digital Twin)", "예지보전 (Predictive Maintenance)", "증강 현실 (Augmented Reality)", "분산 원장 기술 (Distributed Ledger Technology)", "자동화 규칙 엔진 (Automation Rule Engine)"],
+            answer: 1, 
+            explanation: "예지보전은 기계의 상태 데이터를 실시간으로 분석하여 고장 가능성을 사전에 예측하고, 적절한 시점에 유지보수 활동을 수행하도록 하여 설비의 안정성과 생산성을 높이는 기술입니다."
+        },
+        {
+            type: 'mcq',
+            question: "사물 인터넷 시대에 발생하는 보안 및 프라이버시 문제에 대한 해결 노력으로 가장 적절하지 않은 것은?",
+            options: ["IoT 기기의 관리자 비밀번호를 초기값 그대로 사용하기", "기기 간 통신 데이터를 암호화하기", "사용자의 데이터를 수집할 때 목적을 명확히 알리고 동의받기", "개인을 식별할 수 있는 정보를 비식별화(익명화) 처리하여 분석에 활용하기", "기기의 소프트웨어를 최신 상태로 꾸준히 업데이트하기"],
+            answer: 0,
+            explanation: "기기의 초기 비밀번호(예: admin/admin)는 인터넷에 널리 알려져 있어 해커의 가장 첫 번째 공격 목표가 됩니다. 따라서 비밀번호를 자신만이 아는 복잡한 것으로 변경하는 것이 보안의 가장 기본입니다. 나머지는 모두 보안과 프라이버시를 강화하기 위한 중요한 활동입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 IoT 기술이 사회에 미치는 긍정적인 영향으로 가장 거리가 먼 것은?",
+            options: ["실시간 교통 정보 분석을 통한 교통 체증 완화", "원격 환자 모니터링을 통한 의료 서비스 접근성 향상", "데이터 기반 정밀 농업을 통한 식량 생산성 증대", "자동화 시스템 도입으로 인한 특정 분야의 고용 감소", "위험 지역 가스 누출 감지를 통한 시민 안전 확보"],
+            answer: 3,
+            explanation: "고용 감소는 IoT 기술이 가져올 수 있는 잠재적인 '부정적' 영향 또는 사회적 도전 과제에 해당합니다. 나머지 보기들은 모두 IoT 기술이 사회 문제 해결에 기여하는 긍정적인 영향의 사례입니다."
+        },
+        {
+            type: 'mcq',
+            question: "현실의 공장을 가상 공간에 똑같이 만들고, 공장의 센서 데이터를 실시간으로 가상 모델에 반영하여 시뮬레이션을 통해 문제점을 찾거나 생산 효율을 최적화하는 기술은?",
+            options: ["스마트 그리드 (Smart Grid)", "API (Application Programming Interface)", "디지털 트윈 (Digital Twin)", "MQTT (Message Queuing Telemetry Transport)", "블록체인 (Blockchain)"],
+            answer: 2,
+            explanation: "디지털 트윈은 현실 세계의 물리적 객체나 시스템을 가상 세계에 동일하게 구현한 것을 의미합니다. 이를 통해 현실에서 직접 실험하기 어려운 다양한 시나리오를 시뮬레이션하고, 그 결과를 바탕으로 현실 세계를 최적화할 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT 기술의 확산으로 인해 발생할 수 있는 '데이터 독점' 문제에 대한 설명으로 가장 올바른 것은?",
+            options: ["모든 사람이 데이터에 자유롭게 접근할 수 있게 되는 현상이다.", "데이터의 양이 너무 많아져 저장할 공간이 부족해지는 문제이다.", "소수의 거대 기업이 전 세계의 IoT 데이터를 소유하고 통제하게 되는 현상이다.", "잘못된 데이터로 인해 AI가 편향된 판단을 내리는 문제이다.", "데이터가 너무 자주 변경되어 일관성이 없어지는 현상이다."],
+            answer: 2,
+            explanation: "데이터 독점은 구글, 아마존 등 소수의 글로벌 플랫폼 기업들이 방대한 양의 데이터를 수집하여 시장에서의 지배력을 강화하고, 다른 신생 기업들의 진입을 막아 공정한 경쟁을 저해할 수 있는 가능성을 의미합니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT 시대의 개발자가 가져야 할 윤리적 책임감으로 가장 중요도가 낮은 것은?",
+            options: ["사용자의 데이터가 안전하게 보호되도록 강력한 보안을 적용해야 한다.", "어떤 데이터를 수집하고 어떻게 활용하는지 투명하게 공개해야 한다.", "알고리즘이 특정 집단에 불리하게 작용하지 않도록 편향성을 점검해야 한다.", "제품의 디자인을 최대한 화려하고 보기 좋게 만들어야 한다.", "제품의 폐기 시 환경에 미치는 영향을 고려해야 한다."],
+            answer: 3,
+            explanation: "제품 디자인도 중요하지만, 보안, 투명성, 공정성, 환경 영향 등은 기술이 사회에 미치는 영향을 직접적으로 결정하는 핵심적인 윤리적 고려사항입니다. 따라서 상대적으로 중요도가 낮다고 볼 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "스마트 홈에서 사용자가 \"나 집에 왔어\"라고 말했을 때, 조명이 켜지고, 에어컨이 작동하며, 좋아하는 음악이 재생되는 서비스는 IoT의 어떤 특징을 가장 잘 보여주는가?",
+            options: ["보안성", "이동성", "개인화 및 자동화", "익명성", "표준화"],
+            answer: 2,
+            explanation: "이 서비스는 특정 사용자('나')를 인식하고, 그 사용자의 생활 패턴이나 선호도에 맞춰(개인화) 여러 기기들을 한 번에 연동하여 알아서 동작(자동화)시키는 전형적인 스마트 홈의 가치를 보여줍니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 IoT 기술을 적용하여 해결하려는 문제의 성격과 가장 거리가 먼 것은?",
+            options: ["교통사고 발생률 감소", "공장 생산 라인의 효율 증대", "고대 유적의 역사적 의미 해석", "독거노인의 건강 상태 실시간 모니터링", "농작물의 생육 환경 최적화"],
+            answer: 2,
+            explanation: "IoT는 주로 센서를 통해 '현재'의 물리적 상태를 데이터화하고, 이를 기반으로 현재 또는 미래의 문제를 해결하는 데 강점이 있습니다. 고대 유적의 역사적 의미를 해석하는 것은 데이터 기반의 과학적 분석보다는, 인문학적, 고고학적 지식과 해석이 중심이 되는 영역입니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT의 확산으로 인해 새롭게 수요가 증가할 것으로 예측되는 직업으로 보기 어려운 것은?",
+            options: ["데이터 과학자", "IoT 보안 전문가", "단순 반복 공정 조립원", "AI 윤리 컨설턴트", "클라우드 시스템 아키텍트"],
+            answer: 2,
+            explanation: "IoT와 자동화 기술은 스마트 팩토리 등에서 단순 반복적인 조립 공정을 로봇으로 대체하는 경향이 있습니다. 따라서 해당 직무의 수요는 감소할 가능성이 높습니다. 나머지 직업들은 모두 IoT 시대에 더욱 중요해지는 전문 분야입니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT 기술의 사회적 수용성을 높이기 위한 노력으로 가장 바람직하지 않은 것은?",
+            options: ["기술의 편리함만을 강조하고 잠재적 위험성에 대해서는 언급을 피한다.", "사용자가 자신의 데이터에 대한 통제권(삭제, 접근 등)을 가질 수 있도록 보장한다.", "다양한 계층이 기술의 혜택을 누릴 수 있도록 디지털 교육을 강화한다.", "해킹 등 보안 사고 발생 시 신속하게 대응하고 투명하게 공개하는 체계를 마련한다.", "기술 도입으로 인해 일자리에 변화를 겪는 사람들을 위한 재교육 프로그램을 지원한다."],
+            answer: 0,
+            explanation: "기술의 긍정적인 면만 부각하고 부정적인 면을 숨기는 것은 사용자의 신뢰를 얻을 수 없으며, 장기적으로 기술에 대한 사회적 저항을 불러일으킬 수 있습니다. 잠재적 위험을 투명하게 공개하고 함께 해결책을 모색하는 것이 바람직한 태도입니다."
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak('${q.question}')" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${q.question}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer"> &lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        const filename = `${studentId}_${studentName}_123_${finalScore}점_${timestamp}.txt`;
+        
+        resultText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n` + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

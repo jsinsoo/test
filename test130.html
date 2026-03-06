@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>사물 인터넷 시스템 구현 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>사물 인터넷 시스템 구현 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "클라이언트-서버 모델에서, 서버는 클라이언트에게 먼저 접속을 요청한다.",
+            answer: "X",
+            explanation: "서버는 항상 특정 포트를 열어두고 클라이언트의 접속 요청을 '기다리는' 수동적인 역할을 합니다. 접속을 시작(요청)하는 쪽은 항상 클라이언트입니다."
+        },
+        {
+            type: 'ox',
+            question: "소켓은 IP 주소만으로 식별된다.",
+            answer: "X",
+            explanation: "소켓은 'IP 주소'와 '포트 번호'의 조합으로 식별됩니다. IP 주소가 건물의 주소라면, 포트 번호는 그 건물의 특정 서비스 창구(예: 80번 창구는 웹 서비스)를 나타냅니다."
+        },
+        {
+            type: 'ox',
+            question: "JSON은 파이썬 딕셔너리와 구조가 매우 유사한 텍스트 기반 데이터 형식이다.",
+            answer: "O",
+            explanation: "JSON은 키:값 쌍으로 이루어져 있어 파이썬 딕셔너리로 변환하거나, 딕셔너리를 JSON으로 변환하기 매우 쉽습니다. 이 덕분에 파이썬에서 네트워크 데이터 교환 형식으로 널리 사용됩니다."
+        },
+        {
+            type: 'ox',
+            question: "서버 소켓 프로그래밍의 일반적인 순서는 bind() -> listen() -> accept() 이다.",
+            answer: "O",
+            explanation: "서버는 소켓을 특정 주소와 포트에 '연결'(bind), 클라이언트의 접속을 '기다리기 시작'(listen), 실제 접속 요청이 오면 '수락'(accept)하는 순서로 동작합니다."
+        },
+        {
+            type: 'ox',
+            question: "클라이언트 소켓이 서버에 접속할 때 사용하는 메서드는 accept() 이다.",
+            answer: "X",
+            explanation: "accept()는 서버가 클라이언트의 접속을 '수락'할 때 사용하는 메서드입니다. 클라이언트가 서버에 접속을 '시도'할 때 사용하는 메서드는 connect() 입니다."
+        },
+        {
+            type: 'ox',
+            question: "socket.send()로 데이터를 보내려면, 문자열을 바이트(bytes) 형태로 인코딩해야 한다.",
+            answer: "O",
+            explanation: "소켓은 순수한 바이트 스트림을 전송합니다. 따라서 파이썬의 문자열을 보내려면, 'my_string'.encode('utf-8')와 같이 특정 인코딩(주로 utf-8)을 사용하여 바이트 형태로 변환하는 과정이 필요합니다."
+        },
+        {
+            type: 'ox',
+            question: "socket.recv(1024)는 서버로부터 정확히 1024바이트의 데이터를 수신할 때까지 기다린다.",
+            answer: "X",
+            explanation: "인자로 전달된 1024는 수신할 데이터의 '최대 크기(버퍼 크기)'를 의미합니다. 상대방이 10바이트만 보냈다면 10바이트만 수신하고 즉시 반환됩니다."
+        },
+        {
+            type: 'ox',
+            question: "HTTP 프로토콜은 클라이언트와 서버가 웹 페이지를 주고받기 위해 사용하는 약속(규칙)이다.",
+            answer: "O",
+            explanation: "HTTP는 웹 브라우저(클라이언트)와 웹 서버가 통신하는 데 사용되는 대표적인 프로토콜입니다."
+        },
+        {
+            type: 'ox',
+            question: "127.0.0.1은 모든 컴퓨터에서 자기 자신을 가리키는 특별한 IP 주소이다.",
+            answer: "O",
+            explanation: "127.0.0.1 (또는 localhost)은 루프백(loopback) 주소라고 하며, 네트워크 테스트 등을 위해 컴퓨터가 자기 자신과 통신할 때 사용하는 약속된 IP 주소입니다."
+        },
+        {
+            type: 'ox',
+            question: "파이썬의 json 모듈은 파이썬 딕셔너리를 JSON 형식의 문자열로 바꾸거나, 그 반대의 작업을 수행한다.",
+            answer: "O",
+            explanation: "json.dumps()(딕셔너리 -> JSON 문자열)와 json.loads()(JSON 문자열 -> 딕셔너리) 함수가 이 핵심적인 변환 작업을 수행합니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "다음 중 IoT 시스템에서 개별 온도 센서 장치의 역할에 가장 가까운 것은?",
+            options: ["서버", "클라이언트", "프로토콜", "데이터베이스", "라우터"],
+            answer: 1, 
+            explanation: "센서 장치는 데이터를 수집하여 중앙 서버로 '보내는(요청하는)' 역할을 하므로 클라이언트에 해당합니다. 중앙에서 데이터를 받는 쪽이 서버입니다."
+        },
+        {
+            type: 'mcq',
+            question: "파이썬 딕셔너리 d = {'temp': 25.5} 를 JSON 형식의 문자열로 변환하는 올바른 코드는?",
+            options: ["str(d)", "json.parse(d)", "json.dumps(d)", "d.to_json()", "d.encode('json')"],
+            answer: 2,
+            explanation: "파이썬 객체(딕셔너리 등)를 JSON 형식의 문자열로 변환하는 함수는 json.dumps() (dump string)입니다. 반대로 JSON 문자열을 딕셔너리로 바꾸는 것은 json.loads() (load string) 입니다."
+        },
+        {
+            type: 'mcq',
+            question: "서버 소켓이 accept() 메서드를 호출한 뒤 반환하는 것은 무엇인가?",
+            options: ["클라이언트의 IP 주소 문자열", "클라이언트가 보낸 첫 번째 데이터", "새로운 클라이언트와 실제 통신을 할 수 있는 새로운 소켓 객체, 그리고 클라이언트의 주소 정보", "서버가 정상적으로 동작 중이라는 의미의 True 값", "접속한 클라이언트의 수"],
+            answer: 2,
+            explanation: "accept()는 '대기용 소켓'과는 별개로, 접속한 특정 클라이언트와 1:1로 통신할 수 있는 '통신용 소켓'을 새로 만들어 반환합니다. 이 새로운 소켓을 통해 데이터를 주고받게 됩니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 클라이언트 프로그램의 기본적인 동작 순서로 올바른 것은?",
+            options: ["socket -> bind -> listen -> send", "socket -> connect -> send -> recv", "socket -> accept -> recv -> send", "listen -> accept -> send", "connect -> listen -> recv"],
+            answer: 1,
+            explanation: "클라이언트는 소켓을 생성한 뒤, 서버에 접속을 시도(connect)하고, 데이터를 보내고(send), 서버의 응답을 받는(recv) 순서로 동작합니다. bind, listen, accept는 서버의 역할입니다."
+        },
+        {
+            type: 'mcq',
+            question: "소켓 통신에서 데이터를 send() 하거나 recv() 할 때, 실제로는 어떤 타입의 데이터가 오고 가는가?",
+            options: ["리스트 (list)", "딕셔너리 (dict)", "순수한 바이트의 나열 (bytes)", "정수 (int)", "JSON 객체"],
+            answer: 2,
+            explanation: "소켓은 저수준의 통신 인터페이스로, 오직 바이트 스트림만 이해하고 전송할 수 있습니다. 따라서 파이썬에서 문자열이나 JSON 객체를 보내려면, .encode()를 통해 바이트로 변환해야 하고, 받은 바이트는 .decode()를 통해 다시 문자열로 변환해야 합니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT 장치에서 수집된 다양한 종류의 데이터(예: ID, 값, 시간)를 구조화하여 서버로 전송하려 할 때 JSON 형식을 사용하는 주된 이유는?",
+            options: ["전송 속도가 가장 빠르기 때문이다.", "암호화 기능이 내장되어 있기 때문이다.", "텍스트 기반이며 키:값 구조를 가져서, 데이터의 의미를 명확하게 표현하고 파싱하기 용이하기 때문이다.", "오직 파이썬에서만 사용할 수 있는 특별한 형식이기 때문이다.", "데이터 압축률이 가장 높기 때문이다."],
+            answer: 2,
+            explanation: "JSON의 가장 큰 장점은 '사람이 읽기 쉽고, 기계가 파싱하기 쉬운' 구조를 가졌다는 점입니다. 데이터에 '키'라는 이름표를 붙여주므로, 각 값이 무엇을 의미하는지 명확하게 전달할 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "HOST = '127.0.0.1' 코드에서 '127.0.0.1'이 의미하는 바는?",
+            options: ["구글의 DNS 서버", "대한민국의 대표 IP 주소", "네트워크에 연결되지 않음", "컴퓨터 자기 자신 (localhost)", "게이트웨이 주소"],
+            answer: 3,
+            explanation: "127.0.0.1은 모든 컴퓨터 시스템에서 자기 자신을 가리키도록 약속된 특별한 루프백(loopback) IP 주소입니다. 네트워크 테스트나, 한 컴퓨터 안에서 서버와 클라이언트를 동시에 실행할 때 사용됩니다."
+        },
+        {
+            type: 'mcq',
+            question: "C++과 비교했을 때, 파이썬의 socket 모듈이 갖는 장점은?",
+            options: ["더 많은 종류의 네트워크 프로토콜을 지원한다.", "윈도우의 WSAStartup/WSACleanup 같은 플랫폼 종속적인 초기화/정리 과정을 자동으로 처리해준다.", "항상 더 적은 메모리를 사용한다.", "실시간성이 더 뛰어나다.", "바이러스에 더 안전하다."],
+            answer: 1,
+            explanation: "C++로 윈도우에서 소켓 프로그래밍을 하려면 Winsock 라이브러리를 초기화하고 정리하는 코드를 직접 작성해야 합니다. 파이썬의 socket 모듈은 이러한 운영체제별 차이점을 내부적으로 처리하여, 개발자가 플랫폼에 상관없이 동일한 코드를 작성할 수 있게 해줍니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 코드의 실행 결과는? (import json; person = {'name': '파스칼', 'age': 39}; json_str = json.dumps(person, ensure_ascii=False); print(type(json_str)))",
+            options: ["<class 'dict'>", "<class 'str'>", "<class 'json'>", "<class 'bytes'>", "<class 'tuple'>"],
+            answer: 1,
+            explanation: "json.dumps() 함수는 파이썬 딕셔너리를 입력받아, 이를 JSON 형식의 '문자열(string)'로 변환하여 반환합니다. ensure_ascii=False 옵션은 한글이 깨지지 않고 그대로 문자열에 포함되게 해줍니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT 시스템을 설계할 때, '프로토콜'을 먼저 정의하는 것이 중요한 이유는?",
+            options: ["서버 프로그램을 먼저 만들기 위해서", "클라이언트 프로그램을 먼저 만들기 위해서", "서버와 클라이언트가 서로 '어떤 형식과 순서로 대화할지'에 대한 명확한 약속이 있어야, 각각 독립적으로 개발을 진행할 수 있기 때문이다.", "사용할 IP 주소를 결정하기 위해서", "네트워크 속도를 측정하기 위해서"],
+            answer: 2,
+            explanation: "프로토콜은 시스템의 '인터페이스'이자 '계약서'입니다. 이 계약서가 명확해야, 서버 개발팀과 클라이언트(장치) 개발팀이 서로의 결과물을 기다리지 않고, 약속된 형식에 맞춰 각자의 부분을 독립적으로 개발하고 나중에 통합할 수 있습니다."
+        }
+    ];
+
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak(this.previousSibling.textContent)" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${q.question}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer"> &lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        const filename = `${studentId}_${studentName}_130_${finalScore}점_${timestamp}.txt`;
+        
+        resultText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n` + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

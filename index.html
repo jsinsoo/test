@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>사물 인터넷 시스템 설계와 구현 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>사물 인터넷 시스템 설계와 구현 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "IoT 시스템 설계의 첫 단계는 필요한 센서와 액추에이터를 구매하는 것이다.",
+            answer: "X",
+            explanation: "첫 단계는 '문제 정의'입니다. 해결하고자 하는 문제가 무엇인지를 명확히 해야만, 그에 맞는 적절한 센서와 액추에이터를 선택할 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "프로토타이핑은 실제 제품을 만들기 전에 핵심 기능을 간단히 구현하여 아이디어를 검증하는 과정이다.",
+            answer: "O",
+            explanation: "프로토타이핑을 통해 복잡한 전체 시스템을 만들기 전에 설계의 오류를 미리 발견하고 수정할 수 있어, 개발 비용과 시간을 크게 절약할 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "시스템 아키텍처 설계 단계에서는 각 구성 요소의 역할과 데이터 흐름을 정의한다.",
+            answer: "O",
+            explanation: "아키텍처 설계는 시스템의 전체적인 '뼈대'와 '신경망'을 그리는 과정으로, 디바이스, 플랫폼, 앱 등이 어떻게 연결되고 상호작용할지를 결정합니다."
+        },
+        {
+            type: 'ox',
+            question: "펌웨어는 주로 클라우드 플랫폼에서 실행되는 소프트웨어를 의미한다.",
+            answer: "X",
+            explanation: "펌웨어는 MCU와 같은 임베디드 시스템 하드웨어 위에서 직접 실행되는 소프트웨어입니다. 클라우드 플랫폼에서 실행되는 것은 백엔드 애플리케이션 또는 서버 소프트웨어입니다."
+        },
+        {
+            type: 'ox',
+            question: "좋은 IoT 시스템은 사용자가 수동으로 조작할 필요 없이, 상황을 스스로 인지하고 자동으로 동작해야 한다.",
+            answer: "O",
+            explanation: "IoT의 핵심 가치 중 하나는 '자동화(Automation)'입니다. 센서 데이터를 기반으로 시스템이 스스로 판단하고 최적의 서비스를 제공하여 사용자의 개입을 최소화하는 것이 좋은 시스템의 특징입니다."
+        },
+        {
+            type: 'ox',
+            question: "상향링크(Uplink)는 플랫폼에서 디바이스로 제어 명령을 보내는 데이터 흐름이다.",
+            answer: "X",
+            explanation: "상향링크는 디바이스에서 플랫폼으로 데이터가 올라가는 흐름을 의미합니다. 플랫폼에서 디바이스로 명령이 내려가는 것은 '하향링크(Downlink)'입니다."
+        },
+        {
+            type: 'ox',
+            question: "상태 기계(State Machine) 모델은 복잡한 시스템의 동작을 여러 '상태'와 '전이'로 나누어 명확하게 설계하는 데 도움이 된다.",
+            answer: "O",
+            explanation: "상태 기계는 시스템이 가질 수 있는 모든 상태와 상태 간의 전환 조건을 명시적으로 정의함으로써, 복잡한 로직을 누락 없이 체계적으로 설계할 수 있도록 돕는 유용한 도구입니다."
+        },
+        {
+            type: 'ox',
+            question: "IoT 시스템 설계 시, 저전력 설계는 고려하지 않아도 된다.",
+            answer: "X",
+            explanation: "특히 배터리로 동작하는 수많은 IoT 기기에게 저전력 설계는 매우 중요한 요소입니다. 전력 소모를 줄여야 배터리 교체 주기를 늘리고 유지보수 비용을 절감할 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "소프트웨어 시뮬레이션으로는 실제 하드웨어의 동작을 절대로 검증할 수 없다.",
+            answer: "X",
+            explanation: "소프트웨어 시뮬레이션은 하드웨어의 동작을 추상화하고 모델링하여, 실제 하드웨어가 없더라도 시스템의 핵심 로직, 데이터 흐름, 알고리즘의 정확성을 사전에 검증하는 데 매우 효과적입니다."
+        },
+        {
+            type: 'ox',
+            question: "요구사항 분석 단계에서는 시스템의 기능뿐만 아니라, 보안이나 응답 속도 같은 비기능적 요소도 함께 정의해야 한다.",
+            answer: "O",
+            explanation: "'어떤 기능이 있는가'만큼 '얼마나 안전한가', '얼마나 빠른가'와 같은 비기능적 요구사항도 시스템의 품질을 결정하는 중요한 요소이므로 설계 초기에 함께 정의해야 합니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "IoT 시스템 개발 프로세스를 올바른 순서대로 나열한 것은?",
+            options: [
+                "구현 → 설계 → 요구사항 분석 → 문제 정의",
+                "문제 정의 → 아키텍처 설계 → 구현 → 요구사항 분석",
+                "문제 정의 → 요구사항 분석 → 아키텍처 설계 → 구현",
+                "아키텍처 설계 → 문제 정의 → 요구사항 분석 → 구현",
+                "요구사항 분석 → 구현 → 문제 정의 → 아키텍처 설계"
+            ],
+            answer: 2, 
+            explanation: "모든 공학적 시스템 개발은 해결할 '문제 정의'에서 시작하여, 필요한 기능을 구체화하는 '요구사항 분석', 시스템의 뼈대를 그리는 '아키텍처 설계', 그리고 이를 코드로 옮기는 '구현'의 순서로 진행됩니다."
+        },
+        {
+            type: 'mcq',
+            question: "스마트 공기청정기를 설계하려고 한다. \"실내 미세먼지 농도가 '나쁨' 수준이 되면 자동으로 풍량을 '강'으로 조절한다\"는 내용은 개발 프로세스의 어느 단계에 속하는가?",
+            options: ["문제 정의", "요구사항 분석", "아키텍처 설계", "구현", "테스트"],
+            answer: 1,
+            explanation: "이는 시스템이 수행해야 할 구체적인 '기능'을 정의하는 것이므로 '기능 요구사항'에 해당합니다. 따라서 요구사항 분석 단계에서 상세히 정의되어야 합니다."
+        },
+        {
+            type: 'mcq',
+            question: "펌웨어(Firmware)에 대한 설명으로 가장 올바른 것은?",
+            options: [
+                "주로 Python, Java 등 고급 언어로 작성하여 클라우드 서버에서 실행한다.",
+                "하드웨어에 내장되어 특정 작업을 수행하도록 제어하는 소프트웨어이다.",
+                "IoT 플랫폼의 사용자 인터페이스를 담당한다.",
+                "한 번 설치하면 절대로 수정하거나 업데이트할 수 없다.",
+                "모든 IoT 기기들은 동일한 펌웨어를 사용한다."
+            ],
+            answer: 1,
+            explanation: "펌웨어는 특정 하드웨어(임베디드 시스템)를 위해 작성된 소프트웨어로, 하드웨어의 동작을 직접적으로 제어하는 역할을 합니다."
+        },
+        {
+            type: 'mcq',
+            question: "실제 하드웨어 없이 Python과 같은 프로그래밍 언어만으로 IoT 시스템의 핵심 로직과 데이터 흐름을 미리 검증해보는 개발 방법을 무엇이라고 하는가?",
+            options: ["리버스 엔지니어링 (Reverse Engineering)", "애자일 개발 (Agile Development)", "프로토타이핑 (Prototyping)", "컴파일 (Compilation)", "디버깅 (Debugging)"],
+            answer: 2,
+            explanation: "프로토타이핑은 아이디어를 빠르고 간단하게 구현하여 실제 동작을 흉내 내보고, 이를 통해 설계를 개선하고 위험 요소를 사전에 파악하는 과정입니다. 소프트웨어 시뮬레이션은 프로토타이핑의 효과적인 방법 중 하나입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 IoT 시스템의 '아키텍처 설계' 단계에서 결정할 사항으로 가장 거리가 먼 것은?",
+            options: [
+                "디바이스와 플랫폼 간의 통신 프로토콜 (예: MQTT, HTTP)",
+                "시스템이 사용할 클라우드 서비스 제공자 (예: AWS, Google Cloud)",
+                "펌웨어 코드의 특정 변수 이름",
+                "데이터베이스 스키마 설계 (어떤 데이터를 어떻게 저장할지)",
+                "센서 노드와 게이트웨이의 배치 방식"
+            ],
+            answer: 2,
+            explanation: "변수 이름과 같은 구체적인 코드 작성 내용은 '구현' 단계에서 결정됩니다. 아키텍처 설계는 그보다 상위 수준에서 시스템의 전체적인 구조, 구성 요소 간의 관계, 통신 방식 등 뼈대를 잡는 단계입니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT 시스템의 '상태 기계(State Machine)' 모델에 대한 설명으로 옳은 것은?",
+            options: [
+                "시스템의 모든 코드를 한 줄로 표현하는 방식이다.",
+                "오직 'ON'과 'OFF' 두 가지 상태만 표현할 수 있다.",
+                "시스템이 가질 수 있는 여러 상태들과 상태 간의 전환 조건을 정의한 모델이다.",
+                "데이터베이스에 데이터를 저장하는 방식을 의미한다.",
+                "하드웨어 회로도를 그리는 방법이다."
+            ],
+            answer: 2,
+            explanation: "상태 기계는 '현재 어떤 상태인가', '어떤 이벤트가 발생하면 다음 어떤 상태로 변하는가'를 명확하게 정의하여, 복잡한 시스템의 동작을 논리적으로 설계하고 분석하는 데 사용되는 유용한 모델입니다."
+        },
+        {
+            type: 'mcq',
+            question: "스마트 냉장고를 설계할 때, \"계란이 3개 미만으로 남으면 사용자의 스마트폰 앱으로 알림을 보낸다\"는 기능은 다음 중 어떤 요소들의 상호작용으로 구현되는가?",
+            options: [
+                "센서와 액추에이터만의 상호작용",
+                "플랫폼의 규칙 엔진과 사용자 앱의 상호작용",
+                "펌웨어와 게이트웨이만의 상호작용",
+                "MCU와 API의 직접적인 상호작용",
+                "네트워크와 펌웨어만의 상호작용"
+            ],
+            answer: 1,
+            explanation: "냉장고(디바이스)는 계란의 개수(데이터)를 플랫폼으로 보냅니다. 플랫폼의 '규칙 엔진'은 '계란 < 3' 이라는 조건을 감지하고, 이 이벤트를 '사용자 앱'으로 푸시 알림을 보내는 액션을 취합니다. 이는 플랫폼과 앱 간의 중요한 상호작용입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 IoT 시스템의 '비기능적 요구사항'에 해당하는 것은?",
+            options: [
+                "사용자는 앱으로 전등을 켜고 끌 수 있다.",
+                "전등의 현재 상태(ON/OFF)가 앱에 표시되어야 한다.",
+                "사용자의 명령은 1초 이내에 전등에 반영되어야 한다.",
+                "전등은 '자동' 및 '수동' 모드를 가져야 한다.",
+                "주변 밝기가 10 lux 미만이면 자동으로 켜져야 한다."
+            ],
+            answer: 2,
+            explanation: "①, ②, ④, ⑤는 모두 시스템이 무엇을 '하는가'에 대한 기능적 요구사항입니다. ③은 시스템이 기능을 '어떻게' 수행해야 하는지(성능, 응답 속도)에 대한 비기능적 요구사항입니다. 보안, 안정성, 확장성 등도 비기능적 요구사항에 포함됩니다."
+        },
+        {
+            type: 'mcq',
+            question: "'스마트 주차장' 시스템의 데이터 흐름에 대한 설명으로 가장 자연스러운 것은?",
+            options: [
+                "주차 공간 센서(상향) → 플랫폼 → 운전자 앱(하향)",
+                "운전자 앱(상향) → 플랫폼 → 주차 공간 센서(하향)",
+                "플랫폼(상향) → 주차 공간 센서 → 운전자 앱(하향)",
+                "주차 공간 센서(하향) → 플랫폼 → 운전자 앱(상향)",
+                "운전자 앱(하향) → 주차 공간 센서 → 플랫폼(상향)"
+            ],
+            answer: 0,
+            explanation: "주차 공간의 차량 유무를 감지하는 '센서'가 데이터('비어있음')를 플랫폼으로 보냅니다(상향링크). 플랫폼은 이 정보를 처리하여, 빈 공간을 찾는 '운전자 앱'으로 전달합니다. 앱이 사용자에게 정보를 보여주는 것은 일종의 하향링크 서비스라고 볼 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT 시스템의 '구현' 단계에서 이루어지는 활동으로 가장 적절한 것은?",
+            options: [
+                "어떤 문제를 풀 것인지 팀원들과 토론한다.",
+                "시스템 아키텍처 다이어그램을 그린다.",
+                "아두이노 보드에 C++ 언어로 펌웨어 코드를 작성한다.",
+                "고객을 인터뷰하여 필요한 기능을 정리한다.",
+                "경쟁 제품의 장단점을 분석한다."
+            ],
+            answer: 2,
+            explanation: "'구현'은 설계 단계에서 정의된 내용을 실제 코드로 작성하는 단계입니다. 아두이노에 펌웨어를 작성하는 것은 구현의 대표적인 예시입니다. ①, ④, ⑤는 문제 정의 및 요구사항 분석 단계, ②는 아키텍처 설계 단계에 해당합니다."
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak('${q.question}')" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${q.question}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer"> &lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        const filename = `${studentId}_${studentName}_132_${finalScore}점_${timestamp}.txt`;
+        
+        resultText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n` + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

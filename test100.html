@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>컴퓨팅 시스템 대단원 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>컴퓨팅 시스템 대단원 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "컴퓨팅 시스템은 하드웨어, 소프트웨어, 네트워크, 데이터 등이 상호작용하는 유기적인 집합체이다.",
+            answer: "O",
+            explanation: "컴퓨팅 시스템은 단순히 컴퓨터 한 대가 아니라, 목적을 달성하기 위해 여러 구성 요소가 상호작용하는 전체를 의미합니다."
+        },
+        {
+            type: 'ox',
+            question: "IoT 장치가 인터넷에 연결될 때, IP 주소나 DNS 설정은 필요 없다.",
+            answer: "X",
+            explanation: "IoT 장치도 인터넷에 연결되는 하나의 '컴퓨터'이므로, 다른 서버와 통신하기 위해 IP, DNS 등 기본적인 네트워크 설정이 반드시 필요합니다."
+        },
+        {
+            type: 'ox',
+            question: "클라이언트-서버 모델에서, 클라이언트는 서비스를 제공하고 서버는 서비스를 요청한다.",
+            answer: "X",
+            explanation: "정반대입니다. 서버(Server)가 서비스를 '제공(serve)'하고, 클라이언트(Client)가 그 서비스를 '요청(request)'합니다."
+        },
+        {
+            type: 'ox',
+            question: "JSON은 파이썬 딕셔너리와 유사한 구조를 가진 데이터 교환 형식으로, IoT 시스템에서 데이터를 주고받는 데 널리 사용된다.",
+            answer: "O",
+            explanation: "JSON은 가볍고, 사람이 읽기 쉬우며, 대부분의 언어에서 지원하므로 서로 다른 종류의 장치와 서버가 통신하는 IoT 환경에 매우 적합합니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터 시각화는 분석된 결과를 예쁘게 꾸미기 위한 부가적인 활동일 뿐, 분석 과정 자체에는 큰 영향을 주지 않는다.",
+            answer: "X",
+            explanation: "데이터 시각화는 숫자만으로는 발견하기 어려운 패턴, 추세, 이상치 등을 직관적으로 파악하게 하여, 새로운 통찰을 얻고 분석의 방향을 결정하는 데 핵심적인 역할을 합니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터 전처리는 원본 데이터를 그대로 AI 모델에 학습시키는 것이다.",
+            answer: "X",
+            explanation: "데이터 전처리는 원본 데이터에 포함된 결측치, 오류 등을 처리하고, 모델이 더 잘 학습할 수 있는 형태로 데이터를 '가공'하고 '정제'하는 과정입니다."
+        },
+        {
+            type: 'ox',
+            question: "pandas는 파이썬에서 표 형태의 데이터를 다루고 분석하는 데 사용되는 핵심 라이브러리이다.",
+            answer: "O",
+            explanation: "pandas의 DataFrame은 데이터 분석을 위한 강력하고 편리한 기능을 제공하여, 파이썬 데이터 과학 생태계의 중심적인 역할을 합니다."
+        },
+        {
+            type: 'ox',
+            question: "IoT 기술이 확산되면서 수집되는 개인정보의 양이 증가하여, 프라이버시 보호가 중요한 사회적 문제로 대두되고 있다.",
+            answer: "O",
+            explanation: "스마트 기기들은 사용자의 생활 패턴, 위치, 건강 정보 등 매우 민감한 데이터를 수집하므로, 이를 어떻게 안전하게 보호하고 윤리적으로 활용할 것인가가 매우 중요한 문제입니다."
+        },
+        {
+            type: 'ox',
+            question: "시스템적 사고(Systems Thinking)는 각 구성 요소의 세부 기능에만 집중하는 사고방식이다.",
+            answer: "X",
+            explanation: "시스템적 사고는 개별 요소뿐만 아니라, 요소들 간의 '상호작용'과 '관계', 그리고 그로 인해 나타나는 '전체 시스템'의 동작과 특성을 함께 고려하는 종합적인 사고방식입니다."
+        },
+        {
+            type: 'ox',
+            question: "파이썬의 socket 모듈은 저수준 네트워크 통신 기능을, requests 라이브러리는 고수준의 HTTP 통신 기능을 제공한다.",
+            answer: "O",
+            explanation: "socket은 TCP/UDP 통신의 기본을 다루는 반면, requests는 웹 통신에 사용되는 HTTP 프로토콜의 복잡한 절차를 추상화하여 get(), post()와 같은 매우 간편한 함수로 제공합니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "\"스마트 가로등\" 시스템의 구성 요소에 대한 설명으로 가장 적절한 것은?",
+            options: ["주변 밝기를 감지하는 '조도 센서'는 액추에이터이다.", "가로등의 'LED'는 센서이다.", "각 가로등은 IP 주소 없이도 중앙 서버와 통신할 수 있다.", "\"주변이 어두워지면 불을 켠다\"는 로직은 중앙 플랫폼(서버)에서 실행된다.", "모든 데이터 처리는 개별 가로등 내부에서만 이루어진다."],
+            answer: 3, 
+            explanation: "개별 가로등(클라이언트)은 센서 값만 서버로 보내고, 중앙 플랫폼(서버)이 이 데이터를 받아 '언제 불을 켤지'를 '판단'하여 제어 명령을 내리는 것이 일반적인 IoT 시스템의 구조입니다."
+        },
+        {
+            type: 'mcq',
+            question: "한 도시의 모든 스마트 쓰레기통에서 수집된 데이터를 분석하여, 가장 효율적인 수거 트럭의 운행 경로를 계산하는 작업은 주로 어디에서 이루어지는가?",
+            options: ["각 쓰레기통의 마이크로컨트롤러", "수거 트럭의 내비게이션 장치", "빅데이터 분석 플랫폼(클라우드 서버)", "와이파이 공유기", "사용자의 스마트폰 앱"],
+            answer: 2,
+            explanation: "여러 장치로부터 수집된 방대한 데이터를 통합하고, 복잡한 최적화 알고리즘(예: 최단 경로 탐색)을 실행하는 것은 강력한 컴퓨팅 자원을 가진 클라우드 플랫폼의 역할입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 IoT 시스템의 '클라이언트'에 가장 가까운 것은?",
+            options: ["사용자의 웹 브라우저", "구글의 데이터 센터", "가정의 스마트 스피커", "AWS (Amazon Web Services)", "네트워크 라우터"],
+            answer: 2,
+            explanation: "스마트 스피커는 사용자의 음성을 '인지'(센서)하여, 그 데이터를 처리해달라고 중앙 서버에 '요청'(클라이언트 역할)하고, 서버의 응답(음악 재생 등)을 받아 '행동'(액추에이터)합니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT 장치가 서버로 {\"temp\": 25.3, \"humidity\": 62.1}과 같은 JSON 형식의 데이터를 보내는 주된 이유는?",
+            options: ["데이터를 암호화하기 위해", "데이터의 크기를 압축하기 위해", "각 숫자(25.3, 62.1)가 무엇을 의미하는지 '키'를 통해 명확히 전달하고, 서버가 파싱하기 쉽게 하기 위해", "서버의 IP 주소를 숨기기 위해", "네트워크 전송 속도를 높이기 위해"],
+            answer: 2,
+            explanation: "JSON은 키:값 구조를 통해 데이터에 '의미'를 부여합니다. 그냥 25.3, 62.1 이라고 보내는 것보다, 이것이 각각 '온도'와 '습도'임을 명확히 알려주므로, 데이터를 받는 쪽에서 훨씬 처리하기 용이합니다."
+        },
+        {
+            type: 'mcq',
+            question: "\"특정 지역의 모든 미세먼지 센서 데이터 중, '나쁨' 등급(예: 80 초과)인 데이터만 골라낸다.\" 이 작업은 데이터 분석 파이프라인의 어떤 단계에 해당하는가?",
+            options: ["데이터 수집", "데이터 분석 (필터링)", "데이터 시각화", "모델 학습", "문제 정의"],
+            answer: 1,
+            explanation: "데이터 집합에서 특정 '조건'을 만족하는 부분 집합을 추출하는 것은 데이터 분석의 가장 기본적인 기법인 '필터링'입니다. pandas에서는 불리언 인덱싱으로 이를 수행합니다."
+        },
+        {
+            type: 'mcq',
+            question: "데이터 분석 프로젝트의 '탐색적 데이터 분석(EDA)' 단계에서 수행하는 활동으로 가장 적절한 것은?",
+            options: ["최종 결론을 내리고 보고서를 작성한다.", ".info(), .describe(), plt.hist() 등을 사용하여 데이터의 전반적인 특징과 분포, 결측치 등을 파악한다.", "머신러닝 모델의 하이퍼파라미터를 튜닝한다.", "완성된 프로그램을 사용자에게 배포한다.", "프로젝트의 예산을 계획한다."],
+            answer: 1,
+            explanation: "EDA는 데이터를 처음 만난 뒤, 본격적인 분석에 앞서 데이터와 '친해지는' 과정입니다. 데이터의 구조와 특징을 파악하여 데이터에 대한 이해를 높이고, 이후의 전처리 및 분석 방향을 설정합니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 코드에 대한 설명으로 틀린 것은? (import pandas as pd; df = pd.read_csv(\"data.csv\"); group_data = df.groupby('category')['value'].mean())",
+            options: ["pandas 라이브러리를 사용하고 있다.", "data.csv 파일을 읽어 DataFrame을 생성한다.", "'category' 열의 고유한 값들을 기준으로 데이터를 그룹화한다.", "각 그룹별로 'value' 열의 '중앙값'을 계산한다.", "최종 결과는 각 카테고리별 평균 값을 담은 Series 객체이다."],
+            answer: 3,
+            explanation: ".mean()은 평균을 계산하는 메서드입니다. 중앙값을 계산하려면 .median() 메서드를 사용해야 합니다."
+        },
+        {
+            type: 'mcq',
+            question: "C++과 비교하여, 파이썬 기반의 컴퓨팅 시스템 프로젝트(특히 데이터 처리 및 AI)가 갖는 일반적인 특징은?",
+            options: ["저수준 메모리 제어에 더 강점이 있다.", "컴파일을 통한 성능 최적화가 더 용이하다.", "풍부한 외부 라이브러리(pandas, sklearn 등) 덕분에, 복잡한 기능을 빠르게 프로토타이핑하고 개발하는 생산성이 높다.", "임베디드 시스템 개발에 더 적합하다.", "모든 경우에 C++보다 실행 속도가 빠르다."],
+            answer: 2,
+            explanation: "파이썬의 가장 큰 강점은 '생산성'과 '생태계'입니다. 데이터 분석, AI, 웹 개발 등에 필요한 거의 모든 기능이 잘 만들어진 라이브러리로 존재하여, 개발자는 핵심 로직에만 집중하고 빠르게 결과물을 만들 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "컴퓨팅 시스템 프로젝트를 진행하는 '하향식 설계' 방식은 무엇인가?",
+            options: ["가장 작은 단위의 함수부터 먼저 만든다.", "전체 시스템의 최종 목표와 주요 기능들을 먼저 정의하고, 점차 세부적인 구현으로 구체화해 나간다.", "사용자 인터페이스(UI)를 가장 먼저 완성한다.", "데이터베이스 스키마를 가장 먼저 설계한다.", "테스트 코드를 먼저 작성한다."],
+            answer: 1,
+            explanation: "하향식 설계는 숲 전체를 먼저 보고, 그 다음 나무, 나뭇가지를 보는 순서와 같습니다. 전체 시스템의 구조와 흐름을 먼저 정의한 뒤, 각 부분을 채워나가는 방식입니다."
+        },
+        {
+            type: 'mcq',
+            question: "성공적인 컴퓨팅 시스템 프로젝트를 위해, 과학고 학생이 갖춰야 할 가장 중요한 역량은?",
+            options: ["특정 프로그래밍 언어의 모든 문법을 암기하는 능력", "복잡한 문제를 논리적으로 분해하고, 적절한 데이터 구조와 알고리즘을 설계하며, 팀원과 효과적으로 소통하는 종합적인 문제 해결 능력", "가장 빠른 타이핑 속도", "모든 종류의 외부 라이브러리를 사용해 본 경험", "뛰어난 그래픽 디자인 능력"],
+            answer: 1,
+            explanation: "성공적인 프로젝트는 단순히 코딩 기술만으로 이루어지지 않습니다. 문제를 이해하고, 해결책을 설계하며, 다른 사람과 협력하는 종합적이고 시스템적인 사고 능력이 가장 핵심적인 역량입니다."
+        }
+    ];
+
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak(this.previousSibling.textContent)" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${q.question}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer"> &lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        const filename = `${studentId}_${studentName}_100_${finalScore}점_${timestamp}.txt`;
+        
+        resultText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n` + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

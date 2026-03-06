@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>네트워크 개념과 특성 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+        }
+        .info-input {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .info-input label {
+            margin-right: 5px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .question p {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 5px;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border-left: 5px solid #007bff;
+            display: none; /* Initially hidden */
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+        }
+        .correct-answer {
+            font-weight: bold;
+            color: #155724;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>컴퓨팅 시스템 - 네트워크의 개념과 특성 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번을 입력하세요">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름을 입력하세요">
+    </div>
+
+    <form id="quizForm">
+        <h2>I. 진단평가 (OX 퀴즈)</h2>
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    // Web Speech API
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        if (text !== '') {
+            const utterThis = new SpeechSynthesisUtterance(text);
+            utterThis.lang = 'ko-KR';
+            synth.speak(utterThis);
+        }
+    }
+
+    const questions = [
+        // --- 진단평가 ---
+        {
+            type: 'ox',
+            question: "네트워크의 주된 목적은 컴퓨터를 독립적으로 사용하는 것이다.",
+            answer: "X",
+            explanation: "네트워크의 주된 목적은 자원을 '공유'하고 정보를 '교환'하며 서로 '통신'하는 것, 즉 컴퓨터들을 독립적인 상태에서 벗어나 연결된 상태로 만드는 것입니다."
+        },
+        {
+            type: 'ox',
+            question: "컴퓨터끼리 통신하기 위해 지키는 약속을 '프로토콜'이라고 한다.",
+            answer: "O",
+            explanation: "프로토콜은 송신자와 수신자 간에 데이터를 원활하게 주고받기 위해 미리 정해놓은 규칙과 절차의 집합입니다."
+        },
+        {
+            type: 'ox',
+            question: "IP 주소는 컴퓨터의 랜카드에 고정되어 절대 바뀌지 않는 주소이다.",
+            answer: "X",
+            explanation: "IP 주소는 네트워크 환경에 따라 변경될 수 있는 '논리적 주소'입니다. 랜카드에 고정된 고유한 주소는 MAC 주소입니다."
+        },
+        {
+            type: 'ox',
+            question: "인터넷은 전 세계를 연결하는 WAN(광대역 통신망)의 한 종류이다.",
+            answer: "O",
+            explanation: "인터넷은 전 세계의 수많은 LAN과 WAN이 서로 연결되어 만들어진 거대한 네트워크 시스템으로, WAN의 가장 대표적인 예입니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터는 네트워크를 통해 원본 그대로의 큰 덩어리 형태로 전송된다.",
+            answer: "X",
+            explanation: "큰 데이터는 전송 효율성과 안정성을 위해 '패킷'이라는 작은 단위로 분할되어 전송되고, 목적지에서 다시 조립됩니다."
+        },
+        {
+            type: 'ox',
+            question: "LAN은 학교나 사무실과 같이 비교적 좁은 지역을 연결하는 네트워크이다.",
+            answer: "O",
+            explanation: "LAN(Local Area Network)은 이름 그대로 근거리 통신망을 의미하며, 제한된 지리적 영역 내의 장치들을 연결합니다."
+        },
+        {
+            type: 'ox',
+            question: "MAC 주소는 전 세계의 모든 네트워크 장비마다 고유한 값을 가진다.",
+            answer: "O",
+            explanation: "MAC 주소는 제조 과정에서 하드웨어에 부여되는 물리적 주소로, 전 세계적으로 중복되지 않는 고유성을 갖도록 관리됩니다."
+        },
+        {
+            type: 'ox',
+            question: "TCP/IP는 이메일을 보낼 때만 사용되는 특별한 프로토콜이다.",
+            answer: "X",
+            explanation: "TCP/IP는 이메일뿐만 아니라 웹 브라우징, 파일 전송, 온라인 게임 등 인터넷에서 이루어지는 거의 모든 통신의 기반이 되는 핵심 프로토콜 스위트(모음)입니다."
+        },
+        {
+            type: 'ox',
+            question: "네트워크에서 각 컴퓨터나 스마트폰과 같은 장치를 '링크'라고 부른다.",
+            answer: "X",
+            explanation: "네트워크를 구성하는 컴퓨터, 스마트폰, 서버 등의 장치는 '노드(Node)'라고 부릅니다. 이 노드들을 연결하는 통신 회선을 '링크(Link)'라고 합니다."
+        },
+        {
+            type: 'ox',
+            question: "패킷에는 보내는 곳의 주소와 받는 곳의 주소 정보가 포함된다.",
+            answer: "O",
+            explanation: "패킷은 데이터 조각(payload)뿐만 아니라, 이 패킷이 어디로 가야 하는지를 알려주는 목적지 IP 주소, 어디서 왔는지를 알려주는 출발지 IP 주소 등 제어 정보가 담긴 헤더를 포함합니다."
+        },
+        // --- 형성평가 ---
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "다음 중 네트워크의 근본적인 목적으로 가장 거리가 먼 것은?",
+            options: ["프린터 공유", "파일 전송", "컴퓨터 성능 향상", "온라인 게임", "이메일 통신"],
+            answer: 2, // index of correct answer
+            explanation: "네트워크는 여러 컴퓨터가 자원을 공유(①)하거나 정보를 교환(②, ④, ⑤)하게 해주는 것이 주 목적입니다. 네트워크에 연결한다고 해서 컴퓨터 자체의 CPU나 메모리 성능이 직접적으로 향상되지는 않습니다."
+        },
+        {
+            type: 'mcq',
+            question: "데이터를 주고받는 장치들이 서로 이해할 수 있도록 만든 통신 규칙과 약속을 무엇이라고 하는가?",
+            options: ["패킷", "노드", "프로토콜", "IP 주소", "LAN"],
+            answer: 2,
+            explanation: "프로토콜은 통신 시스템이 데이터를 교환하기 위해 사용하는 규칙의 집합입니다. 사람 사이의 '언어'나 '문법'과 같은 역할을 합니다."
+        },
+        {
+            type: 'mcq',
+            question: "IP 주소와 MAC 주소에 대한 설명으로 옳은 것은?",
+            options: [
+                "IP 주소는 물리적 주소, MAC 주소는 논리적 주소이다.",
+                "IP 주소는 변하지 않지만 MAC 주소는 변할 수 있다.",
+                "IP 주소는 우편번호, MAC 주소는 상세 주소와 같다.",
+                "IP 주소는 네트워크 상의 논리적 위치, MAC 주소는 장비의 고유 식별자이다.",
+                "두 주소 모두 전 세계적으로 유일하며 절대 변하지 않는다."
+            ],
+            answer: 3,
+            explanation: "IP 주소는 네트워크 내에서 장치가 어디에 있는지를 나타내는 논리적 주소이며 변경 가능합니다. MAC 주소는 장비 자체에 부여된 고유한 물리적 주소로, 일반적으로 변경되지 않습니다. 따라서 ④가 가장 정확한 설명입니다."
+        },
+        {
+            type: 'mcq',
+            question: "큰 파일을 이메일로 전송할 때, 파일이 작은 조각으로 나뉘어 전송된다. 이 작은 조각을 무엇이라고 하는가?",
+            options: ["프로토콜", "패킷", "포트", "쿠키", "서버"],
+            answer: 1,
+            explanation: "네트워크에서 데이터를 효율적이고 안정적으로 전송하기 위해 사용하는 작은 데이터 단위를 패킷이라고 합니다. 각 패킷에는 헤더 정보와 실제 데이터 조각이 포함됩니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 네트워크의 규모가 가장 큰 것부터 작은 순서대로 올바르게 나열된 것은?",
+            options: [
+                "LAN > WAN > 인터넷",
+                "WAN > 인터넷 > LAN",
+                "인터넷 > WAN > LAN",
+                "LAN > 인터넷 > WAN",
+                "WAN > LAN > 인터넷"
+            ],
+            answer: 2,
+            explanation: "LAN은 근거리 통신망, WAN은 이 LAN들을 연결한 광대역 통신망, 인터넷은 전 세계의 WAN들이 다시 연결된 가장 큰 규모의 네트워크입니다. 따라서 크기 순서는 인터넷 > WAN > LAN 입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 유효한 IPv4 주소 형식으로 올바른 것은?",
+            options: ["192.168.0", "192.168.0.256", "192.168.0.1.10", "192.168.0.1", "192-168-0-1"],
+            answer: 3,
+            explanation: "IPv4 주소는 0~255 사이의 숫자로 이루어진 4개의 부분을 점(.)으로 구분하여 표현합니다. ①은 3부분, ②는 255를 초과하는 숫자, ③은 5부분, ⑤는 구분자가 하이픈(-)이므로 모두 유효하지 않은 형식입니다."
+        },
+        {
+            type: 'mcq',
+            question: "서울에 있는 A학생이 부산에 있는 친구 B에게 메시지를 보낼 때, 이 통신은 어떤 네트워크 환경에 해당하는가?",
+            options: ["LAN", "WAN", "MAN", "PAN", "SAN"],
+            answer: 1,
+            explanation: "서울과 부산은 지리적으로 멀리 떨어진 두 도시입니다. 이처럼 도시와 도시, 국가와 국가를 연결하는 넓은 범위의 네트워크는 WAN(Wide Area Network)에 해당합니다."
+        },
+        {
+            type: 'mcq',
+            question: "네트워크를 구성하는 노드(Node)에 대한 예시로 가장 적절하지 않은 것은?",
+            options: ["내 스마트폰", "학교 서버 컴퓨터", "와이파이 공유기", "인터넷 케이블", "인공지능 스피커"],
+            answer: 3,
+            explanation: "노드는 네트워크에 연결되어 고유한 주소를 가지고 데이터를 처리하거나 교환하는 장치를 의미합니다. 스마트폰, 서버, 공유기, 스피커는 모두 노드에 해당합니다. 인터넷 케이블은 노드와 노드를 연결하는 '링크(Link)'에 해당합니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 MAC 주소에 대한 설명으로 가장 올바른 것은?",
+            options: [
+                "모든 컴퓨터의 MAC 주소는 '192.168.0.1'로 동일하다.",
+                "소프트웨어적으로 부여되는 주소이며 쉽게 변경할 수 있다.",
+                "랜카드 제조사에서 부여하며, 하드웨어에 고정된 주소이다.",
+                "데이터를 어디로 보낼지 최종 경로를 결정하는 데 사용된다.",
+                "점(.)으로 구분되는 4개의 숫자로 이루어져 있다."
+            ],
+            answer: 2,
+            explanation: "MAC 주소는 하드웨어(랜카드)에 부여된 고유한 물리적 주소입니다. 일반적으로 사용자가 변경하지 않으며, 제조사에서 부여하여 전 세계적으로 유일합니다."
+        },
+        {
+            type: 'mcq',
+            question: "친구와 온라인 게임을 할 때, 내 캐릭터의 움직임 데이터는 패킷으로 변환되어 친구에게 전달된다. 이 패킷에 반드시 포함되어야 할 정보가 아닌 것은?",
+            options: ["내 컴퓨터의 IP 주소", "친구 컴퓨터의 IP 주소", "내 컴퓨터의 CPU 온도", "데이터의 순서 번호", "실제 움직임 데이터"],
+            answer: 2,
+            explanation: "패킷에는 통신에 필수적인 정보, 즉 어디서 왔는지(출발지 IP), 어디로 가는지(목적지 IP), 여러 패킷 중 몇 번째인지(순서 번호), 그리고 실제 내용(움직임 데이터)이 포함되어야 합니다. 컴퓨터의 CPU 온도는 통신 규약과 무관한 내부 정보이므로 패킷에 포함될 필요가 없습니다."
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = 'I. 진단평가 (OX 퀴즈)';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && form.querySelector('h2').textContent !== q.sectionTitle) {
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = q.sectionTitle;
+            form.appendChild(sectionHeader);
+            currentSection = q.sectionTitle;
+            if(currentSection === 'II. 형성평가 (5지선다형)') questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak('${q.question}')">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            const options = ['O', 'X'];
+            options.forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        questionCounter = 1;
+        let currentSectionForFile = 'I. 진단평가 (OX 퀴즈)';
+        resultText += "I. 진단평가 (OX 퀴즈)\n\n";
+
+        questions.forEach((q, index) => {
+             if (q.sectionTitle && q.sectionTitle !== currentSectionForFile) {
+                currentSectionForFile = q.sectionTitle;
+                resultText += "\n========================================\n\n";
+                resultText += `${q.sectionTitle}\n\n`;
+                questionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const userAnswer = form.elements['q' + index].value;
+            let isCorrect = false;
+
+            let userAnswerText;
+            let correctAnswerText;
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer;
+                correctAnswerText = q.answer;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer); // Use == for string/number comparison
+                userAnswerText = userAnswer ? `(선택: ${parseInt(userAnswer)+1}번) ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `(정답: ${q.answer+1}번) ${q.options[q.answer]}`;
+            }
+
+            resultText += `${questionCounter}. ${q.question}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   labels[q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : userAnswer].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `정답: ${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    labels[q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : userAnswer].classList.add('incorrect');
+                }
+                 // Also highlight the correct answer
+                const correctLabel = labels[q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer];
+                correctLabel.innerHTML += ' <span class="correct-answer"> &lt;-- 정답</span>';
+                correctLabel.classList.add('correct');
+
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            questionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 
+ 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        // Prepare and download file
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        const filename = `${studentId}_${studentName}_111_${finalScore}점_${timestamp}.txt`;
+        
+        resultText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n` + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Disable form
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료";
+        const inputs = form.getElementsByTagName('input');
+        for(let i = 0; i < inputs.length; i++) {
+            inputs[i].disabled = true;
+        }
+
+    }
+</script>
+
+</body>
+</html>

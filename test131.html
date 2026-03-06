@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>사물 인터넷 시스템의 이해 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>사물 인터넷 시스템의 이해 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "MCU(마이크로컨트롤러 유닛)는 IoT 기기의 두뇌 역할을 하며 CPU, 메모리, 입출력 포트 등을 포함한다.",
+            answer: "O",
+            explanation: "MCU는 특정 기능을 수행하는 임베디드 시스템의 핵심 부품으로, 연산을 위한 CPU, 프로그램 저장을 위한 플래시 메모리, 데이터 처리를 위한 RAM, 센서/액추에이터 연결을 위한 GPIO 포트 등이 하나의 칩에 집적되어 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "펌웨어는 한 번 설치되면 절대 업데이트할 수 없는 하드웨어의 일부이다.",
+            answer: "X",
+            explanation: "펌웨어는 하드웨어를 제어하는 '소프트웨어'입니다. 전원이 꺼져도 유지되지만, 버그를 수정하거나 기능을 추가하기 위해 원격으로 또는 직접 연결하여 업데이트(FOTA, Firmware-Over-The-Air)할 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "IoT 플랫폼의 규칙 엔진은 주로 사용자 앱의 화면 디자인을 담당한다.",
+            answer: "X",
+            explanation: "규칙 엔진은 'IF-THEN' 기반의 자동화 로직을 담당합니다. (예: IF 온도가 30도 이상이면, THEN 에어컨을 켜라). 화면 디자인은 응용/서비스 계층의 역할입니다."
+        },
+        {
+            type: 'ox',
+            question: "IoT 기기는 수집한 데이터를 항상 JSON 형식으로만 플랫폼에 전송해야 한다.",
+            answer: "X",
+            explanation: "JSON은 매우 널리 쓰이고 편리한 형식이지만, 유일한 표준은 아닙니다. 데이터 크기를 극단적으로 줄여야 하는 경우, 이진(binary) 형식의 프로토콜(예: Protocol Buffers, CBOR)을 사용하기도 합니다."
+        },
+        {
+            type: 'ox',
+            question: "API는 IoT 플랫폼의 데이터나 기능을 외부 응용 프로그램이 사용할 수 있도록 제공하는 인터페이스이다.",
+            answer: "O",
+            explanation: "API는 플랫폼과 외부 세계(앱, 다른 서비스 등)를 연결하는 공식적인 '소통 창구' 역할을 합니다. 앱은 이 API를 통해 데이터를 요청하고, 플랫폼을 제어하는 명령을 보낼 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "IoT 시스템에서 '상향링크(Uplink)'는 플랫폼이 기기로 명령을 보내는 것을 의미한다.",
+            answer: "X",
+            explanation: "'상향링크'는 하위 계층에서 상위 계층으로, 즉 디바이스에서 플랫폼으로 데이터가 올라가는 것을 의미합니다. 플랫폼이 기기로 명령을 보내는 것은 '하향링크(Downlink)'라고 합니다."
+        },
+        {
+            type: 'ox',
+            question: "펌웨어의 주된 역할 중 하나는 전력 소모를 최소화하기 위해 적절한 시점에 수면 모드(Sleep Mode)로 진입하는 것이다.",
+            answer: "O",
+            explanation: "특히 배터리로 동작하는 IoT 기기에서 저전력 설계는 매우 중요합니다. 펌웨어는 데이터를 보내거나 특정 동작을 할 때만 깨어나고, 나머지 시간에는 MCU를 수면 모드로 전환하여 전력 소모를 극적으로 줄이는 로직을 포함해야 합니다."
+        },
+        {
+            type: 'ox',
+            question: "디바이스 관리는 IoT 플랫폼의 주요 기능 중 하나로, 수많은 기기의 상태를 모니터링하고 원격으로 업데이트하는 것을 포함한다.",
+            answer: "O",
+            explanation: "수백, 수만 개의 기기를 일일이 관리하는 것은 불가능합니다. IoT 플랫폼은 이러한 대규모 기기들을 중앙에서 효율적으로 관리하고 유지보수하는 필수적인 기능을 제공합니다."
+        },
+        {
+            type: 'ox',
+            question: "IoT 시스템 설계 시, 실시간성은 중요하지 않으며 데이터는 최대한 천천히 처리해도 괜찮다.",
+            answer: "X",
+            explanation: "자율주행차의 장애물 감지, 공장의 비상 정지 시스템 등 일부 IoT 응용에서는 수 밀리초(ms) 단위의 매우 빠른 응답, 즉 '실시간성'이 시스템의 안전과 성능을 위해 절대적으로 중요합니다."
+        },
+        {
+            type: 'ox',
+            question: "모든 IoT 기기는 반드시 게이트웨이를 통해서만 인터넷에 연결될 수 있다.",
+            answer: "X",
+            explanation: "Wi-Fi나 LTE/5G 통신 모듈을 내장한 기기는 게이트웨이 없이 직접 인터넷 공유기나 이동통신망에 연결하여 클라우드 플랫폼과 통신할 수 있습니다. 게이트웨이는 주로 저전력 근거리 통신(Zigbee, Z-Wave 등)을 사용하는 센서 노드들을 위해 사용됩니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "다음 중 IoT 기기의 하드웨어를 직접 제어하며, '설정-무한루프' 구조를 가지는 소프트웨어는 무엇인가?",
+            options: ["운영체제 (OS)", "API", "펌웨어 (Firmware)", "컴파일러 (Compiler)", "데이터베이스 (Database)"],
+            answer: 2, 
+            explanation: "펌웨어는 특정 하드웨어(임베디드 시스템)에 종속되어 하드웨어를 제어하고, 정해진 작업을 무한히 반복하는 소프트웨어를 지칭합니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT 시스템의 여러 구성 요소에 대한 비유로 가장 적절하지 않은 것은?",
+            options: ["MCU - 기기의 작은 두뇌", "펌웨어 - 두뇌 속의 생각과 반사 신경", "IoT 플랫폼 - 도시의 중앙 관제탑", "API - 관제탑과 시민을 연결하는 민원 창구", "JSON - 관제탑의 건물 구조 설계도"],
+            answer: 4,
+            explanation: "JSON은 시스템의 구성 요소 간에 데이터를 주고받을 때 사용하는 '언어' 또는 '편지 양식'에 비유하는 것이 더 적절합니다. 건물 구조 설계도는 시스템의 전체 아키텍처에 해당합니다. 나머지 비유는 각 요소의 역할을 잘 설명하고 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT 플랫폼의 '규칙 엔진'이 수행하는 역할로 가장 알맞은 것은?",
+            options: ["수신된 데이터를 데이터베이스에 저장한다.", "사용자가 기기 상태를 볼 수 있도록 그래프를 그려준다.", "'온도가 30도 이상이면' 과 같은 특정 조건을 감지한다.", "외부 앱이 플랫폼의 기능을 사용할 수 있도록 허용한다.", "기기의 펌웨어를 최신 버전으로 업데이트한다."],
+            answer: 2,
+            explanation: "규칙 엔진의 핵심 역할은 사전에 정의된 '규칙(Rule)'에 따라 들어온 데이터를 평가하고, 조건이 만족되면 정해진 '행동(Action)'을 자동으로 실행(trigger)하는 것입니다. 데이터 저장은 데이터베이스, 그래프 표시는 시각화 도구, 기능 허용은 API, 펌웨어 업데이트는 디바이스 관리 기능의 역할입니다."
+        },
+        {
+            type: 'mcq',
+            question: "스마트폰 앱으로 집 안의 로봇 청소기를 동작시키는 과정의 데이터 흐름으로 가장 올바른 것은? (하향링크)",
+            options: ["앱 → 플랫폼 → 네트워크 → 로봇 청소기", "앱 → 로봇 청소기 → 네트워크 → 플랫폼", "로봇 청소기 → 플랫폼 → 네트워크 → 앱", "플랫폼 → 앱 → 로봇 청소기 → 네트워크", "네트워크 → 플랫폼 → 앱 → 로봇 청소기"],
+            answer: 0,
+            explanation: "사용자가 앱에서 '청소 시작' 버튼을 누르면, 이 명령은 인터넷('네트워크')을 통해 '플랫폼'으로 전송됩니다. 플랫폼은 이 명령을 해석하여 해당 '로봇 청소기'가 알아들을 수 있는 제어 신호로 변환한 뒤, 다시 '네트워크'를 통해 로봇 청소기에 전달합니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 IoT 시스템을 설계할 때 우선적으로 고려해야 할 사항으로 가장 거리가 먼 것은?",
+            options: ["기기의 전력 소모량", "통신 데이터의 보안", "시스템의 확장 가능성", "기기의 화면 크기와 해상도", "데이터 처리의 실시간성"],
+            answer: 3,
+            explanation: "대부분의 IoT 기기(센서, 액추에이터 등)는 화면이 없거나 아주 작은 상태 표시창만 가지고 있습니다. 따라서 화면 크기와 해상도는 일반적인 스마트폰이나 PC 설계와 달리, IoT 시스템 설계의 핵심 고려사항이라고 보기 어렵습니다. 저전력, 보안, 확장성, 실시간성은 매우 중요한 설계 요소입니다."
+        },
+        {
+            type: 'mcq',
+            question: "아두이노(Arduino)나 라즈베리 파이 피코(Raspberry Pi Pico)는 IoT 시스템의 어떤 구성 요소에 가장 가까운가?",
+            options: ["클라우드 플랫폼", "사용자 애플리케이션", "마이크로컨트롤러 유닛(MCU) 보드", "네트워크 게이트웨이", "API 서버"],
+            answer: 2,
+            explanation: "아두이노와 라즈베리 파이 피코는 MCU를 중심으로 하여 개발자가 쉽게 센서와 액추에이터를 연결하고 펌웨어를 업로드하여 테스트할 수 있도록 만든 대표적인 임베디드 시스템 개발 보드입니다."
+        },
+        {
+            type: 'mcq',
+            question: "IoT 플랫폼이 해야 할 역할이 아닌 것은?",
+            options: ["수많은 기기들의 연결을 관리하고 인증한다.", "기기에서 오는 데이터를 수집하여 저장한다.", "주변의 온도, 습도 등 물리량을 직접 측정한다.", "저장된 데이터를 분석하여 유의미한 패턴을 찾는다.", "분석된 결과를 스마트폰 앱에 전달한다."],
+            answer: 2,
+            explanation: "물리량을 직접 측정하는 것은 '센서'의 역할이며, 이는 감지 계층에 속합니다. IoT 플랫폼은 이렇게 측정된 '디지털 데이터'를 받아서 처리하고 관리하는 역할을 합니다."
+        },
+        {
+            type: 'mcq',
+            question: "펌웨어의 무한 루프 안에서 time.sleep()과 같은 대기 함수를 사용하는 주된 이유는?",
+            options: ["코드 실행 속도를 일부러 늦추기 위해", "다음 센서 측정까지 CPU를 쉬게 하여 전력 소모를 줄이기 위해", "인터넷 연결이 안정될 때까지 기다리기 위해", "사용자에게 생각할 시간을 주기 위해", "운영체제의 스케줄러에게 제어권을 넘기기 위해"],
+            answer: 1,
+            explanation: "배터리로 동작하는 많은 IoT 기기들에게 전력 소모는 매우 중요한 문제입니다. 1초에 한 번만 측정하면 되는 센서가 1초 내내 CPU를 100% 사용하고 있을 필요가 없습니다. 측정이 끝나면 sleep()을 통해 MCU를 저전력 '수면 모드'로 전환하여 배터리 사용 시간을 크게 늘릴 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음은 스마트 팩토리의 데이터 흐름을 나타낸 것이다. 괄호 안에 들어갈 가장 적절한 요소는? (컨베이어 벨트 센서 → ( ) → 클라우드 플랫폼 → 공장 관리자 대시보드)",
+            options: ["액추에이터", "게이트웨이", "API", "펌웨어", "사용자"],
+            answer: 1,
+            explanation: "공장 환경에서는 수백 개의 센서가 근거리 통신을 사용할 수 있습니다. 이 센서들의 데이터를 하나로 모아 대표로 인터넷(클라우드 플랫폼)에 연결해주는 역할을 하는 것이 바로 '게이트웨이'입니다."
+        },
+        {
+            type: 'mcq',
+            question: "내가 직접 만든 날씨 앱이 기상청의 서버에 접속하여 현재 온도 데이터를 받아온다. 이 과정에 대한 설명으로 가장 올바른 것은?",
+            options: ["내 앱이 기상청 서버의 '펌웨어'를 실행했다.", "내 앱이 기상청 서버의 'API'를 호출했다.", "내 앱이 기상청 서버의 'MCU'를 제어했다.", "내 앱이 기상청 서버의 '규칙 엔진'을 수정했다.", "내 앱이 기상청 서버의 '게이트웨이'가 되었다."],
+            answer: 1,
+            explanation: "기상청 서버(플랫폼)는 외부 사용자들이 날씨 데이터를 이용할 수 있도록 API를 제공합니다. 내 앱은 이 API의 정해진 규칙에 따라 요청을 보내고, 약속된 형식(주로 JSON)으로 데이터를 받아와 화면에 표시하는 것입니다."
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak('${q.question}')" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${q.question}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer"> &lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        const filename = `${studentId}_${studentName}_131_${finalScore}점_${timestamp}.txt`;
+        
+        resultText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n` + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
