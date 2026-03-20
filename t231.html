@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>빅데이터의 이해 종합 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+            white-space: pre-line;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer-highlight {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>빅데이터의 이해 종합 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "빅데이터는 단순히 데이터의 양(Volume)이 많은 것을 의미한다.",
+            answer: "X",
+            explanation: "빅데이터는 양(Volume)뿐만 아니라, 생성 속도(Velocity), 형태의 다양성(Variety)까지 포함하는 개념으로, 기존의 방식으로는 처리하기 어려운 데이터를 총칭합니다."
+        },
+        {
+            type: 'ox',
+            question: "엑셀 스프레드시트와 같은 테이블 형태의 데이터는 '정형 데이터'에 속한다.",
+            answer: "O",
+            explanation: "정형 데이터는 행과 열의 고정된 스키마(구조)를 가지는 데이터를 의미하며, 엑셀 시트나 데이터베이스 테이블이 대표적인 예입니다."
+        },
+        {
+            type: 'ox',
+            question: "유튜브에 매분마다 업로드되는 동영상들은 빅데이터의 특징 중 '속도(Velocity)'와 '다양성(Variety)'을 잘 보여준다.",
+            answer: "O",
+            explanation: "동영상은 끊임없이 실시간으로 업로드(속도)되며, 그 자체로 용량이 크고(양), 정형화되지 않은 '비정형 데이터'(다양성)에 해당하므로 빅데이터의 여러 특징을 동시에 보여줍니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터의 '정확성(Veracity)'은 데이터의 양이 얼마나 많은지를 나타내는 척도이다.",
+            answer: "X",
+            explanation: "데이터의 정확성(Veracity)은 데이터가 얼마나 신뢰할 수 있고, 오류나 노이즈가 적은지를 나타내는 품질의 척도입니다. 양을 나타내는 것은 Volume입니다."
+        },
+        {
+            type: 'ox',
+            question: "빅데이터 분석의 궁극적인 목표는 가능한 한 많은 데이터를 수집하여 보관하는 것이다.",
+            answer: "X",
+            explanation: "빅데이터의 궁극적인 목표는 수집된 데이터를 분석하여 그 속에서 기존에는 몰랐던 새로운 통찰과 실질적인 '가치(Value)'를 창출하는 것입니다."
+        },
+        {
+            type: 'ox',
+            question: "JSON이나 XML 파일은 데이터 내에 구조에 대한 설명이 포함되어 있어 '반정형 데이터'로 분류된다.",
+            answer: "O",
+            explanation: "반정형 데이터는 정형 데이터처럼 고정된 테이블 구조는 아니지만, 태그나 키-값 쌍 등을 이용해 데이터의 계층 구조나 의미를 파악할 수 있는 유연한 구조를 가집니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터에 포함된 오류나 결측치를 제거하는 과정을 '데이터 시각화'라고 한다.",
+            answer: "X",
+            explanation: "데이터의 오류나 결측치를 처리하는 과정은 '데이터 정제(Data Cleaning)' 또는 '데이터 전처리(Data Preprocessing)'라고 합니다. 데이터 시각화는 분석된 결과를 그래프나 차트로 표현하는 것입니다."
+        },
+        {
+            type: 'ox',
+            question: "분산 처리 시스템은 여러 대의 컴퓨터를 연결하여 대용량 데이터를 병렬적으로 처리하는 기술이다.",
+            answer: "O",
+            explanation: "한 대의 컴퓨터로 감당하기 어려운 빅데이터를 여러 대의 컴퓨터(클러스터)로 나누어 동시에 처리함으로써, 처리 시간을 단축하고 시스템의 확장성을 확보하는 빅데이터 처리의 핵심 기술입니다."
+        },
+        {
+            type: 'ox',
+            question: "SNS에 올라오는 사용자들의 글, 사진, 동영상은 대부분 '비정형 데이터'이다.",
+            answer: "O",
+            explanation: "텍스트, 이미지, 비디오 등은 정해진 구조가 없는 데이터이므로 비정형 데이터에 속합니다."
+        },
+        {
+            type: 'ox',
+            question: "빅데이터는 그 가치가 매우 크기 때문에, 개인정보 보호와 같은 윤리적 문제는 고려하지 않아도 된다.",
+            answer: "X",
+            explanation: "빅데이터는 개인의 사생활, 민감 정보 등을 다량 포함할 수 있으므로, 그 활용에 있어 개인정보 보호와 데이터 오남용 방지 등 엄격한 윤리적, 법적 규제를 준수하는 것이 매우 중요합니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "매일 전 세계에서 발생하는 신용카드 거래 데이터를 실시간으로 분석하여 사기 거래를 탐지하는 시스템이 있다. 이 시스템이 다루는 데이터의 특징과 가장 관련이 깊은 것은?",
+            options: ["양(Volume)과 다양성(Variety)", "속도(Velocity)와 정확성(Veracity)", "양(Volume)과 가치(Value)", "다양성(Variety)과 정확성(Veracity)", "속도(Velocity)와 가치(Value)"],
+            answer: 1,
+            explanation: "'실시간으로' 발생하는 데이터를 처리해야 하므로 '속도(Velocity)'가 매우 중요합니다. 또한, 정상 거래와 사기 거래를 정확히 구분해야 하므로 데이터의 '정확성(Veracity)'이 시스템의 성능을 좌우합니다. 잘못된 판단은 큰 금융 손실을 야기할 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 '비정형 데이터(Unstructured Data)'에 해당하는 것을 모두 고른 것은?\n가. 학생들의 성적 데이터베이스 테이블\n나. 유튜브 크리에이터가 올린 동영상 파일\n다. 이메일 본문 내용\n라. XML 형식으로 작성된 웹사이트 구조 문서",
+            options: ["가, 나", "나, 다", "다, 라", "가, 라", "나, 다, 라"],
+            answer: 1,
+            explanation: "'가'는 명확한 행과 열이 있는 정형 데이터, '라'는 태그로 구조를 설명하는 반정형 데이터입니다. '나'(동영상)와 '다'(자연어 텍스트)는 정해진 구조가 없는 대표적인 비정형 데이터입니다."
+        },
+        {
+            type: 'mcq',
+            question: "빅데이터 분석 과정에서 \"Garbage In, Garbage Out\" 이라는 격언이 강조하는 단계는?",
+            options: ["데이터 수집", "데이터 정제 (Data Cleaning)", "데이터 분석", "데이터 시각화", "데이터 저장"],
+            answer: 1,
+            explanation: "\"쓰레기(잘못된 데이터)를 넣으면 쓰레기(잘못된 분석 결과)가 나온다\"는 의미로, 분석을 수행하기 전에 데이터에 포함된 오류, 노이즈, 결측치 등을 처리하는 데이터 정제 단계의 중요성을 강조하는 말입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 빅데이터의 '가치(Value)'를 창출한 사례로 가장 적절한 것은?",
+            options: ["100페타바이트의 천문 관측 데이터를 하드디스크에 저장했다.", "실시간 SNS 데이터를 분석하여 전염병 확산 경로를 예측했다.", "매일 1억 건의 로그 데이터를 생성하는 시스템을 구축했다.", "다양한 형식의 데이터를 하나의 데이터베이스로 통합했다.", "인터넷에서 10만 장의 고양이 이미지를 수집했다."],
+            answer: 1,
+            explanation: "'가치'는 데이터를 통해 얻어지는 유용한 '통찰'이나 '결과'를 의미합니다. 전염병 확산 경로 예측은 사회 안전에 기여하는 실질적인 가치를 창출한 사례입니다. 나머지 보기들은 데이터의 수집, 저장, 통합 단계에 해당하며, 그 자체만으로는 가치를 창출했다고 보기 어렵습니다."
+        },
+        {
+            type: 'mcq',
+            question: "빅데이터를 처리하기 위해 '분산 처리' 기술을 사용하는 가장 주된 이유는?",
+            options: ["데이터 보안을 강화하기 위해", "데이터 압축률을 높이기 위해", "한 대의 컴퓨터로는 감당하기 어려운 대용량 데이터를 여러 대로 나누어 처리하기 위해", "데이터의 종류를 통일하기 위해", "데이터의 생성 속도를 늦추기 위해"],
+            answer: 2,
+            explanation: "빅데이터의 가장 큰 특징인 '대용량(Volume)'을 한 대의 고성능 컴퓨터(Scale-up)로 처리하는 데에는 한계가 있습니다. 따라서 여러 대의 일반 컴퓨터를 묶어(Scale-out) 작업을 분산시키는 '분산 처리' 방식이 빅데이터 처리의 표준적인 해법이 되었습니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 빅데이터의 특징(V)과 그에 대한 설명이 잘못 연결된 것은?",
+            options: ["Volume - 처리해야 할 데이터의 전체 크기", "Velocity - 데이터가 얼마나 빠르게 생성되고 수집되는지", "Variety - 데이터가 얼마나 다양한 소스로부터 오는지", "Veracity - 데이터의 품질과 신뢰성 수준", "Value - 데이터 분석을 통해 얻는 유의미한 결과"],
+            answer: 2,
+            explanation: "'Variety'는 데이터 소스의 다양성보다는 데이터 자체의 '형태'나 '구조'가 얼마나 다양한지를 의미합니다. (예: 정형, 반정형, 비정형 데이터가 섞여 있음)"
+        },
+        {
+            type: 'mcq',
+            question: "온라인 쇼핑몰이 고객의 과거 구매 기록, 검색 기록, 장바구니 내용 등을 분석하여 개인 맞춤 상품을 추천하는 것은 주로 빅데이터의 어떤 특징을 활용한 것인가?",
+            options: ["정확성(Veracity)과 속도(Velocity)", "양(Volume)과 다양성(Variety)", "가치(Value)와 속도(Velocity)", "정확성(Veracity)과 다양성(Variety)", "양(Volume)과 가치(Value)"],
+            answer: 1,
+            explanation: "수많은 고객의 방대한 구매/검색 기록('양')과, 클릭 로그, 상품평(텍스트), 구매 내역(정형) 등 다양한 형태의 데이터('다양성')를 종합적으로 분석하여 추천 알고리즘을 만듭니다."
+        },
+        {
+            type: 'mcq',
+            question: "데이터 분석가가 되기 위해 필요한 역량으로 가장 거리가 먼 것은?",
+            options: ["통계학적 지식과 데이터 해석 능력", "데이터 전처리 및 정제 능력", "하드웨어 회로를 직접 설계하고 제작하는 능력", "Python, R 등 데이터 분석 도구 활용 능력", "분석 결과를 명확하게 전달하는 시각화 및 소통 능력"],
+            answer: 2,
+            explanation: "데이터 분석가는 주로 소프트웨어와 알고리즘을 다루어 데이터 속에서 의미를 찾는 역할을 합니다. 하드웨어 회로 설계는 임베디드 시스템 엔지니어 등 다른 분야의 전문성에 해당합니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 빅데이터 활용 시 발생할 수 있는 윤리적 문제로 보기 어려운 것은?",
+            options: ["알고리즘의 편향성으로 인한 특정 집단에 대한 차별", "개인정보 유출로 인한 사생활 침해", "데이터 처리 과정에서의 과도한 에너지 소비 및 환경 문제", "데이터 분석을 통한 질병의 조기 진단", "개인의 동의 없는 민감 정보 수집 및 활용"],
+            answer: 3,
+            explanation: "질병의 조기 진단은 빅데이터를 활용하여 인류의 건강에 기여하는 긍정적인 '가치' 창출 사례입니다. 나머지는 모두 빅데이터 시대에 경계해야 할 부정적인 측면 또는 윤리적 쟁점입니다."
+        },
+        {
+            type: 'mcq',
+            question: "한 대의 컴퓨터에서 100GB 파일을 처리하는 데 100분이 걸린다고 가정하자. 10대의 컴퓨터로 분산 처리 시스템을 구축했을 때, 처리 시간이 10분으로 단축되었다면 이는 빅데이터 시스템의 어떤 장점을 보여주는가?",
+            options: ["데이터의 압축률 향상", "병렬 처리를 통한 성능 및 확장성 향상", "데이터의 보안성 강화", "알고리즘의 정확도 향상", "데이터의 시각화 능력 향상"],
+            answer: 1,
+            explanation: "하나의 큰 작업을 여러 개로 나누어 동시에 처리하는 '병렬 처리'를 통해 전체 작업 시간을 크게 단축할 수 있습니다. 또한, 데이터가 더 커지면 컴퓨터를 더 추가(Scale-out)하여 성능을 유지할 수 있는 '확장성'을 보여주는 예시입니다."
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        const cleanQuestionForTTS = q.question.replace(/\n/g, " ");
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak('${cleanQuestionForTTS}')" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            const cleanQuestionForFile = q.question.replace(/\n/g, '\n');
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${cleanQuestionForFile}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+            const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer-highlight">&lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        const filename = `${studentId}_${studentName}_${finalScore}점_${timestamp}.txt`;
+        
+        const fileHeaderText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n`;
+        resultText = fileHeaderText + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

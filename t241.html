@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>데이터 시각화의 이해 종합 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+            white-space: pre-line;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer-highlight {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>데이터 시각화의 이해 종합 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "데이터 시각화는 숫자 데이터를 표로 보기 좋게 정리하는 것을 의미한다.",
+            answer: "X",
+            explanation: "데이터 시각화는 표를 넘어, 데이터를 그래프, 차트, 맵 등 '시각적 이미지'로 변환하여 패턴과 인사이트를 직관적으로 파악할 수 있도록 하는 과정입니다."
+        },
+        {
+            type: 'ox',
+            question: "여러 국가의 GDP를 비교하고자 할 때, 선 그래프가 가장 적합한 시각화 방법이다.",
+            answer: "X",
+            explanation: "여러 항목(국가) 간의 값을 '비교'하는 데에는 '막대그래프'가 가장 적합합니다. 선 그래프는 시간의 흐름에 따른 '변화 추세'를 보여주는 데 사용됩니다."
+        },
+        {
+            type: 'ox',
+            question: "산점도(Scatter Plot)는 두 수치형 변수 간의 상관관계를 파악하는 데 유용하다.",
+            answer: "O",
+            explanation: "산점도는 각 데이터를 x축과 y축에 해당하는 두 변수의 값으로 좌표 평면에 점을 찍어, 점들의 분포 패턴을 통해 두 변수 간의 관계(양의 상관, 음의 상관, 무상관)를 시각적으로 보여줍니다."
+        },
+        {
+            type: 'ox',
+            question: "좋은 시각화는 보는 사람이 정보를 왜곡하여 받아들이지 않도록 정확하게 데이터를 표현해야 한다.",
+            answer: "O",
+            explanation: "시각화의 중요한 원칙 중 하나는 '정확성'입니다. y축의 시작점을 조작하거나 축의 비율을 왜곡하여 변화를 과장하는 것은 데이터를 오도하는 나쁜 시각화의 예입니다."
+        },
+        {
+            type: 'ox',
+            question: "히스토그램에서 각 막대의 높이는 특정 값의 크기를 나타낸다.",
+            answer: "X",
+            explanation: "히스토그램에서 각 막대의 높이는 특정 '구간(bin)'에 속하는 데이터의 '개수(빈도)'를 나타냅니다. 특정 값의 크기를 나타내는 것은 막대그래프입니다."
+        },
+        {
+            type: 'ox',
+            question: "탐색적 데이터 분석(EDA) 과정에서 시각화는 데이터의 분포나 이상치를 파악하는 데 효과적으로 사용된다.",
+            answer: "O",
+            explanation: "EDA의 핵심 활동 중 하나는 데이터를 다양한 그래프로 그려보며, 데이터가 어떤 특성을 가지고 있는지, 분석 시 주의해야 할 점은 없는지 등을 탐색하는 것입니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터 시각화의 주된 목적은 데이터의 크기를 줄여 저장 공간을 확보하는 것이다.",
+            answer: "X",
+            explanation: "데이터의 크기를 줄이는 것은 '데이터 압축'의 주된 목적입니다. 데이터 시각화의 주된 목적은 데이터에 대한 '이해'와 분석 결과의 '전달'입니다."
+        },
+        {
+            type: 'ox',
+            question: "3D 파이 차트는 여러 항목의 비율을 비교하는 데 가장 효과적이고 명확한 방법이다.",
+            answer: "X",
+            explanation: "3D 효과가 들어간 파이 차트는 원근감 때문에 각 조각의 크기가 왜곡되어 보일 수 있어, 정확한 비율 비교를 어렵게 만듭니다. 많은 데이터 시각화 전문가들은 비율 비교 시, 3D 파이 차트보다 막대그래프를 사용할 것을 권장합니다."
+        },
+        {
+            type: 'ox',
+            question: "시간에 따른 주가의 변화를 보여주고 싶을 때는 선 그래프를 사용하는 것이 적절하다.",
+            answer: "O",
+            explanation: "선 그래프는 시간의 흐름(x축)에 따른 값(y축)의 연속적인 변화 추세를 보여주는 데 가장 최적화된 차트입니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터 시각화는 항상 최종 결과물을 보고할 때만 사용하는 설명적인 도구이다.",
+            answer: "X",
+            explanation: "시각화는 최종 결과를 다른 사람에게 '설명'하기 위해서도 사용되지만, 분석가 자신이 데이터의 특성을 파악하기 위한 '탐색' 과정에서도 매우 중요한 역할을 합니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "반 학생들의 '키'와 '몸무게' 사이의 관계를 시각적으로 확인하고 싶을 때, 가장 적합한 차트는?",
+            options: ["파이 차트", "선 그래프", "막대그래프", "산점도", "히스토그램"],
+            answer: 3,
+            explanation: "'키'와 '몸무게'라는 두 개의 수치형 변수 간의 관계(상관관계)를 파악하는 것이 목적이므로, 각 학생을 (키, 몸무게) 좌표를 갖는 점으로 표현하는 산점도가 가장 적합합니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 데이터 시각화의 주된 목적으로 가장 적절한 것은?",
+            options: ["데이터 속에 숨겨진 패턴과 인사이트를 쉽게 발견하기 위해", "데이터를 암호화하여 보안을 강화하기 위해", "데이터의 파일 형식을 변환하기 위해", "데이터의 크기를 압축하여 전송 속도를 높이기 위해", "데이터의 오류를 자동으로 수정하기 위해"],
+            answer: 0,
+            explanation: "데이터 시각화의 가장 근본적인 목적은 복잡하고 방대한 숫자 데이터의 나열을 인간이 직관적으로 이해할 수 있는 시각적 형태로 변환하여, 그 안에 숨겨진 의미 있는 정보(패턴, 추세, 관계, 이상치 등)를 쉽게 찾아낼 수 있도록 돕는 것입니다."
+        },
+        {
+            type: 'mcq',
+            question: "한 학급의 학생들의 '혈액형(A, B, O, AB)' 분포를 시각화하려고 한다. 어떤 차트가 가장 적합한가?",
+            options: ["선 그래프", "막대그래프", "산점도", "히스토그램", "버블 차트"],
+            answer: 1,
+            explanation: "'혈액형'은 범주형 데이터입니다. 각 범주(A, B, O, AB)에 해당하는 학생 수를 '비교'하는 것이 목적이므로, 막대그래프가 가장 적합합니다. 각 혈액형을 x축에 놓고, 학생 수를 y축 막대의 높이로 표현할 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "데이터 시각화에서 '차트정크(Chartjunk)'라는 용어가 비판하는 대상은?",
+            options: ["데이터의 내용을 이해하는 데 도움이 되지 않는 불필요한 시각적 장식", "데이터의 출처를 명확하게 밝히지 않는 행위", "데이터의 일부를 의도적으로 누락하여 결과를 왜곡하는 것", "그래프의 축 범위를 조작하여 변화를 과장하는 것", "너무 작은 글씨를 사용하여 내용을 알아보기 힘들게 만드는 것"],
+            answer: 0,
+            explanation: "'차트정크'는 데이터 시각화의 대가인 에드워드 터프티가 만든 용어로, 3D 효과, 그라데이션, 그림자, 불필요한 그림 등 데이터 자체의 정보를 전달하는 데 방해가 되는 모든 시각적 '쓰레기'를 의미합니다. 좋은 시각화는 간결하고 데이터에 집중해야 함을 강조합니다."
+        },
+        {
+            type: 'mcq',
+            question: "시험 점수 데이터의 분포를 확인하기 위해 '히스토그램'을 그리려고 한다. 가장 먼저 해야 할 작업은?",
+            options: ["학생들의 평균 점수를 계산한다.", "점수 범위를 여러 개의 동일한 구간(bin)으로 나눈다.", "각 학생의 등수를 매긴다.", "최고점과 최저점을 찾아낸다.", "모든 점수를 더한다."],
+            answer: 1,
+            explanation: "히스토그램은 특정 '구간'에 데이터가 얼마나 많이 속해 있는지를 보여주는 그래프입니다. 따라서 시각화를 시작하기 전에, 전체 데이터의 범위를 몇 개의 구간으로 나눌지(예: 0~10점, 10~20점, ...)를 결정하는 것이 가장 첫 번째 단계입니다."
+        },
+        {
+            type: 'mcq',
+            question: "플로렌스 나이팅게일이 '로즈 다이어그램'을 통해 전달하고자 했던 핵심 메시지는 무엇이었는가?",
+            options: ["전쟁의 참혹함", "부상당한 병사들의 고통", "크림 전쟁에서 영국군이 승리하고 있다는 사실", "전투로 인한 사망보다 병원의 비위생적인 환경으로 인한 질병 사망이 훨씬 더 심각한 문제라는 것", "간호사들의 헌신적인 노력"],
+            answer: 3,
+            explanation: "나이팅게일의 시각화는 감정에 호소하는 것이 아니라, 명확한 '데이터'에 기반하여 문제의 진짜 원인을 지적했습니다. 그녀의 다이어그램은 질병으로 인한 사망 영역이 전투 사망 영역보다 압도적으로 크게 그려져, 보는 사람이 즉시 문제의 핵심을 파악하고 위생 개선의 시급성을 깨닫게 만들었습니다."
+        },
+        {
+            type: 'mcq',
+            question: "어떤 뉴스에서 막대그래프의 y축이 0에서 시작하지 않고 중간 값에서 시작하여, 작은 차이를 매우 큰 차이처럼 보이게 만들었다. 이는 좋은 시각화의 원칙 중 무엇을 가장 크게 위배한 것인가?",
+            options: ["명확성 (Clarity)", "간결성 (Simplicity)", "심미성 (Aesthetics)", "정확성 (Accuracy)", "상호작용성 (Interactivity)"],
+            answer: 3,
+            explanation: "y축을 0에서 시작하지 않으면 막대의 '길이'가 실제 값의 '비율'을 정확하게 반영하지 못하게 됩니다. 이는 독자가 값의 차이를 시각적으로 과장하여 인식하게 만들므로, 데이터를 정직하게 표현해야 한다는 '정확성'의 원칙을 심각하게 위배하는 행위입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 시각화를 통해 파악하기 가장 어려운 정보는?",
+            options: ["시간에 따른 온도의 변화 추세", "여러 제품 간의 판매량 비교", "특정 데이터 값 하나에 대한 정확한 수치", "두 변수 사이의 대략적인 상관관계", "데이터 값들의 전반적인 분포 형태"],
+            answer: 2,
+            explanation: "시각화는 전체적인 패턴, 추세, 관계, 분포 등 '숲'을 보는 데 강점이 있습니다. 하지만 특정 지점의 '정확한 값'(예: 3월 15일의 정확한 온도 12.37℃)을 읽어내는 데는 표(Table)보다 비효율적이거나 부정확할 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "탐색적 데이터 분석(EDA) 단계에서 데이터 시각화를 수행하는 주된 이유는?",
+            options: ["최종 보고서에 넣을 아름다운 그래프를 미리 만들기 위해", "데이터의 특성과 구조를 직관적으로 파악하고, 분석 방향에 대한 아이디어를 얻기 위해", "데이터에 포함된 모든 오류를 자동으로 수정하기 위해", "데이터의 크기를 줄여 분석 속도를 높이기 위해", "데이터에 대한 나의 초기 가설이 옳았음을 증명하기 위해"],
+            answer: 1,
+            explanation: "EDA에서의 시각화는 '탐험'과 같습니다. 데이터를 이리저리 그려보면서 \"이 변수는 이런 분포를 가지는구나\", \"저 두 변수는 관계가 있어 보이는데?\", \"이 값은 왜 혼자 동떨어져 있지(이상치)?\" 와 같은 질문을 던지고, 데이터에 대한 이해를 높여 본격적인 분석 전략을 수립하는 데 목적이 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음은 어떤 종류의 차트를 텍스트로 표현한 것인가?\n10대 | ###\n20대 | #######\n30대 | #####\n40대 | ##",
+            options: ["선 그래프", "산점도", "파이 차트", "히스토그램 또는 막대그래프", "간트 차트"],
+            answer: 3,
+            explanation: "x축에 '10대', '20대' 등 범주나 구간이 있고, y축 값에 해당하는 빈도를 막대의 길이('#'의 개수)로 표현하고 있습니다. 이는 범주 간 비교를 위한 '막대그래프' 또는 특정 구간의 빈도를 나타내는 '히스토그램'의 전형적인 형태입니다."
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        const cleanQuestionForTTS = q.question.replace(/\n/g, " ");
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak('${cleanQuestionForTTS}')" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            const cleanQuestionForFile = q.question.replace(/\n/g, '\n');
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${cleanQuestionForFile}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+            const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer-highlight">&lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        const filename = `${studentId}_${studentName}_${finalScore}점_${timestamp}.txt`;
+        
+        const fileHeaderText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n`;
+        resultText = fileHeaderText + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

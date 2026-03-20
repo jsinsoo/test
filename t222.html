@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>압축의 효율성 분석 종합 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+            white-space: pre-line;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer-highlight {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>압축의 효율성 분석 종합 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "데이터의 엔트로피가 높을수록 무손실 압축의 효율이 좋다.",
+            answer: "X",
+            explanation: "엔트로피는 데이터의 무작위성을 나타내는 척도입니다. 엔트로피가 높다는 것은 데이터가 무작위적이고 중복성이 낮다는 의미이므로, 압축하기가 매우 어렵고 압축 효율이 떨어집니다."
+        },
+        {
+            type: 'ox',
+            question: "압축률 90%는 원본 데이터 크기의 10%로 줄어들었음을 의미한다.",
+            answer: "O",
+            explanation: "압축률 90%는 원본 대비 90%의 크기가 '감소'했음을 의미합니다. 따라서 남은 파일의 크기는 원본의 10%가 됩니다."
+        },
+        {
+            type: 'ox',
+            question: "무손실 압축에서는 압축률과 압축 속도가 항상 비례한다.",
+            answer: "X",
+            explanation: "일반적으로 압축률과 속도는 '상충 관계(Trade-off)'에 있습니다. 더 높은 압축률을 얻기 위해 더 복잡한 알고리즘을 사용하면, 더 많은 연산이 필요하므로 압축 속도는 느려지는 경향이 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "손실 압축은 압축률을 높이면 원본과의 데이터 차이(품질 저하)가 커진다.",
+            answer: "O",
+            explanation: "손실 압축은 데이터를 버려서 압축률을 높이는 방식이므로, 압축률을 높인다는 것은 더 많은 데이터를 버린다는 의미입니다. 따라서 원본과의 차이가 커져 품질이 저하됩니다."
+        },
+        {
+            type: 'ox',
+            question: "이미 압축된 파일(예: ZIP 파일)을 다시 압축하면, 압축률이 매우 높게 나타난다.",
+            answer: "X",
+            explanation: "이미 압축된 파일은 데이터의 중복성이 대부분 제거되어 엔트로피가 매우 높은 상태입니다. 이러한 데이터에 다시 압축을 시도하면 크기가 거의 줄지 않거나, 압축 파일 헤더 정보 등으로 인해 오히려 크기가 약간 더 커질 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "섀넌의 소스 코딩 정리에 따르면, 데이터의 엔트로피는 해당 데이터를 압축할 수 있는 이론적인 한계를 제시한다.",
+            answer: "O",
+            explanation: "섀넌은 데이터의 엔트로피가 그 데이터를 무손실 압축했을 때, 심볼 당 평균 비트 수의 최솟값임을 증명했습니다. 즉, 어떤 무손실 압축 알고리즘도 데이터의 엔트로피보다 더 작게 압축할 수는 없습니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터에 특정 패턴이나 규칙이 전혀 없을수록 RLE 압축의 효율이 좋다.",
+            answer: "X",
+            explanation: "RLE(Run-Length Encoding)는 '같은 데이터가 연속으로 반복되는' 특정 패턴에 최적화된 알고리즘입니다. 패턴이 전혀 없는 무작위 데이터는 RLE 압축 효과가 거의 없습니다."
+        },
+        {
+            type: 'ox',
+            question: "압축 알고리즘의 성능은 원본 데이터의 특성과 무관하게 항상 일정하다.",
+            answer: "X",
+            explanation: "압축 알고리즘의 성능은 원본 데이터의 특성(중복성, 패턴, 빈도 분포 등)에 매우 크게 의존합니다. 특정 데이터에 매우 효과적인 알고리즘이 다른 종류의 데이터에는 비효율적일 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "JPEG 압축 레벨을 낮추면(품질을 낮추면) 파일 크기는 커진다.",
+            answer: "X",
+            explanation: "JPEG 압축 레벨(품질)을 낮춘다는 것은 더 많은 데이터를 버려도 좋다는 의미이므로, 압축률이 높아져 파일 크기는 '작아집니다'."
+        },
+        {
+            type: 'ox',
+            question: "어떤 압축 알고리즘을 선택할지는 압축률, 속도, 데이터의 종류, 사용 목적 등을 종합적으로 고려하여 결정해야 한다.",
+            answer: "O",
+            explanation: "모든 상황에 맞는 최고의 압축 알고리즘은 없습니다. 빠른 전송이 중요한지, 영구 보관이 중요한지, 데이터 손실이 허용되는지 등 다양한 요소를 고려하여 가장 적합한 압축 전략을 선택하는 것이 중요합니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "다음 중 데이터의 엔트로피(Entropy)가 가장 높을 것으로 예상되는 것은?",
+            options: [
+                "\"0000000000000000\"",
+                "\"abababababababab\"",
+                "한글 '가'로만 채워진 텍스트 파일",
+                "AES-256으로 암호화된 파일",
+                "동일한 단어가 많이 반복되는 신문 기사"
+            ],
+            answer: 3,
+            explanation: "좋은 암호화 알고리즘의 결과물은 통계적으로 거의 완벽한 무작위(random) 데이터처럼 보여야 합니다. 만약 암호문에 패턴이 보인다면 해독의 단서가 될 수 있기 때문입니다. 따라서 잘 암호화된 파일은 엔트로피가 매우 높고, 무손실 압축이 거의 되지 않습니다. ①, ②, ③, ⑤는 모두 명백한 패턴과 중복성을 가지므로 엔트로피가 낮습니다."
+        },
+        {
+            type: 'mcq',
+            question: "원본 파일 크기가 2MB이고, 압축률이 75%일 때, 압축 후 파일의 크기는?",
+            options: ["250 KB", "500 KB", "750 KB", "1 MB", "1.5 MB"],
+            answer: 1,
+            explanation: "압축률이 75%라는 것은 원본 크기의 75%가 줄어들었다는 의미입니다. 따라서 남은 파일의 크기는 원본의 (100 - 75)% = 25% 입니다. 2MB (2048 KB)의 25%는 512 KB 이므로, 보기 중 가장 가까운 값은 500 KB 입니다."
+        },
+        {
+            type: 'mcq',
+            question: "무손실 압축 프로그램을 개발할 때, '최대한 높은 압축률'과 '최대한 빠른 압축 속도'를 동시에 달성하기 어려운 이유는 무엇인가?",
+            options: [
+                "두 목표는 수학적으로 관계가 없기 때문이다.",
+                "높은 압축률을 위해서는 복잡한 패턴 분석이 필요하여 더 많은 연산 시간이 소요되는 상충 관계에 있기 때문이다.",
+                "압축 속도가 빠르면 데이터에 손실이 발생하기 때문이다.",
+                "무손실 압축은 압축률이 항상 고정되어 있기 때문이다.",
+                "빠른 압축은 저사양 컴퓨터에서는 불가능하기 때문이다."
+            ],
+            answer: 1,
+            explanation: "더 높은 압축률을 달성하려면 데이터 내에 숨어있는 더 복잡하고 긴 패턴을 찾아내야 합니다. 이러한 탐색 과정은 더 많은 CPU 연산과 메모리를 필요로 하므로, 자연스럽게 압축 속도는 느려지게 됩니다. 이것이 바로 '압축률 vs. 속도'의 상충 관계(Trade-off)입니다."
+        },
+        {
+            type: 'mcq',
+            question: "의료용 X-ray 이미지 원본 파일을 이메일로 전송하려고 한다. 어떤 압축 방식을 선택하는 것이 가장 바람직한가?",
+            options: ["JPEG (손실 압축)", "MP3 (손실 압축)", "ZIP (무손실 압축)", "MPEG (손실 압축)", "압축하지 않고 그대로 전송한다."],
+            answer: 2,
+            explanation: "의료 영상은 환자의 진단과 직결되는 매우 중요한 정보이므로, 단 1픽셀의 정보 손실도 허용되어서는 안 됩니다. 따라서 반드시 원본이 100% 보존되는 무손실 압축(ZIP, PNG, TIFF LZW 등)을 사용해야 합니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 데이터의 특성과 그에 가장 적합한 압축 알고리즘의 연결이 옳지 않은 것은?",
+            options: ["WWWWWWWWWWBBBB -> RLE", "영어 소설 텍스트 -> 허프만 코딩", "프로그램 소스 코드 -> LZ77 (ZIP에서 사용)", "사람의 목소리 녹음 -> JPEG", "1011010010111101 (랜덤 비트열) -> 압축 효과 거의 없음"],
+            answer: 3,
+            explanation: "JPEG는 정지 '이미지'를 위한 손실 압축 알고리즘입니다. 사람의 목소리와 같은 '오디오' 데이터에는 MP3, AAC 등의 손실 압축 알고리즘이 적합합니다."
+        },
+        {
+            type: 'mcq',
+            question: "데이터 압축의 효율성을 분석하는 활동으로 가장 거리가 먼 것은?",
+            options: [
+                "동일한 파일에 대해 RLE와 ZIP의 압축률을 비교한다.",
+                "JPEG 파일의 품질 설정을 10, 50, 100으로 바꾸며 파일 크기의 변화를 기록한다.",
+                "암호화 키의 길이를 늘리면서 암호화에 걸리는 시간을 측정한다.",
+                "텍스트 파일과 이미지 파일에 zlib 압축을 적용하고 압축률 차이를 분석한다.",
+                "압축 레벨을 다르게 설정하며 압축 속도와 압축률의 관계를 그래프로 그린다."
+            ],
+            answer: 2,
+            explanation: "암호화 키 길이는 '보안 강도'와 '암호화 속도'에 영향을 미치지만, '압축'의 효율성과는 직접적인 관련이 없습니다. 나머지는 모두 압축 알고리즘의 성능과 효율성을 분석하는 활동입니다."
+        },
+        {
+            type: 'mcq',
+            question: "컴퓨터 바탕화면을 캡쳐한 이미지 파일(PNG)이 풍경 사진(JPG)에 비해 파일 크기가 작게 나오는 경향이 있다. 그 이유를 가장 잘 설명한 것은?",
+            options: [
+                "PNG는 손실 압축, JPG는 무손실 압축이기 때문이다.",
+                "바탕화면 이미지는 풍경 사진보다 엔트로피가 낮기 때문이다.",
+                "바탕화면 이미지는 항상 크기가 작기 때문이다.",
+                "PNG는 텍스트 압축에, JPG는 이미지 압축에 특화되었기 때문이다.",
+                "바탕화면 이미지는 색상 수가 더 많기 때문이다."
+            ],
+            answer: 1,
+            explanation: "컴퓨터 바탕화면은 아이콘, 단색 배경 등 동일한 색상으로 이루어진 넓은 영역이 많습니다. 이는 데이터의 중복성이 매우 높고 패턴이 단순하다는 의미이며, 정보 이론 관점에서는 '엔트로피가 낮다'고 말합니다. PNG는 이러한 특징을 잘 활용하는 무손실 압축(LZ77+허프만)을 사용하므로 압축 효율이 좋습니다. 반면, 풍경 사진은 복잡하고 다양한 색상 정보로 이루어져 엔트로피가 상대적으로 높습니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 데이터 압축에 대한 설명으로 가장 옳은 것은?",
+            options: [
+                "모든 데이터는 최소 50% 이상 압축될 수 있다.",
+                "손실 압축은 원본을 완벽하게 복원할 수 없지만, 높은 압축률을 얻을 수 있다.",
+                "무손실 압축은 항상 손실 압축보다 압축률이 높다.",
+                "데이터의 크기를 늘려서 정보를 추가하는 과정이다.",
+                "압축된 데이터는 암호화된 데이터보다 항상 안전하다."
+            ],
+            answer: 1,
+            explanation: "손실 압축의 핵심적인 특징이자 상충 관계입니다. 일부 데이터를 버리는 대가로 높은 압축률을 얻습니다. ①번과 같이 모든 데이터를 압축할 수 있다는 보장은 없으며(엔트로피 한계), ③ 무손실 압축은 일반적으로 손실 압축보다 압축률이 낮습니다."
+        },
+        {
+            type: 'mcq',
+            question: "\"No Free Lunch Theorem\"을 데이터 압축에 적용할 때, 다음 중 가장 적절한 해석은?",
+            options: [
+                "압축 소프트웨어는 항상 유료로 구매해야 한다.",
+                "모든 종류의 데이터에 대해 항상 최고의 성능을 내는 '만능' 압축 알고리즘은 존재하지 않는다.",
+                "압축을 하면 항상 데이터의 일부를 잃게 된다.",
+                "압축에 드는 시간과 압축으로 절약하는 시간은 항상 같다.",
+                "데이터 압축 기술은 더 이상 발전할 여지가 없다."
+            ],
+            answer: 1,
+            explanation: "\"세상에 공짜 점심은 없다\"는 이 정리는, 어떤 문제에 대해 모든 상황에서 뛰어난 성능을 보이는 보편적인 알고리즘은 존재할 수 없다는 의미를 담고 있습니다. 데이터 압축에서는, 어떤 알고리즘이 특정 종류의 데이터(예: 텍스트)에 매우 효율적이더라도, 다른 종류의 데이터(예: 오디오)에는 비효율적일 수 있음을 의미합니다."
+        },
+        {
+            type: 'mcq',
+            question: "압축률을 계산하는 공식으로 옳은 것은? (단, O=원본 크기, C=압축 후 크기)",
+            options: ["(C / O) * 100", "(O / C) * 100", "(1 - C / O) * 100", "(1 - O / C) * 100", "(O - C) * 100"],
+            answer: 2,
+            explanation: "C / O는 원본 대비 압축 파일의 크기 비율입니다. 1에서 이 비율을 빼면 '줄어든 비율'이 계산되고, 여기에 100을 곱하여 백분율로 나타냅니다."
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        const cleanQuestionForTTS = q.question.replace(/\n/g, " ");
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak('${cleanQuestionForTTS}')" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            const cleanQuestionForFile = q.question.replace(/\n/g, '\n');
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${cleanQuestionForFile}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+            const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer-highlight">&lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        const filename = `${studentId}_${studentName}_${finalScore}점_${timestamp}.txt`;
+        
+        const fileHeaderText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n`;
+        resultText = fileHeaderText + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

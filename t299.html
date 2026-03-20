@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>빅데이터 분석 프로젝트 종합 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+            white-space: pre-line;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer-highlight {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>빅데이터 분석 프로젝트 종합 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "데이터 분석 프로젝트의 첫 단계는 가능한 한 많은 데이터를 수집하는 것이다.",
+            answer: "X",
+            explanation: "첫 단계는 해결하고자 하는 '문제를 명확하게 정의'하고, 어떤 질문에 답할 것인지를 결정하는 것입니다."
+        },
+        {
+            type: 'ox',
+            question: ".info()는 Pandas 데이터프레임의 각 열에 대한 데이터 타입과 결측치 정보를 보여주는 유용한 메서드이다.",
+            answer: "O",
+            explanation: ".info()는 데이터의 전체적인 구조(행/열 개수, 데이터 타입, 메모리 사용량 등)를 파악하는 데 필수적인 첫 단계입니다."
+        },
+        {
+            type: 'ox',
+            question: "'대여일시' 열에서 '요일' 정보를 추출하여 새로운 열로 만드는 것은 '특성 공학(Feature Engineering)'의 예이다.",
+            answer: "O",
+            explanation: "기존의 변수를 가공하거나 조합하여 분석에 더 유용한 새로운 변수를 만드는 모든 과정을 특성 공학이라고 합니다."
+        },
+        {
+            type: 'ox',
+            question: "탐색적 데이터 분석(EDA)은 데이터의 패턴이나 구조를 파악하기 위해 주로 시각화를 활용한다.",
+            answer: "O",
+            explanation: "EDA의 핵심은 데이터를 그래프로 그려보며, 숫자만으로는 알 수 없는 데이터의 특성, 분포, 관계, 이상치 등을 직관적으로 파악하는 것입니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터 정제 과정은 전체 프로젝트에서 많은 시간을 차지하지만, 분석 결과의 품질에는 큰 영향을 주지 않는다.",
+            answer: "X",
+            explanation: "데이터 정제는 분석 결과의 신뢰도를 결정하는 가장 중요한 과정 중 하나입니다. \"쓰레기를 넣으면 쓰레기가 나온다\"는 말처럼, 잘못된 데이터로 분석하면 잘못된 결론이 나옵니다."
+        },
+        {
+            type: 'ox',
+            question: "Pandas의 .groupby() 메서드는 특정 열의 값을 기준으로 데이터를 그룹화하고, 각 그룹에 대한 집계(평균, 합계 등)를 계산하는 데 사용된다.",
+            answer: "O",
+            explanation: ".groupby()는 SQL의 GROUP BY 구문과 유사한 강력한 기능으로, 범주별 통계를 계산하는 데 핵심적으로 사용됩니다."
+        },
+        {
+            type: 'ox',
+            question: "프로젝트의 최종 목표는 복잡하고 어려운 분석 모델을 만드는 것이다.",
+            answer: "X",
+            explanation: "최종 목표는 '문제를 해결'하고, 그 과정에서 얻은 '인사이트를 효과적으로 전달'하여 실제 의사결정에 도움을 주는 것입니다. 복잡한 모델은 그 목표를 위한 수단일 뿐입니다."
+        },
+        {
+            type: 'ox',
+            question: ".describe() 메서드는 숫자형 데이터뿐만 아니라 문자열 데이터의 빈도수까지 계산해준다.",
+            answer: "X",
+            explanation: ".describe()는 기본적으로 숫자형(int, float) 열에 대한 기술 통계량(평균, 표준편차 등)을 계산합니다. 문자열 데이터에 대해서는 include='all' 옵션을 주면 개수(count), 고유값 개수(unique), 최빈값(top), 빈도(freq) 등을 보여줍니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터 분석은 항상 정해진 하나의 정답을 찾아가는 과정이다.",
+            answer: "X",
+            explanation: "데이터 분석은 정답이 없는 문제를 탐험하는 과정에 가깝습니다. 동일한 데이터라도 분석가의 관점, 가설, 분석 방법에 따라 다양한 해석과 결론이 나올 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "분석 결과를 다른 사람에게 전달할 때는 시각화 자료를 사용하는 것이 효과적이다.",
+            answer: "O",
+            explanation: "시각화는 복잡한 데이터 분석 결과를 사람들이 빠르고 직관적으로 이해할 수 있도록 돕는 가장 강력한 '소통' 도구입니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "데이터 분석 프로젝트를 시작할 때, '풀고자 하는 문제를 명확하게 정의하는' 단계의 중요성으로 가장 적절한 것은?",
+            options: ["프로젝트에 필요한 총 예산을 산출할 수 있다.", "프로젝트의 최종 결과 보고서의 목차를 미리 정할 수 있다.", "분석의 방향을 설정하고, 어떤 데이터를 수집하고 분석해야 할지에 대한 명확한 가이드라인을 제공한다.", "프로젝트에 사용할 프로그래밍 언어와 라이브러리를 결정할 수 있다.", "프로젝트의 실패 가능성을 미리 예측할 수 있다."],
+            answer: 2,
+            explanation: "문제 정의는 프로젝트의 '나침반' 역할을 합니다. \"어떤 시간대에 사람이 많은가?\" 라는 질문이 정의되어야, '시간' 데이터와 '이용량' 데이터를 수집하고, 시간대별로 그룹화하여 분석하는 구체적인 계획을 세울 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "Pandas 데이터프레임 df가 있을 때, df.isnull().sum() 코드를 실행하여 얻을 수 있는 정보는?",
+            options: ["데이터프레임의 전체 행의 개수", "각 열(column)의 평균값", "각 열에 포함된 결측치(missing value)의 개수", "각 열의 데이터 타입", "데이터프레임이 차지하는 메모리 용량"],
+            answer: 2,
+            explanation: "df.isnull()은 각 셀이 결측치인지 여부를 True/False로 반환하고, .sum()은 각 열에 대해 True(결측치)의 개수를 합산합니다. 이는 데이터 정제 전, 데이터의 품질(완전성)을 확인하는 필수적인 과정입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 '탐색적 데이터 분석(EDA)' 단계에서 수행하는 활동으로 가장 적합한 것은?",
+            options: ["웹사이트에서 데이터를 스크래핑하여 CSV 파일로 저장한다.", "데이터의 분포와 변수 간의 관계를 파악하기 위해 다양한 그래프를 그려본다.", "분석 결과를 바탕으로 파워포인트 보고서를 작성한다.", "머신러닝 모델의 예측 정확도를 평가한다.", "결측치를 평균값으로 대체한다."],
+            answer: 1,
+            explanation: "EDA의 핵심은 데이터를 '탐색'하는 것입니다. 선 그래프, 막대그래프, 산점도, 히스토그램 등 다양한 시각화 기법을 사용하여 데이터가 어떤 이야기를 담고 있는지 직관적으로 파악하고 가설을 세우는 활동입니다. ⑤는 데이터 정제, ③은 결과 공유 단계입니다."
+        },
+        {
+            type: 'mcq',
+            question: "따릉이 데이터의 '대여일시'(YYYY-MM-DD HH:MM) 열에서 '요일'(월,화,수...) 정보를 추출하여 새로운 '대여요일' 열을 추가했다. 이러한 작업을 무엇이라고 하는가?",
+            options: ["데이터 시각화", "데이터 마이닝", "특성 공학 (Feature Engineering)", "기술 통계 분석", "데이터 정규화"],
+            answer: 2,
+            explanation: "특성 공학은 기존의 변수를 가공하거나 조합하여 분석 모델에 더 유용한 새로운 변수(특성)를 만드는 과정입니다. '대여일시' 자체보다 '요일'이나 '시간대'가 이용 패턴 분석에 더 직접적인 정보를 제공할 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "프로젝트의 최종 단계에서, 분석가가 자신의 분석 결과와 인사이트를 경영진에게 보고하려고 한다. 이때 가장 효과적인 의사소통 도구는?",
+            options: ["분석에 사용된 전체 Python 코드", "데이터베이스의 모든 원본 데이터 테이블", "분석의 핵심 결론을 한눈에 보여주는 간결하고 명확한 시각화 자료(그래프)와 요약", "분석 과정에서 시도했던 모든 실패한 알고리즘 목록", "복잡한 수학 공식으로 가득 찬 통계 모델 요약표"],
+            answer: 2,
+            explanation: "최종 보고/발표의 목적은 '설득'과 '전달'입니다. 비전문가인 의사결정권자를 대상으로 할 때는, 복잡한 과정보다는 핵심적인 결론과 그 근거를 직관적으로 보여주는 시각화 자료와 스토리가 가장 효과적입니다."
+        },
+        {
+            type: 'mcq',
+            question: "데이터프레임 df에 df.groupby('대여소').size().sort_values(ascending=False).head(10) 코드를 실행했다. 이 코드가 수행하는 작업은?",
+            options: ["평점이 가장 높은 영화 10개를 찾는다.", "가장 최근에 대여된 10건의 기록을 찾는다.", "대여 건수가 가장 많은 상위 10개 대여소를 찾는다.", "이동 거리가 가장 긴 상위 10건의 기록을 찾는다.", "가장 오랜 시간 이용된 상위 10건의 기록을 찾는다."],
+            answer: 2,
+            explanation: ".groupby('대여소')로 대여소별로 그룹화하고, .size()로 각 그룹의 크기(대여 건수)를 계산한 뒤, .sort_values(ascending=False)로 내림차순 정렬하고, .head(10)으로 상위 10개를 선택하는 코드입니다."
+        },
+        {
+            type: 'mcq',
+            question: "데이터 분석 프로젝트 진행 시, 가장 많은 시간과 노력이 소요되는 단계는 일반적으로 어디인가?",
+            options: ["문제 정의", "데이터 준비 및 정제", "모델링", "테스트", "결과 발표"],
+            answer: 1,
+            explanation: "많은 데이터 분석가들이 전체 프로젝트 시간의 60~80%를 데이터 정제 및 가공에 사용한다고 말합니다. 현실 세계의 데이터는 대부분 불완전하고 오류가 많아, 분석에 적합한 형태로 만드는 데 많은 노력이 필요하기 때문입니다."
+        },
+        {
+            type: 'mcq',
+            question: "데이터 분석가에게 '데이터 스토리텔링' 역량이 중요한 이유는?",
+            options: ["코드를 더 빨리 작성할 수 있기 때문에", "복잡한 분석 결과를 청중이 이해하고 공감할 수 있는 이야기로 만들어 설득력을 높이기 때문에", "데이터 수집 비용을 절감할 수 있기 때문에", "데이터베이스를 더 효율적으로 설계할 수 있기 때문에", "데이터의 보안을 강화할 수 있기 때문에"],
+            answer: 1,
+            explanation: "데이터 스토리텔링은 분석 결과를 단순히 나열하는 것이 아니라, 문제의 배경, 분석 과정, 발견한 인사이트, 그리고 결론을 하나의 논리적인 이야기로 엮어 청중의 이해와 공감을 이끌어내는 능력입니다. 이는 분석의 가치를 최종적으로 실현하는 데 필수적입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 데이터 분석 프로젝트의 '성공'을 판단하는 가장 중요한 기준은?",
+            options: ["얼마나 복잡하고 최신 머신러닝 모델을 사용했는가", "얼마나 많은 양의 데이터를 사용했는가", "얼마나 화려하고 아름다운 그래프를 만들었는가", "프로젝트를 통해 처음에 정의했던 문제를 해결하고, 실제 의사결정에 긍정적인 영향을 주었는가", "프로젝트를 얼마나 빠른 시간 안에 끝냈는가"],
+            answer: 3,
+            explanation: "프로젝트의 성공은 기술의 복잡성이나 데이터의 양이 아닌, '그래서 그 문제가 해결되었는가?', '이 분석이 실제 세상에 어떤 가치를 제공했는가?'로 평가됩니다. 문제 해결이라는 본질적인 목표 달성 여부가 가장 중요합니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 Pandas 라이브러리의 주된 용도는?",
+            options: ["과학적 계산 및 행렬 연산", "데이터 시각화 및 그래프 생성", "표 형태의 데이터를 다루고 분석하기 위한 자료구조(DataFrame) 제공", "웹 페이지의 데이터를 수집하는 크롤러 제작", "머신러닝 알고리즘 모델 제공"],
+            answer: 2,
+            explanation: "Pandas의 핵심은 '데이터프레임(DataFrame)'이라는 2차원 표 형태의 자료구조입니다. 이를 통해 CSV, Excel 등 다양한 소스로부터 데이터를 쉽게 불러오고, 필터링, 그룹핑, 조인 등 강력한 데이터 가공 및 분석 기능을 수행할 수 있습니다."
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        const cleanQuestionForTTS = q.question.replace(/\n/g, " ");
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak('${cleanQuestionForTTS}')" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            const cleanQuestionForFile = q.question.replace(/\n/g, '\n');
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${cleanQuestionForFile}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+            const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer-highlight">&lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        const filename = `${studentId}_${studentName}_${finalScore}점_${timestamp}.txt`;
+        
+        const fileHeaderText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n`;
+        resultText = fileHeaderText + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

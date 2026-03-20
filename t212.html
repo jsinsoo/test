@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>암호화 기법의 종류 종합 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+            white-space: pre-line;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer-highlight {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>암호화 기법의 종류 종합 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "블록 암호의 ECB 운영 모드는 동일한 평문 블록이 항상 동일한 암호문 블록으로 변환되어 보안에 취약하다.",
+            answer: "O",
+            explanation: "ECB 모드는 각 블록을 독립적으로 암호화하기 때문에, 평문의 패턴이 암호문에 그대로 드러나는 단점이 있습니다. 예를 들어 이미지 데이터의 경우, 암호화를 해도 원래 이미지의 윤곽이 그대로 보일 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "스트림 암호는 평문을 고정된 크기의 블록 단위로 나누어 처리한다.",
+            answer: "X",
+            explanation: "평문을 블록 단위로 처리하는 것은 '블록 암호'입니다. 스트림 암호는 데이터를 비트나 바이트 단위의 연속적인 흐름(스트림)으로 처리합니다."
+        },
+        {
+            type: 'ox',
+            question: "RSA 암호 알고리즘의 안전성은 '매우 큰 수를 소인수분해하기 어렵다'는 수학적 문제에 기반한다.",
+            answer: "O",
+            explanation: "두 개의 큰 소수 p, q를 곱하여 N=pq를 만드는 것은 쉽지만, 거대한 수 N을 주고 다시 p와 q를 찾아내는 것은 현재의 컴퓨팅 기술로 사실상 불가능에 가깝습니다. 이 비대칭적인 계산의 어려움이 RSA의 핵심입니다."
+        },
+        {
+            type: 'ox',
+            question: "전자서명은 메시지의 '기밀성'을 보장하기 위해 사용된다.",
+            answer: "X",
+            explanation: "전자서명의 주된 목적은 메시지를 보낸 사람이 본인이 맞음을 증명(인증, 부인 방지)하고, 메시지가 중간에 위변조되지 않았음(무결성)을 보장하는 것입니다. 기밀성을 위해서는 메시지 자체를 암호화해야 합니다."
+        },
+        {
+            type: 'ox',
+            question: "CBC 운영 모드는 암호화를 수행할 때 이전 블록의 암호화 결과가 다음 블록에 영향을 미친다.",
+            answer: "O",
+            explanation: "CBC(Cipher Block Chaining)는 이름 그대로, 각 평문 블록을 암호화하기 전에 이전 암호문 블록과 XOR하는 '연결(Chaining)' 구조를 가집니다. 이 때문에 평문의 패턴이 암호문에 드러나지 않습니다."
+        },
+        {
+            type: 'ox',
+            question: "하이브리드 암호 시스템은 비대칭키의 높은 보안성과 대칭키의 빠른 속도라는 장점을 결합한 방식이다.",
+            answer: "O",
+            explanation: "실제 데이터를 암호화하는 데는 빠른 대칭키를 사용하고, 이 대칭키를 안전하게 전달하는 데에만 비대칭키를 사용하여 두 방식의 장점을 모두 취하는 효율적인 방식입니다."
+        },
+        {
+            type: 'ox',
+            question: "전자서명을 생성할 때는 자신의 '공개키'로 해시 값을 암호화한다.",
+            answer: "X",
+            explanation: "전자서명은 '나만이 할 수 있는 행위'여야 하므로, 나만 가지고 있는 '개인키'로 메시지의 해시 값을 암호화해야 합니다. 이 서명은 나의 공개키로만 검증될 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "블록 암호에서 마지막 블록의 길이가 부족할 때, 이를 채워주는 과정을 '패딩(Padding)'이라고 한다.",
+            answer: "O",
+            explanation: "블록 암호는 항상 고정된 크기의 블록 단위로 동작하므로, 원본 데이터가 블록 크기의 배수가 아닐 경우 마지막 블록의 부족한 부분을 특정 규칙에 따라 채워 길이를 맞춰주는 패딩 과정이 필요합니다."
+        },
+        {
+            type: 'ox',
+            question: "MD5는 현재에도 안전한 해시 함수로 인정받아 비밀번호 저장에 널리 사용된다.",
+            answer: "X",
+            explanation: "MD5는 충돌을 쉽게 찾을 수 있는 심각한 보안 취약점이 발견되어, 더 이상 안전한 해시 함수로 간주되지 않습니다. 현재는 SHA-256 이상의 해시 함수 사용이 권고됩니다."
+        },
+        {
+            type: 'ox',
+            question: "초기화 벡터(IV)는 ECB 운영 모드의 보안을 강화하기 위해 사용된다.",
+            answer: "X",
+            explanation: "초기화 벡터(IV)는 CBC와 같은 체이닝 방식의 운영 모드에서 첫 번째 평문 블록과 연산하기 위해 사용되는 임의의 값입니다. 각 블록을 독립적으로 암호화하는 ECB 모드에서는 IV가 필요하지 않습니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "동일한 내용의 이미지 파일을 암호화했음에도 불구하고, 암호화된 파일에서 원래 이미지의 윤곽이 희미하게 보이는 현상이 발생했다. 어떤 블록 암호 운영 모드를 사용했을 가능성이 가장 높은가?",
+            options: ["CBC (Cipher Block Chaining)", "CFB (Cipher Feedback)", "OFB (Output Feedback)", "CTR (Counter)", "ECB (Electronic Codebook)"],
+            answer: 4,
+            explanation: "ECB 모드는 동일한 평문 블록을 항상 동일한 암호문 블록으로 변환하기 때문에, 이미지의 배경색과 같이 동일한 색상 값을 갖는 블록들이 암호화 후에도 동일한 패턴을 유지하게 됩니다. 이로 인해 원본 이미지의 형태가 유추될 수 있는 심각한 보안 취약점이 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "HTTPS 통신을 시작할 때, 웹 브라우저(클라이언트)가 웹 서버의 '공개키'를 이용하여 암호화하는 것은 무엇인가?",
+            options: ["사용자가 보내려는 실제 데이터 (예: 아이디, 비밀번호)", "앞으로 사용할 임시 대칭키 (세션 키)", "웹 서버의 도메인 이름", "사용자의 개인키", "데이터의 해시 값"],
+            answer: 1,
+            explanation: "이것이 하이브리드 암호 시스템의 핵심입니다. 전체 통신을 암호화할 빠르고 효율적인 임시 대칭키를 클라이언트가 생성한 뒤, 이 키를 안전하게 서버에 전달하기 위해 서버의 공개키로 암호화하여 보냅니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 '전자서명'이 제공하는 주요 보안 기능으로 짝지어진 것은?",
+            options: ["기밀성, 가용성", "인증, 부인 방지, 무결성", "기밀성, 무결성", "인증, 가용성", "부인 방지, 기밀성"],
+            answer: 1,
+            explanation: "전자서명은 ① 메시지가 서명한 사람(개인키 소유자)에게서 온 것이 맞음을 보장하고(인증), ② 서명한 사람이 나중에 서명한 사실을 부인할 수 없게 하며(부인 방지), ③ 서명을 검증하는 과정에서 메시지의 해시 값을 비교하므로 내용이 변조되지 않았음(무결성)을 보장합니다."
+        },
+        {
+            type: 'mcq',
+            question: "AES, ARIA와 같이 고정된 크기의 데이터 블록을 처리하는 암호화 방식을 무엇이라고 하는가?",
+            options: ["스트림 암호", "블록 암호", "공개키 암호", "해시 함수", "양자 암호"],
+            answer: 1,
+            explanation: "블록 암호는 평문을 일정한 크기(블록)로 나누어, 각 블록 단위로 암호화 연산을 수행하는 대칭키 암호 방식의 한 종류입니다. AES와 ARIA는 대표적인 블록 암호 알고리즘입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 입력 데이터의 길이가 달라도 항상 고정된 길이의 결과값을 출력하며, 결과값으로 입력값을 역산할 수 없는 단방향 함수의 특징을 가지는 것은?",
+            options: ["RSA", "AES", "시저 암호", "SHA-256", "Base64 인코딩"],
+            answer: 3,
+            explanation: "해시 함수(SHA-256 등)는 임의의 입력을 받아 고정 길이의 출력을 내보내는 단방향 함수입니다. ①, ②, ③은 모두 복호화가 가능한 양방향 암호 알고리즘이며, ⑤는 단순히 데이터를 다른 문자셋으로 표현하는 인코딩 방식으로 암호화가 아닙니다."
+        },
+        {
+            type: 'mcq',
+            question: "CBC 운영 모드에서 첫 번째 평문 블록을 암호화하기 전에 XOR 연산을 수행하는 대상은 무엇인가?",
+            options: ["암호화 키 (Key)", "두 번째 평문 블록", "고정된 상수 값", "초기화 벡터 (IV)", "이전 통신의 마지막 암호문 블록"],
+            answer: 3,
+            explanation: "CBC 모드는 '이전 암호문 블록'과 체이닝되지만, 첫 번째 블록은 그럴 대상이 없습니다. 따라서 첫 블록의 암호화를 위해 '초기화 벡터(IV)'라는 임의의 초기값을 사용합니다. 이 IV는 매번 다른 값을 사용해야 암호문의 보안성이 높아집니다."
+        },
+        {
+            type: 'mcq',
+            question: "비대칭키 암호 시스템에 대한 설명으로 옳지 않은 것은?",
+            options: ["공개키와 개인키라는 한 쌍의 키를 사용한다.", "대칭키 암호 방식에 비해 연산 속도가 매우 빠르다.", "키를 안전하게 배송해야 하는 문제가 해결된다.", "공개키로 암호화된 내용은 개인키로만 복호화할 수 있다.", "대표적인 알고리즘으로 RSA가 있다."],
+            answer: 1,
+            explanation: "비대칭키 암호는 소인수분해, 이산대수 문제 등 복잡한 수학적 연산을 기반으로 하므로, 단순한 비트 연산 위주의 대칭키 암호에 비해 연산 속도가 수백 배에서 수천 배까지 느립니다."
+        },
+        {
+            type: 'mcq',
+            question: "블록 암호를 사용하여 100바이트의 데이터를 암호화하려고 한다. 블록 크기가 16바이트일 때, 마지막 블록에 필요한 패딩(padding)의 크기는 얼마인가?",
+            options: ["0바이트", "4바이트", "8바이트", "12바이트", "16바이트"],
+            answer: 3,
+            explanation: "100바이트를 16바이트 블록으로 나누면 6개의 완전한 블록(6 * 16 = 96 바이트)이 나오고, 마지막에 4바이트가 남습니다. 이 4바이트를 하나의 완전한 16바이트 블록으로 만들기 위해서는 12바이트의 패딩이 필요합니다. (4 + 12 = 16)"
+        },
+        {
+            type: 'mcq',
+            question: "다음 암호 기술 중, 개발자인 '로널드 리베스트(Ronald Rivest)'가 개발에 참여한 것으로만 짝지어진 것은?",
+            options: ["AES, SHA-256", "DES, ECC", "RSA, MD5", "RC4, SHA-1", "시저 암호, 비즈네르 암호"],
+            answer: 2,
+            explanation: "로널드 리베스트는 아디 샤미르(Adi Shamir), 레너드 애들먼(Leonard Adleman)과 함께 RSA 알고리즘을 개발했으며, MD5나 RC4와 같은 다른 여러 암호 알고리즘 개발에도 참여한 저명한 암호학자입니다."
+        },
+        {
+            type: 'mcq',
+            question: "인터넷 뱅킹에서 보안카드의 비밀번호 전체를 입력받지 않고, '앞 2자리', '뒤 2자리'와 같이 일부만 요구하는 주된 이유는?",
+            options: ["사용자 입력의 편의성을 높이기 위해", "통신 데이터의 양을 줄이기 위해", "사용자의 기억력을 테스트하기 위해", "통신 과정에서 비밀번호가 유출되더라도 전체 비밀번호의 노출을 막기 위해", "서버의 계산 부하를 줄이기 위해"],
+            answer: 3,
+            explanation: "이는 일종의 보안 기법입니다. 만약 통신 내용이 유출되거나 사용자의 키보드 입력이 해킹당하더라도, 비밀번호의 일부만 노출되므로 공격자가 전체 비밀번호를 알아낼 수 없습니다. 다음에 접속할 때는 다른 위치의 번호를 요구함으로써 보안성을 더욱 높입니다."
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        const cleanQuestionForTTS = q.question.replace(/\n/g, " ");
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak('${cleanQuestionForTTS}')" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            const cleanQuestionForFile = q.question.replace(/\n/g, '\n');
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${cleanQuestionForFile}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+            const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer-highlight">&lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        const filename = `${studentId}_${studentName}_${finalScore}점_${timestamp}.txt`;
+        
+        const fileHeaderText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n`;
+        resultText = fileHeaderText + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

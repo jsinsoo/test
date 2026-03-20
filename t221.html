@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>데이터 압축의 원리 종합 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+            white-space: pre-line;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer-highlight {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>데이터 압축의 원리 종합 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "데이터 압축의 주된 목적은 데이터의 보안을 강화하는 것이다.",
+            answer: "X",
+            explanation: "데이터 압축의 주된 목적은 데이터의 크기를 줄여 저장 공간을 효율적으로 사용하고, 데이터 전송 시간을 단축하는 것입니다. 보안 강화는 '암호화'의 목적입니다."
+        },
+        {
+            type: 'ox',
+            question: "무손실 압축은 압축을 해제하면 원본 데이터와 100% 동일한 데이터로 복원된다.",
+            answer: "O",
+            explanation: "무손실 압축은 데이터의 손실 없이 원본 그대로 복원되는 압축 방식입니다. 텍스트 문서, 프로그램 파일 등 정보의 정확성이 중요한 데이터에 사용됩니다."
+        },
+        {
+            type: 'ox',
+            question: "손실 압축은 주로 텍스트 파일이나 프로그램 압축에 사용된다.",
+            answer: "X",
+            explanation: "손실 압축은 사람이 인지하기 어려운 데이터를 일부 제거하여 압축률을 높이는 방식으로, 주로 이미지(JPEG), 오디오(MP3), 비디오(MPEG) 파일에 사용됩니다. 텍스트나 프로그램은 단 1비트의 손실도 허용되지 않으므로 무손실 압축을 사용해야 합니다."
+        },
+        {
+            type: 'ox',
+            question: "런렝스 인코딩(RLE)은 데이터에 동일한 값이 연속으로 많이 반복될 때 효과적이다.",
+            answer: "O",
+            explanation: "런렝스 인코딩은 'A가 5번 반복'과 같이, 연속되는 데이터의 값과 그 길이를 함께 기록하여 압축하는 방식이므로, 동일한 데이터가 길게 이어지는 경우에 압축 효율이 매우 좋습니다."
+        },
+        {
+            type: 'ox',
+            question: "허프만 코딩은 모든 문자를 동일한 길이의 코드로 변환하는 방식이다.",
+            answer: "X",
+            explanation: "허프만 코딩의 핵심은, 자주 등장하는 문자에는 '짧은' 길이의 코드를, 드물게 등장하는 문자에는 '긴' 길이의 코드를 할당하여 전체 데이터의 평균 길이를 줄이는 가변 길이 인코딩 방식입니다."
+        },
+        {
+            type: 'ox',
+            question: "LZ77 알고리즘은 이전에 등장했던 문자열이 다시 나타나면, 그 위치와 길이로 대체하여 압축한다.",
+            answer: "O",
+            explanation: "LZ77은 슬라이딩 윈도우를 사용하여, 현재 압축할 문자열과 동일한 문자열이 윈도우 내에 이전에 있었는지를 찾고, 있다면 (이전 위치로부터의 거리, 동일한 문자열의 길이)로 대체하는 방식입니다."
+        },
+        {
+            type: 'ox',
+            question: "JPEG, MP3는 대표적인 무손실 압축 기법이다.",
+            answer: "X",
+            explanation: "JPEG(이미지)와 MP3(오디오)는 인간의 시각, 청각이 둔감한 부분을 제거하여 높은 압축률을 얻는 대표적인 '손실' 압축 기법입니다."
+        },
+        {
+            type: 'ox',
+            question: "압축은 저장 공간을 절약하고 데이터 전송 시간을 단축하는 효과가 있다.",
+            answer: "O",
+            explanation: "데이터의 크기가 줄어들면, 같은 저장 공간에 더 많은 데이터를 저장할 수 있고, 네트워크를 통해 파일을 보낼 때도 더 빨리 전송할 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터의 중복성이 높을수록 압축 효율이 좋다.",
+            answer: "O",
+            explanation: "대부분의 압축 알고리즘은 데이터 내에 존재하는 패턴이나 중복성을 찾아내어, 이를 더 간결한 형태로 표현하는 원리에 기반합니다. 따라서 중복성이 높을수록 압축할 여지가 많아져 압축 효율이 좋아집니다."
+        },
+        {
+            type: 'ox',
+            question: "압축을 해제하는 과정을 '인코딩'이라고 한다.",
+            answer: "X",
+            explanation: "압축을 하는 과정이 '인코딩(Encoding)'이고, 압축을 풀어 원본으로 되돌리는 과정은 '디코딩(Decoding)'이라고 합니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "데이터 압축의 가장 주된 목적으로 옳은 것은?",
+            options: [
+                "데이터의 보안 수준을 높인다.",
+                "데이터를 저장하고 전송하는 데 필요한 비용과 시간을 줄인다.",
+                "데이터에 포함된 오류를 자동으로 수정한다.",
+                "데이터의 처리 속도를 향상시킨다.",
+                "데이터의 가독성을 높인다."
+            ],
+            answer: 1,
+            explanation: "데이터 압축의 핵심 목표는 데이터의 물리적인 크기를 줄이는 것입니다. 이를 통해 저장 장치의 공간을 절약하고, 네트워크를 통해 데이터를 전송할 때 걸리는 시간을 단축할 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 무손실 압축(Lossless Compression)에 대한 설명으로 옳은 것은?",
+            options: [
+                "압축률이 손실 압축보다 항상 더 높다.",
+                "주로 사진이나 동영상 파일에 사용된다.",
+                "압축 과정에서 일부 데이터가 영구적으로 손실된다.",
+                "압축 해제 시 원본 데이터와 100% 동일하게 복원된다.",
+                "인간이 인지하지 못하는 정보를 제거하는 방식이다."
+            ],
+            answer: 3,
+            explanation: "무손실 압축의 가장 중요한 정의는, 압축을 풀었을 때 데이터가 원본과 비트 단위까지 완벽하게 일치한다는 것입니다. 따라서 데이터의 정확성이 매우 중요한 프로그램 파일, 텍스트 문서 등에 사용됩니다."
+        },
+        {
+            type: 'mcq',
+            question: "\"AAAAABBBCC\" 라는 문자열을 런렝스 인코딩(RLE)으로 압축한 결과로 가장 적절한 것은?",
+            options: [
+                "A5B3C2", "5A3B2C", "ABC", "10", "A-B-C-5-3-2"
+            ],
+            answer: 0,
+            explanation: "런렝스 인코딩은 '문자'와 '반복 횟수'를 쌍으로 표현합니다. 따라서 A가 5번, B가 3번, C가 2번 반복되었으므로 'A5B3C2' (또는 (A,5), (B,3), (C,2) 등)의 형태로 표현하는 것이 가장 일반적입니다."
+        },
+        {
+            type: 'mcq',
+            question: "허프만 코딩 알고리즘의 핵심 원리는 무엇인가?",
+            options: [
+                "연속되는 문자의 개수를 센다.",
+                "모든 문자를 고정된 길이의 코드로 바꾼다.",
+                "이전에 나왔던 문자열의 위치를 참조한다.",
+                "자주 등장하는 문자에는 짧은 비트 코드를, 드물게 등장하는 문자에는 긴 비트 코드를 할당한다.",
+                "데이터의 수학적 변환을 통해 주파수 영역에서 정보를 제거한다."
+            ],
+            answer: 3,
+            explanation: "허프만 코딩은 통계적 압축 기법입니다. 각 문자의 출현 빈도를 분석하여, 빈도가 높은 문자일수록 더 적은 비트를 사용하여 표현함으로써 전체 데이터의 평균 길이를 줄이는 방식입니다."
+        },
+        {
+            type: 'mcq',
+            question: "ZIP 파일이 텍스트 파일을 효과적으로 압축하는 데 사용하는 주된 원리는?",
+            options: [
+                "텍스트의 오타를 자동으로 수정하여 압축한다.",
+                "텍스트에 사용된 단어의 의미를 분석하여 압축한다.",
+                "텍스트에서 사람이 잘 읽지 않는 부분을 삭제하여 압축한다.",
+                "텍스트 내에서 반복적으로 나타나는 단어나 구문을 찾아, 이를 참조 정보로 대체하여 압축한다.",
+                "텍스트를 이미지로 변환한 후 JPEG 압축을 수행한다."
+            ],
+            answer: 3,
+            explanation: "ZIP 파일은 주로 LZ 계열(LZ77 등) 알고리즘을 사용합니다. 이 알고리즘의 핵심은, 파일 내에서 이전에 등장했던 문자열 패턴이 다시 나타나면, 그 문자열 자체를 다시 쓰는 대신 '앞에서 몇 바이트 떨어진 곳에 있는 몇 바이트 길이의 문자열'과 같다는 정보로 대체하여 압축하는 것입니다. 텍스트에는 반복되는 단어나 구문이 많아 이 방식이 매우 효과적입니다."
+        },
+        {
+            type: 'mcq',
+            question: "의학용 MRI 원본 이미지나 프로그램 소스 코드를 보관할 때 반드시 사용해야 하는 압축 방식은?",
+            options: [
+                "JPEG (손실 압축)", "MP3 (손실 압축)", "MPEG (손실 압축)", "무손실 압축 (ZIP, PNG 등)", "어떤 압축도 사용해서는 안 된다."
+            ],
+            answer: 3,
+            explanation: "의료 영상이나 소스 코드는 단 하나의 정보라도 손실되거나 변경되면 치명적인 오류를 유발할 수 있습니다. 따라서 압축을 하더라도 반드시 원본을 100% 그대로 복원할 수 있는 '무손실 압축' 방식을 사용해야 합니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 손실 압축 기법이 주로 사용되는 파일 형식으로 짝지어진 것은?",
+            options: [
+                "TXT, HWP", "EXE, DLL", "WAV, BMP", "JPEG, MP3", "ZIP, GZ"
+            ],
+            answer: 3,
+            explanation: "JPEG는 이미지, MP3는 오디오를 위한 대표적인 손실 압축 형식입니다. WAV와 BMP는 보통 압축되지 않은 원본 형식이며, TXT, EXE, ZIP 등은 모두 무손실 압축을 사용하거나 무손실 압축이 필요한 데이터입니다."
+        },
+        {
+            type: 'mcq',
+            question: "데이터 압축의 효율성이 가장 떨어질 것으로 예상되는 데이터는?",
+            options: [
+                "단색 배경의 로고 이미지 파일",
+                "같은 단어가 많이 반복되는 텍스트 파일",
+                "랜덤한 노이즈로만 가득 찬 오디오 파일",
+                "조용한 환경에서 녹음된 사람의 목소리 파일",
+                "아이콘이 몇 개 없는 컴퓨터 바탕화면 캡쳐 이미지"
+            ],
+            answer: 2,
+            explanation: "압축은 데이터의 '규칙성'이나 '중복성'을 이용하는 기술입니다. 랜덤한 노이즈 데이터는 규칙성과 중복성이 거의 없어 예측이 불가능하므로, 압축할 수 있는 여지가 거의 없습니다. 압축을 시도해도 크기가 거의 줄지 않거나 오히려 커질 수 있습니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음은 어떤 압축 알고리즘의 동작을 설명한 것인가?\n\"문자열을 읽다가 이전에 등장했던 가장 긴 문자열을 찾고, 그 문자열의 (위치, 길이)로 현재 문자열을 대체한다.\"",
+            options: [
+                "런렝스 인코딩 (RLE)", "허프만 코딩", "LZ77 (Lempel-Ziv 77)", "JPEG 압축", "산술 부호화"
+            ],
+            answer: 2,
+            explanation: "이는 딕셔너리 기반 압축의 대표적인 알고리즘인 LZ77의 핵심 동작 원리에 대한 설명입니다. 이전에 나온 내용을 '사전'처럼 활용하여 반복을 제거합니다."
+        },
+        {
+            type: 'mcq',
+            question: "데이터 압축에 대한 설명으로 옳지 않은 것은?",
+            options: [
+                "무손실 압축은 원본 데이터를 완벽하게 복원할 수 있다.",
+                "손실 압축은 주로 멀티미디어 데이터에 사용된다.",
+                "압축의 핵심 원리는 데이터의 중복성을 제거하는 것이다.",
+                "이미 압축된 파일을 다시 압축하면 압축률이 더 높아진다.",
+                "허프만 코딩은 자주 나오는 문자에 짧은 코드를 할당한다."
+            ],
+            answer: 3,
+            explanation: "이미 압축된 파일은 데이터의 중복성이 대부분 제거된, 거의 무작위 데이터에 가까운 상태입니다. 이러한 데이터에 다시 압축을 시도하면 압축 효과가 거의 없거나, 새로운 압축 파일의 헤더 정보 때문에 크기가 오히려 미세하게 증가할 수 있습니다."
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        const cleanQuestionForTTS = q.question.replace(/\n/g, " ");
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak('${cleanQuestionForTTS}')" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            const cleanQuestionForFile = q.question.replace(/\n/g, '\n');
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${cleanQuestionForFile}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+            const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer-highlight">&lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        const filename = `${studentId}_${studentName}_${finalScore}점_${timestamp}.txt`;
+        
+        const fileHeaderText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n`;
+        resultText = fileHeaderText + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>빅데이터 분석과 이해 종합 평가</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.7;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #dee2e6;
+        }
+        h1, h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 { margin-top: 0; }
+        .info-input {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+        .info-input label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .info-input input {
+            padding: 8px;
+            border: 1px solid #adb5bd;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-left: 5px solid #007bff;
+            background-color: #fdfdff;
+            border-radius: 0 8px 8px 0;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+        }
+        .question p {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+            white-space: pre-line;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .question label:hover {
+            background-color: #e9ecef;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #bce0fd;
+            display: none; /* Initially hidden */
+            font-size: 0.95em;
+        }
+        #submitBtn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 30px;
+        }
+        #submitBtn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .correct {
+            background-color: #d1e7dd !important;
+            border-color: #a3cfbb !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #f1aeb5 !important;
+        }
+        .correct-answer-highlight {
+            font-weight: bold;
+            color: #0a58ca;
+        }
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>빅데이터 분석과 이해 종합 평가</h1>
+
+    <div class="info-input">
+        <label for="studentId">학번:</label>
+        <input type="text" id="studentId" placeholder="학번 입력">
+        <label for="studentName">이름:</label>
+        <input type="text" id="studentName" placeholder="이름 입력">
+    </div>
+
+    <form id="quizForm">
+        <!-- Questions will be dynamically inserted here -->
+    </form>
+    
+    <button id="submitBtn" onclick="gradeAndSubmit(event)">제출 및 채점</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'ko-KR';
+        synth.speak(utterThis);
+    }
+
+    const questions = [
+        {
+            type: 'ox',
+            sectionTitle: "I. 진단평가 (OX 퀴즈)",
+            question: "\"지난 분기 우리 회사의 매출액은 얼마였는가?\"라는 질문에 답하는 것은 예측 분석에 해당한다.",
+            answer: "X",
+            explanation: "과거에 일어난 일에 대한 사실을 요약하고 설명하는 것은 '기술 분석(Descriptive Analytics)'입니다. 예측 분석은 미래에 일어날 일을 예측합니다."
+        },
+        {
+            type: 'ox',
+            question: "지도학습(Supervised Learning)은 '정답'이 있는 데이터를 사용하여 모델을 학습시킨다.",
+            answer: "O",
+            explanation: "지도학습은 '입력(문제)'과 '결과(정답)'가 쌍으로 이루어진 데이터를 통해, 입력과 결과 사이의 관계(패턴)를 학습합니다."
+        },
+        {
+            type: 'ox',
+            question: "두 변수 사이에 높은 상관관계가 존재한다면, 둘 사이에는 반드시 인과관계가 존재한다.",
+            answer: "X",
+            explanation: "상관관계는 인과관계의 필요조건일 수는 있지만, 충분조건은 아닙니다. 두 변수가 함께 움직이는 것처럼 보여도, 실제로는 제3의 변수가 두 변수 모두에 영향을 미치는 '허위 상관관계'일 수 있습니다."
+        },
+        {
+            type: 'ox',
+            question: "군집화(Clustering)는 데이터들을 미리 정해진 카테고리로 나누는 지도학습의 한 종류이다.",
+            answer: "X",
+            explanation: "군집화는 정답(카테고리)이 없는 데이터에서 알고리즘이 스스로 데이터의 구조를 파악하여 비슷한 것끼리 그룹으로 묶는 '비지도학습(Unsupervised Learning)'의 대표적인 예입니다."
+        },
+        {
+            type: 'ox',
+            question: "빅데이터 분석에서 처방 분석은 특정 목표를 달성하기 위한 최적의 행동 방안을 제시하는 단계이다.",
+            answer: "O",
+            explanation: "처방 분석은 기술, 진단, 예측 분석의 결과를 종합하여, \"그래서 우리는 무엇을 해야 하는가?\"라는 질문에 답하는 가장 높은 수준의 분석입니다."
+        },
+        {
+            type: 'ox',
+            question: "회귀(Regression) 분석은 데이터가 '스팸/정상'과 같이 특정 범주에 속할 확률을 예측하는 문제이다.",
+            answer: "X",
+            explanation: "특정 범주로 나누는 것은 '분류(Classification)' 문제입니다. 회귀 분석은 주가, 온도, 시험 점수 등 '연속적인 숫자 값'을 예측하는 문제입니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터 분석의 4단계(기술-진단-예측-처방)는 항상 순서대로 진행되며, 높은 단계일수록 더 큰 가치를 창출하는 경향이 있다.",
+            answer: "O",
+            explanation: "일반적으로 과거를 이해(기술, 진단)하는 것보다 미래를 예측(예측)하고 행동을 결정(처방)하는 것이 더 큰 비즈니스적, 사회적 가치를 가집니다."
+        },
+        {
+            type: 'ox',
+            question: "데이터 마이닝은 대용량 데이터 속에서 유용하고 의미 있는 패턴을 찾아내는 과정이다.",
+            answer: "O",
+            explanation: "데이터 마이닝은 마치 광산에서 금을 캐는 것처럼, 거대한 데이터 더미 속에서 이전에는 알려지지 않았던 가치 있는 관계, 패턴, 규칙 등을 발견하는 기술과 과정을 총칭합니다."
+        },
+        {
+            type: 'ox',
+            question: "비지도학습은 지도학습보다 항상 더 정확한 예측 모델을 만든다.",
+            answer: "X",
+            explanation: "지도학습은 명확한 '정답'을 가지고 학습하므로, 일반적으로 예측 문제에서는 비지도학습보다 더 높은 정확도를 보입니다. 비지도학습은 정답이 없는 상황에서 데이터의 숨겨진 구조를 발견하는 데 주로 사용됩니다."
+        },
+        {
+            type: 'ox',
+            question: "\"아이스크림을 많이 먹으면 성적이 떨어진다\"는 주장은 상관관계를 인과관계로 오해했을 가능성이 있다.",
+            answer: "O",
+            explanation: "아이스크림 판매량과 성적 하락은 '여름 방학'이라는 공통된 제3의 변수에 의해 영향을 받을 수 있습니다. 방학 동안 아이스크림 소비는 늘고, 학업 집중도는 떨어질 수 있습니다. 두 현상은 상관관계가 있을 수 있지만, 아이스크림이 성적 하락의 원인이라고 단정할 수는 없습니다."
+        },
+        {
+            type: 'mcq',
+            sectionTitle: "II. 형성평가 (5지선다형)",
+            question: "쇼핑몰 사이트에서 고객의 나이, 성별, 과거 구매 이력을 바탕으로 \"이 고객이 다음 달에 재구매할 것인가, 안 할 것인가?\"를 예측하는 모델을 만들려고 한다. 이는 어떤 분석 유형과 머신러닝 기법에 해당하는가?",
+            options: ["기술 분석 - 군집화", "예측 분석 - 분류", "진단 분석 - 회귀", "처방 분석 - 연관 규칙", "예측 분석 - 군집화"],
+            answer: 1,
+            explanation: "'다음 달'의 일을 맞추는 것이므로 '예측 분석'이며, '재구매/비재구매'라는 두 개의 정해진 카테고리 중 하나로 나누는 문제이므로 지도학습의 '분류'에 해당합니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 \"왜 지난달의 사용자 이탈률이 급증했는가?\"라는 질문에 답하기 위한 분석은?",
+            options: ["기술 분석", "진단 분석", "예측 분석", "처방 분석", "데이터 마이닝"],
+            answer: 1,
+            explanation: "'왜(Why)?'라는 질문에 답하며 특정 현상의 원인을 파악하는 것은 '진단 분석'의 전형적인 예입니다. 이탈한 사용자 그룹의 공통적인 특징, 특정 이벤트와의 연관성 등을 분석하게 됩니다."
+        },
+        {
+            type: 'mcq',
+            question: "고객들의 구매 내역 데이터를 분석하여 \"기저귀를 구매한 고객은 맥주도 함께 구매하는 경향이 있다\"는 규칙을 발견했다. 이는 어떤 머신러닝 기법에 해당하는가?",
+            options: ["분류", "회귀", "군집화", "연관 규칙 학습", "강화 학습"],
+            answer: 3,
+            explanation: "연관 규칙 학습(장바구니 분석)은 정답 없이 데이터 내에서 'A 아이템을 구매하면 B 아이템도 함께 구매한다'와 같이 항목들 간의 흥미로운 관계(연관성)를 찾아내는 비지도학습의 한 종류입니다."
+        },
+        {
+            type: 'mcq',
+            question: "빅데이터 분석 프로젝트를 수행하는 데이터 과학자의 역할로 가장 거리가 먼 것은?",
+            options: ["문제 해결을 위한 데이터 요구사항을 정의한다.", "데이터의 품질을 검토하고, 결측치나 이상치를 처리한다.", "서버 컴퓨터의 하드웨어를 직접 조립하고 운영체제를 설치한다.", "분석 목적에 맞는 머신러닝 모델을 선택하고 구현한다.", "분석 결과를 시각화하여 다른 부서 사람들에게 쉽게 설명한다."],
+            answer: 2,
+            explanation: "하드웨어 조립 및 시스템 운영은 시스템 엔지니어나 인프라 엔지니어의 역할입니다. 데이터 과학자는 주로 데이터 자체를 다루고, 소프트웨어와 알고리즘을 이용해 데이터로부터 가치를 추출하는 데 집중합니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 '상관관계는 있지만 인과관계는 아닌' 사례로 가장 적절한 것은?",
+            options: ["흡연량이 많을수록 폐암 발병률이 높아진다.", "공부 시간이 길수록 시험 성적이 오르는 경향이 있다.", "도시의 아이스크림 판매량과 소매치기 발생 건수는 여름에 함께 증가한다.", "약을 복용했더니 병이 나았다.", "과속 운전을 하다가 교통사고가 났다."],
+            answer: 2,
+            explanation: "아이스크림 판매량과 소매치기 발생 건수는 모두 '더운 날씨로 인해 거리에 유동 인구가 많아진다'는 공통된 원인(잠재 변수)에 의해 함께 증가하는 경향을 보이는 허위 상관관계의 대표적인 예입니다. ①, ④, ⑤는 강한 인과관계가 있으며, ②도 인과관계가 있다고 보는 것이 일반적입니다."
+        },
+        {
+            type: 'mcq',
+            question: "데이터 과학자가 분석 결과를 발표할 때, 가장 중요하게 고려해야 할 점은?",
+            options: ["최대한 많은 전문 용어와 복잡한 수식을 사용하여 전문성을 과시한다.", "분석에 사용된 모든 코드를 한 줄씩 상세하게 설명한다.", "데이터 분석을 통해 발견한 '인사이트'와 그것이 '무엇을 의미하는지'를 청중이 이해하기 쉽게 전달한다.", "분석 과정에서 발생한 모든 오류와 실패 사례를 상세히 보고한다.", "자신의 주장을 뒷받침하는 데이터만 선택적으로 보여준다."],
+            answer: 2,
+            explanation: "데이터 분석의 최종 목표는 의사결정에 도움을 주는 것입니다. 따라서 분석 결과가 비즈니스적으로나 과학적으로 어떤 의미를 가지며, 이를 통해 어떤 행동을 취할 수 있는지를 명확하고 설득력 있게 전달하는 '스토리텔링' 능력이 매우 중요합니다."
+        },
+        {
+            type: 'mcq',
+            question: "머신러닝 모델의 '학습' 단계에 대한 설명으로 가장 올바른 것은?",
+            options: ["대용량의 데이터를 여러 컴퓨터에 나누어 저장하는 과정이다.", "데이터 속의 오류를 찾아내어 제거하는 과정이다.", "주어진 데이터(입력)와 정답(출력) 사이의 수학적 관계(패턴)를 찾는 과정이다.", "분석 결과를 그래프나 차트로 그리는 과정이다.", "완성된 모델을 실제 서비스에 적용하는 과정이다."],
+            answer: 2,
+            explanation: "머신러닝의 '학습' 또는 '훈련(Training)'이란, 모델이 수많은 데이터 예시를 보고 입력과 출력 사이를 가장 잘 설명하는 최적의 수학적 함수 또는 규칙(가중치, 파라미터)을 찾아가는 과정을 의미합니다."
+        },
+        {
+            type: 'mcq',
+            question: "'스팸 메일 필터링' 기능은 어떤 머신러닝 문제로 정의할 수 있는가?",
+            options: ["회귀 (Regression)", "분류 (Classification)", "군집화 (Clustering)", "차원 축소 (Dimensionality Reduction)", "강화 학습 (Reinforcement Learning)"],
+            answer: 1,
+            explanation: "이메일의 내용(단어, 보낸 사람 등)을 입력으로 받아, 해당 이메일이 '스팸' 또는 '정상'이라는 두 개의 미리 정해진 범주 중 하나로 나누는 문제이므로, 전형적인 '분류' 문제입니다."
+        },
+        {
+            type: 'mcq',
+            question: "다음 중 빅데이터 분석의 활용 사례로 가장 거리가 먼 것은?",
+            options: ["개인의 유전체 데이터를 분석하여 미래의 질병 발생 확률 예측", "과거 판매 데이터를 학습하여 다음 분기 매출액 예측", "고객들을 구매 패턴에 따라 여러 그룹으로 나누어 타겟 마케팅 수행", "웹사이트의 HTML 코드를 작성하여 화면 디자인 구현", "SNS 데이터를 실시간 분석하여 특정 키워드에 대한 대중의 감성 분석"],
+            answer: 3,
+            explanation: "HTML 코드를 작성하여 웹사이트를 만드는 것은 '웹 개발'의 영역입니다. 나머지 보기들은 모두 빅데이터 분석 기술(예측, 군집, 텍스트 마이닝)을 활용하는 대표적인 사례입니다."
+        },
+        {
+            type: 'mcq',
+            question: "빅데이터 분석의 4단계 중, \"항공권 가격을 언제 구매해야 가장 저렴할까?\" 라는 질문에 대한 최적의 구매 시점을 알려주는 것은 어디에 해당하는가?",
+            options: ["기술 분석", "진단 분석", "예측 분석", "처방 분석", "데이터 수집"],
+            answer: 3,
+            explanation: "이 질문은 단순히 미래의 가격을 '예측'하는 것을 넘어, '가장 저렴하게 구매'라는 특정 목표를 달성하기 위한 '최적의 행동(언제 구매할지)'을 묻고 있으므로, 가장 높은 수준의 분석인 '처방 분석'에 해당합니다."
+        }
+    ];
+
+    const form = document.getElementById('quizForm');
+    let questionCounter = 1;
+    let currentSection = '';
+
+    questions.forEach((q, index) => {
+        if (q.sectionTitle && currentSection !== q.sectionTitle) {
+            currentSection = q.sectionTitle;
+            const sectionHeader = document.createElement('h2');
+            sectionHeader.textContent = currentSection;
+            form.appendChild(sectionHeader);
+            questionCounter = 1;
+        }
+
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.id = 'q-container-' + index;
+
+        const questionText = document.createElement('p');
+        const cleanQuestionForTTS = q.question.replace(/\n/g, " ");
+        questionText.innerHTML = `${questionCounter}. ${q.question} <button type="button" class="tts-button" onclick="speak('${cleanQuestionForTTS}')" title="문제 읽어주기">🔊</button>`;
+        questionDiv.appendChild(questionText);
+
+        if (q.type === 'ox') {
+            ['O', 'X'].forEach(opt => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = opt;
+                label.appendChild(radio);
+                label.append(` ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        } else if (q.type === 'mcq') {
+            q.options.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q' + index;
+                radio.value = optIndex;
+                label.appendChild(radio);
+                label.append(` ${optIndex + 1}. ${opt}`);
+                questionDiv.appendChild(label);
+            });
+        }
+
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'explanation';
+        explanationDiv.id = 'exp' + index;
+        explanationDiv.innerHTML = `<strong>상세 풀이:</strong> ${q.explanation}`;
+        questionDiv.appendChild(explanationDiv);
+
+        form.appendChild(questionDiv);
+        questionCounter++;
+    });
+
+    function gradeAndSubmit(event) {
+        event.preventDefault();
+
+        const studentId = document.getElementById('studentId').value.trim();
+        const studentName = document.getElementById('studentName').value.trim();
+
+        if (!studentId || !studentName) {
+            alert("학번과 이름을 모두 입력해주세요.");
+            return;
+        }
+
+        let score = 0;
+        let resultText = `학생 정보\n학번: ${studentId}\n이름: ${studentName}\n\n`;
+        resultText += "========================================\n\n";
+        
+        let fileQuestionCounter = 1;
+        let currentSectionForFile = '';
+
+        questions.forEach((q, index) => {
+            if (q.sectionTitle && currentSectionForFile !== q.sectionTitle) {
+                currentSectionForFile = q.sectionTitle;
+                if (index > 0) resultText += "\n========================================\n\n";
+                resultText += `${currentSectionForFile}\n\n`;
+                fileQuestionCounter = 1;
+            }
+
+            const container = document.getElementById('q-container-' + index);
+            const explanation = document.getElementById('exp' + index);
+            explanation.style.display = 'block';
+            
+            const selectedRadio = form.elements['q' + index];
+            const userAnswer = selectedRadio ? selectedRadio.value : "";
+            let isCorrect = false;
+
+            const cleanQuestionForFile = q.question.replace(/\n/g, '\n');
+
+            let userAnswerText = "(미응답)";
+            let correctAnswerText = "";
+
+            if (q.type === 'ox') {
+                isCorrect = (userAnswer === q.answer);
+                userAnswerText = userAnswer ? `선택: ${userAnswer}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer}`;
+            } else if (q.type === 'mcq') {
+                isCorrect = (userAnswer == q.answer);
+                userAnswerText = userAnswer ? `선택: ${parseInt(userAnswer)+1}번. ${q.options[userAnswer]}` : "(미응답)";
+                correctAnswerText = `정답: ${q.answer+1}번. ${q.options[q.answer]}`;
+            }
+
+            resultText += `${fileQuestionCounter}. ${cleanQuestionForFile}\n`;
+            resultText += `${userAnswerText}\n`;
+
+            const labels = container.getElementsByTagName('label');
+            const correctLabelIndex = q.type === 'ox' ? (q.answer === 'O' ? 0 : 1) : q.answer;
+
+            if (isCorrect) {
+                score++;
+                resultText += "결과: 정답 (O)\n";
+                if(userAnswer !== "") {
+                   const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                   labels[selectedLabelIndex].classList.add('correct');
+                }
+            } else {
+                resultText += "결과: 오답 (X)\n";
+                resultText += `${correctAnswerText}\n`;
+                if(userAnswer !== "") {
+                    const selectedLabelIndex = q.type === 'ox' ? (userAnswer === 'O' ? 0 : 1) : parseInt(userAnswer);
+                    if(labels[selectedLabelIndex]) labels[selectedLabelIndex].classList.add('incorrect');
+                }
+                const correctLabel = labels[correctLabelIndex];
+                if(correctLabel) {
+                    correctLabel.classList.add('correct');
+                    correctLabel.innerHTML += ' <span class="correct-answer-highlight">&lt;-- 정답</span>';
+                }
+            }
+
+            resultText += `상세 풀이: ${q.explanation}\n\n`;
+            fileQuestionCounter++;
+        });
+
+        const totalQuestions = questions.length;
+        const finalScore = Math.round((score / totalQuestions) * 100);
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `채점이 완료되었습니다. 총 ${totalQuestions}문제 중 ${score}문제를 맞추셨습니다. (점수: ${finalScore}점)`;
+        resultDiv.classList.add(finalScore >= 60 ? 'correct' : 'incorrect');
+
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        const filename = `${studentId}_${studentName}_${finalScore}점_${timestamp}.txt`;
+        
+        const fileHeaderText = `채점 결과\n총점: ${finalScore}점 (${totalQuestions}문제 중 ${score}문제 정답)\n응시 시각: ${now.toLocaleString('ko-KR')}\n\n`;
+        resultText = fileHeaderText + resultText;
+
+        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = "채점 완료 (결과 파일 다운로드됨)";
+        const formInputs = form.getElementsByTagName('input');
+        for(let i = 0; i < formInputs.length; i++) {
+            formInputs[i].disabled = true;
+        }
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
