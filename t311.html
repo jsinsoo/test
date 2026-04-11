@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>311. 알고리즘의 이해 평가 프로그램</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; line-height: 1.6; max-width: 850px; margin: 20px auto; padding: 20px; background-color: #f8f9fa; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 25px; }
+        h1 { color: #2c3e50; text-align: center; border-bottom: 3px solid #6741d8; padding-bottom: 10px; }
+        h2 { color: #6741d8; margin-top: 30px; border-left: 5px solid #6741d8; padding-left: 10px; }
+        .question-item { margin-bottom: 25px; padding: 15px; border-radius: 8px; background: #fff; border: 1px solid #ddd; }
+        .options label { display: block; cursor: pointer; margin: 8px 0; padding: 8px; border-radius: 4px; transition: 0.2s; }
+        .options label:hover { background: #f3f0ff; }
+        .info-inputs { display: flex; gap: 15px; justify-content: center; margin-bottom: 25px; }
+        input[type="text"] { padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; width: 180px; }
+        button { display: block; width: 100%; padding: 18px; background: #6741d8; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #5f3dc4; }
+        .feedback { margin-top: 15px; padding: 12px; border-radius: 6px; display: none; font-size: 0.95em; }
+        .correct { background-color: #ebfbee; color: #2b8a3e; border: 1px solid #b2f2bb; }
+        .wrong { background-color: #fff5f5; color: #c92a2a; border: 1px solid #ffc9c9; }
+        .explanation { display: block; margin-top: 8px; color: #495057; font-style: italic; }
+        #result-section { display: none; text-align: center; }
+    </style>
+</head>
+<body>
+
+<h1>Ⅲ. 알고리즘의 이해 평가 (311)</h1>
+
+<div class="card info-inputs">
+    <input type="text" id="stuNum" placeholder="학번">
+    <input type="text" id="stuName" placeholder="이름">
+</div>
+
+<div class="card">
+    <h2>1. 진단평가 (OX 퀴즈)</h2>
+    <div id="ox-area"></div>
+</div>
+
+<div class="card">
+    <h2>2. 형성평가 (5지 선다형)</h2>
+    <div id="multi-area"></div>
+</div>
+
+<button onclick="processQuiz()">평가 제출 및 결과 확인</button>
+
+<div id="result-section" class="card">
+    <h2 id="score-text"></h2>
+    <p>아래 버튼을 눌러 상세 결과 보고서를 저장하세요.</p>
+    <button onclick="downloadReport()" style="background-color: #37b24d;">결과 파일(.txt) 저장</button>
+</div>
+
+<script>
+const oxQuestions = [
+    { q: "알고리즘은 문제를 해결하기 위해 거쳐야 하는 단계적인 절차를 의미한다.", a: "O", e: "알고리즘의 정의입니다. 어떤 입력이 주어졌을 때 출력을 내기 위한 일련의 논리적 절차입니다." },
+    { q: "알고리즘의 조건 중 '유한성'은 알고리즘이 반드시 결과(출력)를 하나 이상 내야 함을 의미한다.", a: "X", e: "유한성은 '반드시 종료되어야 함'을 의미합니다. 결과를 내야 하는 조건은 '출력' 조건입니다." },
+    { q: "동일한 문제를 해결하더라도 사용되는 알고리즘에 따라 효율성이 다를 수 있다.", a: "O", e: "문제 해결 방법은 여러 가지일 수 있으며, 시간과 메모리를 얼마나 적게 사용하는지에 따라 효율성이 결정됩니다." },
+    { q: "순서도(Flowchart)는 알고리즘의 논리적 흐름을 기호를 사용하여 시각적으로 표현한 것이다.", a: "O", e: "순서도는 알고리즘의 절차를 직관적으로 이해하기 좋게 그림으로 나타낸 것입니다." },
+    { q: "시간 복잡도 O(n)은 데이터의 개수가 2배가 되면 실행 시간도 대략 2배가 됨을 의미한다.", a: "O", e: "O(n)은 입력 크기에 비례하여 연산 횟수가 증가하는 선형 시간 복잡도입니다." },
+    { q: "알고리즘은 특정 프로그래밍 언어(파이썬, C 등)로 작성되어야만 알고리즘이라고 할 수 있다.", a: "X", e: "알고리즘은 논리적 절차 자체이므로 자연어, 의사코드, 순서도 등 다양한 방법으로 표현 가능합니다." },
+    { q: "알고리즘의 조건 중 '명확성'은 각 단계가 누가 봐도 모호하지 않고 명확하게 해석되어야 함을 뜻한다.", a: "O", e: "모호한 표현 대신 구체적인 지시가 포함되어야 한다는 조건입니다." },
+    { q: "의사코드(Pseudocode)는 컴퓨터가 직접 실행할 수 있는 특수한 프로그래밍 언어이다.", a: "X", e: "의사코드는 사람이 이해하기 쉽게 짠 '가짜 코드'로, 컴퓨터가 직접 실행할 수는 없습니다." },
+    { q: "O(1) 복잡도를 가진 알고리즘은 데이터가 아무리 많아져도 연산 횟수가 일정하다.", a: "O", e: "상수 시간 복잡도라고 하며, 입력 크기와 무관하게 일정한 시간이 걸립니다." },
+    { q: "알고리즘은 반드시 입력(Input) 값이 하나 이상 존재해야 한다.", a: "X", e: "입력은 0개 이상일 수 있습니다. 외부에서 들어오는 데이터가 없는 알고리즘도 존재 가능합니다." }
+];
+
+const multiQuestions = [
+    { q: "다음 중 좋은 알고리즘의 조건으로 가장 거리가 먼 것은?", o: ["명확성", "유한성", "복잡성", "유효성", "출력"], a: 3, e: "좋은 알고리즘은 문제를 명확하고 '효율적'으로 해결해야 하며, 불필요하게 복잡해서는 안 됩니다." },
+    { q: "1부터 n까지의 카드 중 특정 숫자를 찾기 위해 처음부터 끝까지 확인하는 알고리즘의 시간 복잡도는?", o: ["O(1)", "O(log n)", "O(n)", "O(n log n)", "O(n²)"], a: 3, e: "데이터의 개수 n에 비례하여 확인 횟수가 늘어나는 선형 시간 복잡도 O(n)입니다." },
+    { q: "알고리즘의 각 단계는 명확해야 하고 모호해서는 안 된다는 조건은?", o: ["유한성", "유효성", "명확성", "입력", "출력"], a: 3, e: "이는 '명확성(Definiteness)'에 대한 설명입니다." },
+    { q: "데이터가 n개일 때, 이중 반복문을 사용하여 모든 경우를 비교하는 알고리즘의 시간 복잡도는?", o: ["O(1)", "O(n)", "O(n log n)", "O(n²)", "O(2ⁿ)"], a: 4, e: "n번 반복하는 루프 안에 다시 n번 반복하는 루프가 있으므로 n * n, 즉 O(n²)이 됩니다." },
+    { q: "다음 중 알고리즘을 표현하는 방법으로 적절하지 않은 것은?", o: ["자연어", "의사코드", "순서도", "프로그래밍 언어", "암호문"], a: 5, e: "알고리즘은 다른 사람이나 컴퓨터에 전달 가능하도록 명확한 방법으로 표현되어야 합니다." },
+    { q: "알고리즘의 '유효성' 조건이 의미하는 바는?", o: ["반드시 종료되어야 한다", "각 단계는 실행 가능해야 한다", "입력이 반드시 있어야 한다", "명확해야 한다", "결과가 나와야 한다"], a: 2, e: "유효성은 모든 명령이 종이와 연필만으로도 수행할 수 있을 정도로 실행 가능해야 함을 뜻합니다." },
+    { q: "요리 레시피가 알고리즘의 비유로 적절한 이유는?", o: ["맛을 보장하기 때문", "비용이 적기 때문", "순차적인 절차와 명확한 지시가 있기 때문", "누구나 할 수 있기 때문", "컴퓨터로 요리하기 때문"], a: 3, e: "레시피는 재료(입력)를 가지고 순서(절차)에 따라 요리(출력)를 만드는 과정이 알고리즘과 매우 흡사합니다." },
+    { q: "복잡도가 O(1) < O(log n) < O(n) < O(n²) 일 때, 가장 효율적인 알고리즘은?", o: ["O(1)", "O(log n)", "O(n)", "O(n log n)", "O(n²)"], a: 1, e: "데이터 증가에 따른 연산 횟수 증가폭이 가장 적은(상수인) O(1)이 가장 효율적입니다." },
+    { q: "알고리즘 설계 시 가장 먼저 해야 할 일은?", o: ["코드 작성하기", "문제 분석 및 이해하기", "복잡도 계산하기", "컴퓨터 구매하기", "친구에게 물어보기"], a: 2, e: "문제를 명확히 정의하고 분석하는 것이 해결 절차를 세우기 위한 첫 번째 단계입니다." },
+    { q: "알고리즘의 조건 중 '종료'와 관련된 조건은?", o: ["입력", "출력", "명확성", "유한성", "유효성"], a: 4, e: "유한성은 알고리즘이 무한 루프에 빠지지 않고 반드시 끝이 나야 함을 의미합니다." }
+];
+
+let userScore = 0;
+let reportText = "";
+
+function setup() {
+    const oxDiv = document.getElementById('ox-area');
+    oxQuestions.forEach((q, i) => {
+        oxDiv.innerHTML += `
+            <div class="question-item">
+                <p><strong>Q${i+1}.</strong> ${q.q}</p>
+                <div class="options">
+                    <label><input type="radio" name="ox${i}" value="O"> O</label>
+                    <label><input type="radio" name="ox${i}" value="X"> X</label>
+                </div>
+                <div id="ox-fb-${i}" class="feedback"></div>
+            </div>`;
+    });
+
+    const multiDiv = document.getElementById('multi-area');
+    multiQuestions.forEach((q, i) => {
+        let opts = q.o.map((opt, idx) => `<label><input type="radio" name="m${i}" value="${idx+1}"> ${idx+1}. ${opt}</label>`).join('');
+        multiDiv.innerHTML += `
+            <div class="question-item">
+                <p><strong>Q${i+1}.</strong> ${q.q}</p>
+                <div class="options">${opts}</div>
+                <div id="m-fb-${i}" class="feedback"></div>
+            </div>`;
+    });
+}
+
+function processQuiz() {
+    const num = document.getElementById('stuNum').value;
+    const name = document.getElementById('stuName').value;
+    if(!num || !name) return alert("학번과 이름을 입력해주세요.");
+
+    let score = 0;
+    reportText = `[311 알고리즘의 이해 평가 결과]\n학번: ${num} / 이름: ${name}\n\n`;
+
+    oxQuestions.forEach((q, i) => {
+        const sel = document.querySelector(`input[name="ox${i}"]:checked`)?.value;
+        const isCorrect = sel === q.a;
+        if(isCorrect) score += 5;
+        displayFeedback(`ox-fb-${i}`, isCorrect, q.a, q.e);
+        reportText += `OX ${i+1}번: ${isCorrect ? '정답' : '오답'} (정답: ${q.a}) - ${q.e}\n`;
+    });
+
+    multiQuestions.forEach((q, i) => {
+        const sel = document.querySelector(`input[name="m${i}"]:checked`)?.value;
+        const isCorrect = parseInt(sel) === q.a;
+        if(isCorrect) score += 5;
+        displayFeedback(`m-fb-${i}`, isCorrect, q.a, q.e);
+        reportText += `선다 ${i+1}번: ${isCorrect ? '정답' : '오답'} (정답: ${q.a}번) - ${q.e}\n`;
+    });
+
+    userScore = score;
+    reportText += `\n최종 점수: ${score}점`;
+    document.getElementById('score-text').innerText = `${name}님의 최종 점수는 ${score}점입니다.`;
+    document.getElementById('result-section').style.display = "block";
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+function displayFeedback(id, isCorrect, ans, expl) {
+    const el = document.getElementById(id);
+    el.style.display = "block";
+    el.className = "feedback " + (isCorrect ? "correct" : "wrong");
+    el.innerHTML = `<strong>${isCorrect ? '정답입니다!' : '틀렸습니다.'}</strong> (정답: ${ans})<span class="explanation">${expl}</span>`;
+}
+
+function downloadReport() {
+    const num = document.getElementById('stuNum').value;
+    const name = document.getElementById('stuName').value;
+    const now = new Date();
+    const time = `${now.getHours()}시${now.getMinutes()}분`;
+    const fileName = `${num}_${name}_${userScore}_311_${time}.txt`;
+    
+    const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+}
+
+setup();
+</script>
+</body>
+</html>

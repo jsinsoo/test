@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>322. 모델링 평가 프로그램</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; line-height: 1.6; max-width: 850px; margin: 20px auto; padding: 20px; background-color: #f4f7f9; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 25px; }
+        h1 { color: #2c3e50; text-align: center; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #3498db; margin-top: 30px; border-left: 5px solid #3498db; padding-left: 10px; }
+        .question-item { margin-bottom: 25px; padding: 15px; border-radius: 8px; background: #fff; border: 1px solid #eee; }
+        .options label { display: block; cursor: pointer; margin: 8px 0; padding: 5px; border-radius: 4px; transition: 0.2s; }
+        .options label:hover { background: #eef7fe; }
+        .info-inputs { display: flex; gap: 15px; justify-content: center; margin-bottom: 25px; }
+        input[type="text"] { padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; width: 180px; }
+        button { display: block; width: 100%; padding: 18px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #2980b9; }
+        .feedback { margin-top: 15px; padding: 12px; border-radius: 6px; display: none; font-size: 0.95em; }
+        .correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .wrong { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .explanation { display: block; margin-top: 8px; color: #666; font-style: italic; }
+        #result-section { display: none; text-align: center; }
+    </style>
+</head>
+<body>
+
+<h1>Ⅲ. 모델링 평가 (322)</h1>
+
+<div class="card info-inputs">
+    <input type="text" id="stuNum" placeholder="학번">
+    <input type="text" id="stuName" placeholder="이름">
+</div>
+
+<div class="card">
+    <h2>1. 진단평가 (OX 퀴즈)</h2>
+    <div id="ox-area"></div>
+</div>
+
+<div class="card">
+    <h2>2. 형성평가 (5지 선다형)</h2>
+    <div id="multi-area"></div>
+</div>
+
+<button onclick="processQuiz()">평가 제출 및 결과 확인</button>
+
+<div id="result-section" class="card">
+    <h2 id="score-text"></h2>
+    <p>아래 버튼을 눌러 결과 보고서를 저장하세요.</p>
+    <button onclick="downloadReport()" style="background-color: #27ae60;">결과 파일(.txt) 저장</button>
+</div>
+
+<script>
+const oxQuestions = [
+    { q: "모델링은 현실 세계의 대상을 컴퓨터 코드로 똑같이 복제하는 과정이다.", a: "X", e: "모델링은 똑같이 복제하는 것이 아니라, 문제 해결에 필요한 핵심적인 특징만을 뽑아내어 '단순화'하고 '구조화'하는 과정입니다." },
+    { q: "'추상화'는 문제 해결에 불필요한 세부 사항은 숨기는 것을 의미한다.", a: "O", e: "이것이 추상화의 핵심 정의입니다. 복잡성을 줄이고 문제의 본질에 집중하게 해줍니다." },
+    { q: "객체지향 프로그래밍에서 class는 모델링을 위한 가장 중요한 도구이다.", a: "O", e: "클래스는 데이터(속성)와 기능(메서드)을 하나로 묶어 현실의 개념을 독립적인 객체로 모델링하는 핵심 문법입니다." },
+    { q: "문제 설명에 나오는 '명사'는 주로 클래스의 '메서드'가 된다.", a: "X", e: "명사는 클래스나 속성이 되며, '동사'가 객체의 행동인 메서드가 됩니다." },
+    { q: "하향식 설계는 전체 시스템에서 시작하여 더 작은 기능 단위로 나누어 가는 방식이다.", a: "O", e: "가장 크고 추상적인 목표에서 시작하여 하위 기능으로 점차 분해해 나가는 방식입니다." },
+    { q: "\"학생은 이름을 가진다\"에서 '이름'은 Student 클래스의 메서드가 된다.", a: "X", e: "'이름'은 학생의 상태를 나타내는 데이터이므로 '속성(attribute)'이 되어야 합니다." },
+    { q: "잘 된 모델링은 코드의 재사용성을 높여준다.", a: "O", e: "잘 만든 클래스는 원소 정보가 필요한 다양한 프로젝트에서 재사용될 수 있습니다." },
+    { q: "문제를 작은 함수나 클래스로 나누면 각 부분을 개별적으로 테스트하기 쉬워진다.", a: "O", e: "모듈화의 장점으로, 각 부품이 의도대로 동작하는지 독립적으로 테스트(단위 테스트)할 수 있습니다." },
+    { q: "C++의 struct는 데이터를 구조화하여 모델링한다는 점에서 파이썬 클래스의 데이터 모델링 기능과 유사하다.", a: "O", e: "관련 데이터들을 하나로 묶는 구조라는 점에서 근본적인 모델링 목적이 유사합니다." },
+    { q: "모델링은 코딩을 시작하기 전에 수행하는 문제 해결을 위한 계획 단계이다.", a: "O", e: "성능 좋은 프로그래밍은 코딩 전 데이터와 기능을 어떻게 구조화할지 설계하는 모델링에서 시작됩니다." }
+];
+
+const multiQuestions = [
+    { q: "\"온라인 쇼핑몰\" 시스템 설계 시 클래스로 모델링하기 가장 부적절한 것은?", o: ["고객", "상품", "주문", "장바구니", "클릭하기"], a: 5, e: "'클릭하기'는 행위(동사)이므로 메서드가 적절하며 나머지는 명사 객체입니다." },
+    { q: "\"자동차\" 클래스 설계 시 'has-a' 관계로 모델링되어야 할 속성은?", o: ["운송수단", "엔진", "탈것", "기계", "바퀴달린것"], a: 2, e: "'자동차는 엔진을 가진다'가 성립하므로 엔진은 포함(has-a) 관계입니다." },
+    { q: "다음 중 '메서드'로 추출하기 가장 적합한 행동은?", o: ["가진다", "입금하다, 출금하다, 조회하다", "계좌 번호, 잔액", "사용자", "은행 계좌"], a: 2, e: "객체가 수행하는 구체적인 행동(동사)들이 메서드가 됩니다." },
+    { q: "하향식(Top-down) 설계 방식에 대한 설명으로 가장 올바른 것은?", o: ["기본 부품부터 설계한다", "전체 시스템의 큰 그림에서 시작하여 점차 세부 모듈로 분해한다", "작은 함수를 먼저 만든다", "코딩 완료 후 구조를 정리한다", "테스트 케이스를 먼저 작성한다"], a: 2, e: "거대한 문제를 어떻게 나눌 것인가에 초점을 맞추어 숲에서 나무를 보는 방식입니다." },
+    { q: "의사코드(Pseudocode) 작성의 주된 장점은?", o: ["성능 예측 가능", "디버깅 불필요", "복잡한 문법 대신 순수한 논리에만 집중하여 설계 가능", "협업 불가능", "자동 최적화 코드 생성"], a: 3, e: "실제 코딩 부담을 덜고 문제 해결 절차 자체에만 집중하도록 도와줍니다." },
+    { q: "파이썬에서 pass 키워드가 설계 단계에서 유용한 이유는?", o: ["성능 향상", "상속 방지", "구조만 먼저 잡고 내용은 나중에 구현하여 문법 오류 방지", "속성 비공개", "자동 테스트"], a: 3, e: "로직은 비어있지만 문법적으로 완전한 스켈레톤 코드를 작성하게 해줍니다." },
+    { q: "'분할 정복' 전략과 가장 관련 깊은 것은?", o: ["문제 분해", "데이터 압축", "예외 처리", "알고리즘 암호화", "네트워크 통신"], a: 1, e: "큰 문제를 작은 문제로 분할하고 정복하는 것은 문제 분해의 핵심 사상입니다." },
+    { q: "\"자동차 클래스 설계\"의 첫 번째 단계로 가장 바람직한 것은?", o: ["즉시 코드 작성", "속성과 행동을 먼저 정의하고 정리", "그래픽 라이브러리 찾기", "수학 공식 공부", "데이터베이스 설계"], a: 2, e: "대상의 본질(속성과 행동)을 파악하는 것이 모든 설계의 출발점입니다." },
+    { q: "게임 캐릭터 모델링 의사코드를 파이썬 클래스로 가장 잘 변환한 것은?", o: ["함수 정의", "변수만 선언", "생성자와 메서드 구현", "딕셔너리 사용", "인자값만 받는 메서드"], a: 3, e: "속성을 생성자에서 초기화하고 행동을 메서드로 구현한 형태가 설계에 가장 부합합니다." },
+    { q: "잘 설계된 객체지향 프로그램의 장점이 아닌 것은?", o: ["재사용성 향상", "구조가 명확함", "수정 및 관리 용이", "항상 가장 빠른 실행 속도 보장", "협업 용이"], a: 4, e: "객체지향은 유지보수와 구조에 목적이 있어 저수준 최적화 코드보다 항상 빠르지는 않습니다." }
+];
+
+let userScore = 0;
+let reportContent = "";
+
+function setup() {
+    const oxContainer = document.getElementById('ox-area');
+    oxQuestions.forEach((q, i) => {
+        oxContainer.innerHTML += `
+            <div class="question-item">
+                <p><strong>Q${i+1}.</strong> ${q.q}</p>
+                <div class="options">
+                    <label><input type="radio" name="ox${i}" value="O"> O</label>
+                    <label><input type="radio" name="ox${i}" value="X"> X</label>
+                </div>
+                <div id="ox-fb-${i}" class="feedback"></div>
+            </div>`;
+    });
+
+    const multiContainer = document.getElementById('multi-area');
+    multiQuestions.forEach((q, i) => {
+        let optionsHtml = q.o.map((opt, idx) => `<label><input type="radio" name="m${i}" value="${idx+1}"> ${idx+1}. ${opt}</label>`).join('');
+        multiContainer.innerHTML += `
+            <div class="question-item">
+                <p><strong>Q${i+1}.</strong> ${q.q}</p>
+                <div class="options">${optionsHtml}</div>
+                <div id="m-fb-${i}" class="feedback"></div>
+            </div>`;
+    });
+}
+
+function processQuiz() {
+    const num = document.getElementById('stuNum').value;
+    const name = document.getElementById('stuName').value;
+    if(!num || !name) return alert("학번과 이름을 입력해주세요.");
+
+    let score = 0;
+    reportContent = `[322 모델링 평가 결과]\n학번: ${num} / 이름: ${name}\n\n`;
+
+    // OX 채점
+    oxQuestions.forEach((q, i) => {
+        const selected = document.querySelector(`input[name="ox${i}"]:checked`)?.value;
+        const isCorrect = selected === q.a;
+        if(isCorrect) score += 5;
+        showFeedback(`ox-fb-${i}`, isCorrect, q.a, q.e);
+        reportContent += `OX ${i+1}번: ${isCorrect ? '정답' : '오답'} (정답: ${q.a}) - ${q.e}\n`;
+    });
+
+    // 5지선다 채점
+    multiQuestions.forEach((q, i) => {
+        const selected = document.querySelector(`input[name="m${i}"]:checked`)?.value;
+        const isCorrect = parseInt(selected) === q.a;
+        if(isCorrect) score += 5;
+        showFeedback(`m-fb-${i}`, isCorrect, q.a, q.e);
+        reportContent += `선다 ${i+1}번: ${isCorrect ? '정답' : '오답'} (정답: ${q.a}번) - ${q.e}\n`;
+    });
+
+    userScore = score;
+    reportContent += `\n최종 점수: ${score}점`;
+    document.getElementById('score-text').innerText = `${name}님의 최종 점수는 ${score}점입니다.`;
+    document.getElementById('result-section').style.display = "block";
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+function showFeedback(id, isCorrect, ans, expl) {
+    const el = document.getElementById(id);
+    el.style.display = "block";
+    el.className = "feedback " + (isCorrect ? "correct" : "wrong");
+    el.innerHTML = `<strong>${isCorrect ? '정답입니다!' : '틀렸습니다.'}</strong> (정답: ${ans})<span class="explanation">${expl}</span>`;
+}
+
+function downloadReport() {
+    const num = document.getElementById('stuNum').value;
+    const name = document.getElementById('stuName').value;
+    const now = new Date();
+    const time = `${now.getHours()}시${now.getMinutes()}분`;
+    const fileName = `${num}_${name}_${userScore}_322_${time}.txt`;
+    
+    const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+}
+
+setup();
+</script>
+</body>
+</html>
