@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>403 기계학습을 이용한 문제 해결 - 출력결과 서술형 평가</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{
+  --ink:#172033;--muted:#64748b;--blue:#2563eb;--purple:#7c3aed;--green:#059669;
+  --red:#dc2626;--orange:#ea580c;--line:#dbe3f0;--soft:#eef4ff;--code:#101828;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;
+  color:var(--ink);line-height:1.72;
+  background:linear-gradient(135deg,#eef4ff 0%,#f8fbff 52%,#fff7ed 100%);
+}
+header{
+  padding:44px 24px 34px;text-align:center;color:#fff;
+  background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+}
+header .tag{display:inline-block;padding:8px 15px;border-radius:999px;background:rgba(255,255,255,.18);font-weight:900;margin-bottom:14px}
+header h1{margin:0 auto 12px;max-width:1120px;font-size:clamp(28px,4vw,48px);line-height:1.18;letter-spacing:-.045em}
+header p{margin:0 auto;max-width:940px;font-size:18px;opacity:.95}
+.container{max-width:1240px;margin:0 auto;padding:28px 20px 72px}
+.grid{display:grid;grid-template-columns:2fr 8fr;gap:22px;align-items:start}
+nav{
+  position:sticky;top:18px;background:rgba(255,255,255,.95);border:1px solid var(--line);
+  border-radius:22px;padding:16px;box-shadow:0 18px 40px rgba(30,64,175,.09)
+}
+nav h2{font-size:18px;margin:0 0 10px}
+nav a{display:block;text-decoration:none;color:#223047;padding:9px 11px;border-radius:12px;font-weight:900;margin:3px 0}
+nav a:hover{background:var(--soft);color:var(--blue)}
+main{min-width:0}
+.card{
+  background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:26px;
+  padding:28px;margin-bottom:24px;box-shadow:0 18px 45px rgba(15,23,42,.08)
+}
+h2{margin:0 0 18px;font-size:30px;letter-spacing:-.035em}
+h3{font-size:23px;margin:24px 0 12px;color:#1e3a8a}
+.kicker{color:var(--muted);font-weight:900;letter-spacing:.02em}
+blockquote{margin:0;padding:20px 24px;background:#eff6ff;border-left:7px solid #2563eb;border-radius:18px;font-size:18px}
+.goalbox,.peas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.peas{grid-template-columns:repeat(2,1fr)}
+.goal,.item{border-radius:20px;padding:18px;background:#f8fbff;border:1px solid #dbeafe}
+.goal h3{margin-top:0;color:#1d4ed8}
+.item strong{font-size:19px;color:#1d4ed8}
+.flow{counter-reset:step}
+.flow .step{position:relative;padding:20px 20px 20px 72px;border-left:5px solid #93c5fd;background:#f8fbff;border-radius:20px;margin:16px 0}
+.flow .step:before{counter-increment:step;content:counter(step);position:absolute;left:20px;top:22px;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#2563eb;color:#fff;font-weight:900}
+pre{overflow:auto;background:var(--code);color:#f8fafc;padding:18px;border-radius:18px;font-size:15px;line-height:1.55;border:1px solid #344054}
+code{font-family:"Cascadia Code","Consolas","D2Coding",monospace}
+table{width:100%;border-collapse:collapse;margin:14px 0}
+th,td{border:1px solid var(--line);padding:12px 14px;vertical-align:top}
+th{background:#eef4ff;color:#1e3a8a}
+.student-box{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;background:#f8fbff;border:1px solid #dbeafe;border-radius:20px;padding:18px}
+label{font-weight:900}
+input[type="text"]{width:100%;padding:13px 14px;border:1px solid #cbd5e1;border-radius:14px;font-size:17px}
+.quiz{border:1px solid var(--line);background:#fff;border-radius:18px;padding:18px;margin:14px 0}
+.quiz-title{font-weight:900;font-size:18px;color:#172033}
+.choice{display:block;margin:7px 0;padding:9px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;cursor:pointer}
+.choice:hover{background:#eef4ff}
+textarea{width:100%;min-height:115px;padding:13px 14px;border:1px solid #cbd5e1;border-radius:14px;font-size:16px;line-height:1.55;font-family:"Cascadia Code","Consolas","D2Coding",monospace}
+.answer{margin-top:10px;padding:12px 14px;border-radius:14px;background:#f0fdf4;border:1px solid #bbf7d0}
+.hidden{display:none}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+button{border:0;border-radius:14px;padding:13px 18px;font-size:16px;font-weight:900;cursor:pointer}
+.primary{background:#2563eb;color:#fff}.secondary{background:#e0e7ff;color:#1e3a8a}.danger{background:#fee2e2;color:#991b1b}
+.result-box{margin-top:18px;border-radius:20px;border:1px solid #bfdbfe;background:#eff6ff;padding:18px;white-space:pre-wrap}
+.small{font-size:14px;color:#64748b}.footer{text-align:center;color:#64748b;margin-top:34px}
+@media(max-width:960px){.grid{grid-template-columns:1fr}nav{position:relative;top:0}.goalbox,.peas,.student-box{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">과학고 정보 · 목표지향적 개념기반 수업지도안 + 자동 TXT 수행평가</div>
+  <h1>Ⅳ. 인공지능 - 403. 기계학습을 이용한 문제 해결</h1>
+  <p>데이터에서 통찰을 빚어내는 과정 · 코드 출력결과 서술형 + OX 10문항 + 5지선다형 10문항</p>
+</header>
+
+<div class="container">
+<div class="grid">
+<nav>
+  <h2>📌 사이드 메뉴</h2>
+  <a href="#intro">1. 수업 시작</a>
+  <a href="#goals">2. 학습 목표</a>
+  <a href="#concepts">3. 핵심 개념</a>
+  <a href="#flow">4. 수업 흐름</a>
+  <a href="#examples">5. 핵심 예제 코드</a>
+  <a href="#codequiz">6. 코드 출력 서술형</a>
+  <a href="#ox">7. OX 퀴즈</a>
+  <a href="#mcq">8. 5지선다형</a>
+  <a href="#submit">9. 제출/TXT 저장</a>
+</nav>
+
+<main>
+<section class="card" id="intro">
+  <p class="kicker">OPENING</p>
+  <h2>🚀 수업 시작 멘트</h2>
+  <blockquote>
+    케플러는 티코 브라헤가 모은 방대한 행성 위치 데이터에서 “행성은 타원 궤도로 돈다”는 패턴을 발견했습니다.
+    오늘 우리는 데이터라는 밤하늘에서 통찰을 찾아내는 데이터 과학자가 되어,
+    <b>문제 정의 → 데이터 준비 → 모델 학습 → 평가 → 튜닝</b>의 전체 과정을 경험합니다.
+  </blockquote>
+</section>
+
+<section class="card" id="goals">
+  <p class="kicker">OBJECTIVES</p>
+  <h2>🎯 목표지향적 학습 목표</h2>
+  <div class="goalbox">
+    <div class="goal"><h3>🧠 개념적 목표</h3><p>기계학습 프로젝트 워크플로우, 특성 공학, 특성 스케일링, 하이퍼파라미터와 튜닝의 의미를 설명한다.</p></div>
+    <div class="goal"><h3>🛠 절차적 목표</h3><p>pandas, StandardScaler, train_test_split, fit, predict, accuracy_score의 흐름을 코드로 이해한다.</p></div>
+    <div class="goal"><h3>🌱 태도적 목표</h3><p>한 번에 완벽한 모델을 기대하지 않고, 평가와 튜닝을 반복하는 데이터 기반 문제 해결 태도를 기른다.</p></div>
+  </div>
+</section>
+
+<section class="card" id="concepts">
+  <p class="kicker">CONCEPTS</p>
+  <h2>💡 핵심 개념 정리</h2>
+  <h3>1. 기계학습 워크플로우</h3>
+  <p>기계학습 문제 해결은 일반적으로 <b>문제 정의 → 데이터 수집·탐색 → 전처리 → 데이터 분할 → 모델 학습 → 평가 → 튜닝</b>의 순서로 진행됩니다.</p>
+  <h3>2. 전처리와 모델 개선</h3>
+  <div class="peas">
+    <div class="item"><strong>특성 공학</strong><p>기존 변수를 조합하거나 가공하여 새로운 특성을 만든다. 예: 키와 몸무게로 BMI 만들기.</p></div>
+    <div class="item"><strong>특성 스케일링</strong><p>값의 범위가 다른 특성들을 공정하게 비교하도록 조정한다.</p></div>
+    <div class="item"><strong>StandardScaler</strong><p>데이터를 평균 0, 표준편차 1에 가깝게 변환한다.</p></div>
+    <div class="item"><strong>하이퍼파라미터 튜닝</strong><p>max_depth, C, k처럼 사람이 설정하는 값을 바꾸며 모델 성능을 개선한다.</p></div>
+  </div>
+  <h3>3. 프로젝트 흐름표</h3>
+  <table>
+    <tr><th>단계</th><th>핵심 코드/활동</th><th>의미</th></tr>
+    <tr><td>문제 정의</td><td>분류/회귀 결정</td><td>무엇을 예측할지 정한다</td></tr>
+    <tr><td>데이터 준비</td><td>read_csv, info, describe</td><td>데이터 구조와 품질 확인</td></tr>
+    <tr><td>전처리</td><td>fillna, StandardScaler</td><td>결측치·스케일 문제 해결</td></tr>
+    <tr><td>모델 학습</td><td>model.fit</td><td>패턴 학습</td></tr>
+    <tr><td>평가</td><td>accuracy_score</td><td>테스트 성능 측정</td></tr>
+    <tr><td>튜닝</td><td>max_depth 변경</td><td>성능 개선 실험</td></tr>
+  </table>
+</section>
+
+<section class="card" id="flow">
+  <p class="kicker">LESSON FLOW</p>
+  <h2>🧭 수업 흐름</h2>
+  <div class="flow">
+    <div class="step"><h3>도입 5분</h3><p>최고의 쿠키 레시피 비유로 알고리즘, 데이터, 하이퍼파라미터의 관계를 설명한다.</p></div>
+    <div class="step"><h3>개념 전개 15분</h3><p>워크플로우, 특성 공학, 스케일링, 튜닝의 역할을 비교한다.</p></div>
+    <div class="step"><h3>코드 실습 20분</h3><p>작은 데이터 예제로 스케일링, 모델 비교, 정확도 계산, 튜닝 결과를 해석한다.</p></div>
+    <div class="step"><h3>평가 및 정리 10분</h3><p>코드 출력 서술형, OX, 5지선다형을 풀고 TXT 결과를 제출한다.</p></div>
+  </div>
+</section>
+
+<section class="card" id="examples">
+  <p class="kicker">CORE EXAMPLE</p>
+  <h2>🐍 핵심 예제 코드</h2>
+<pre><code>from sklearn.preprocessing import StandardScaler
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+X_train = [[10, 1000], [20, 2000], [30, 3000], [40, 4000]]
+y_train = [0, 0, 1, 1]
+X_test = [[25, 2500], [35, 3500]]
+y_test = [1, 1]
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+model = DecisionTreeClassifier(max_depth=2, random_state=42)
+model.fit(X_train_scaled, y_train)
+
+pred = model.predict(X_test_scaled)
+acc = accuracy_score(y_test, pred)
+
+print(pred.tolist())
+print(f"{acc:.2f}")</code></pre>
+</section>
+
+<section class="card" id="codequiz">
+  <p class="kicker">CODE OUTPUT WRITING</p>
+  <h2>✍️ 코드 보여주고 출력결과 입력 받는 서술형 코드 10문항</h2>
+  <p class="small">출력 결과가 예시 정답과 정확히 일치하면 각 3점입니다. 공백은 줄 단위로 정리하여 비교합니다.</p>
+  <div id="codeQuizList"></div>
+</section>
+
+<section class="card" id="ox">
+  <p class="kicker">OX QUIZ</p>
+  <h2>✅ OX 퀴즈 10개</h2>
+  <div id="oxList"></div>
+</section>
+
+<section class="card" id="mcq">
+  <p class="kicker">MULTIPLE CHOICE</p>
+  <h2>📝 5지선다형 10개</h2>
+  <div id="mcqList"></div>
+</section>
+
+<section class="card" id="submit">
+  <p class="kicker">SUBMIT</p>
+  <h2>📥 제출 및 TXT 산출</h2>
+  <div class="student-box">
+    <div><label for="studentId">학번</label><input id="studentId" type="text" placeholder="학번 "></div>
+    <div><label for="studentName">이름</label><input id="studentName" type="text" placeholder="이름 "></div>
+  </div>
+  <div class="btns">
+    <button class="primary" onclick="gradeAndDownload()">채점하고 TXT 다운로드</button>
+    <button class="secondary" onclick="showAllSolutions()">상세 풀이 모두 보기</button>
+    <button class="danger" onclick="resetAnswers()">답안 초기화</button>
+  </div>
+  <div id="result" class="result-box hidden"></div>
+</section>
+
+<div class="footer">과학고 정보 · Ⅳ. 인공지능 · 403. 기계학습을 이용한 문제 해결</div>
+</main>
+</div>
+</div>
+
+<script>
+const codeQuestions = [
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`steps = ["문제 정의", "데이터 준비", "모델 학습", "평가"]
+
+print(steps[0])
+print(steps[-1])`,
+ans:`문제 정의
+평가`,
+sol:"리스트의 첫 번째 원소는 steps[0], 마지막 원소는 steps[-1]로 접근한다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`height = 1.70
+weight = 68
+bmi = weight / (height ** 2)
+
+print(f"{bmi:.2f}")`,
+ans:`23.53`,
+sol:"BMI는 몸무게를 키의 제곱으로 나눈 값이다. 68/(1.70**2)=23.529... 이므로 23.53으로 출력된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`import numpy as np
+
+data = np.array([10, 20, 30])
+scaled = (data - data.mean()) / data.std()
+
+print(round(scaled.mean()))
+print(round(scaled.std()))`,
+ans:`0
+1`,
+sol:"표준화하면 평균은 0, 표준편차는 1에 가까워진다. round로 각각 0과 1이 출력된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`values = [1, None, 3]
+cleaned = [0 if v is None else v for v in values]
+
+print(cleaned)
+print(sum(cleaned))`,
+ans:`[1, 0, 3]
+4`,
+sol:"None을 0으로 바꾸면 [1,0,3]이 되고 합은 4이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`models = {"LR": 0.91, "DT": 0.86}
+
+best = max(models, key=models.get)
+print(best)
+print(models[best])`,
+ans:`LR
+0.91`,
+sol:"딕셔너리 값이 가장 큰 key는 LR이고 그 값은 0.91이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`pred = [1, 0, 1, 1]
+true = [1, 1, 1, 0]
+
+correct = [p == t for p, t in zip(pred, true)]
+acc = sum(correct) / len(correct)
+
+print(correct)
+print(f"{acc:.2f}")`,
+ans:`[True, False, True, False]
+0.50`,
+sol:"4개 중 2개가 맞았으므로 정확도는 0.50이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`max_depth = 3
+
+if max_depth <= 2:
+    print("단순한 모델")
+elif max_depth <= 5:
+    print("적당한 모델")
+else:
+    print("복잡한 모델")`,
+ans:`적당한 모델`,
+sol:"max_depth가 3이므로 두 번째 조건 max_depth <= 5가 참이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`train_acc = 1.00
+test_acc = 0.72
+
+if train_acc - test_acc > 0.2:
+    print("과적합 의심")
+else:
+    print("일반화 양호")`,
+ans:`과적합 의심`,
+sol:"1.00 - 0.72 = 0.28로 0.2보다 크므로 과적합을 의심할 수 있다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`features = ["키", "몸무게"]
+new_feature = "BMI"
+
+features.append(new_feature)
+
+print(features)
+print(len(features))`,
+ans:`['키', '몸무게', 'BMI']
+3`,
+sol:"append로 BMI가 추가되어 특성은 3개가 된다. 이는 특성 공학의 예이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`workflow = "튜닝"
+
+if workflow == "전처리":
+    print("데이터 준비")
+elif workflow == "튜닝":
+    print("설정값 조정")
+else:
+    print("평가")`,
+ans:`설정값 조정`,
+sol:"workflow 값이 튜닝이므로 하이퍼파라미터 같은 설정값 조정이 출력된다."
+}
+];
+
+const oxQuestions = [
+["기계학습 워크플로우에서 데이터 전처리는 모델 학습 전에 수행하는 것이 일반적이다.","O","전처리는 모델이 데이터를 잘 학습하도록 준비하는 과정이다."],
+["특성 스케일링은 특성 간 값의 범위 차이를 줄이는 데 사용된다.","O","스케일 차이가 크면 특정 특성이 과도하게 영향을 줄 수 있다."],
+["하이퍼파라미터는 모델이 학습 과정에서 자동으로 찾아내는 값이다.","X","하이퍼파라미터는 사람이 미리 설정하는 값이다."],
+["StandardScaler는 데이터를 평균 0, 표준편차 1에 가깝게 변환한다.","O","표준화의 대표 도구이다."],
+["MinMaxScaler와 StandardScaler는 완전히 같은 변환을 수행한다.","X","MinMaxScaler는 보통 0~1 범위, StandardScaler는 평균 0 표준편차 1로 변환한다."],
+["특성 공학은 기존 데이터에서 새로운 특성을 만들어내는 과정이다.","O","날짜에서 요일을 만들거나 키·몸무게에서 BMI를 만들 수 있다."],
+["모델 평가는 학습 데이터만으로 하는 것이 가장 객관적이다.","X","모델이 보지 못한 테스트 데이터로 평가해야 일반화 성능을 알 수 있다."],
+["분류와 회귀는 모두 지도 학습에 속할 수 있다.","O","둘 다 X와 y의 관계를 학습하는 대표적인 지도 학습 문제이다."],
+["fit은 학습, predict는 예측을 수행한다.","O","scikit-learn의 기본 사용 패턴이다."],
+["좋은 기계학습 모델은 평가와 튜닝을 반복하며 개선될 수 있다.","O","기계학습 프로젝트는 반복적인 실험 과정이다."]
+];
+
+const mcqQuestions = [
+{q:"특성 공학의 예시로 가장 적절한 것은?",choices:["데이터를 삭제한다","날짜에서 요일 열을 만든다","모델을 저장한다","정확도를 출력한다","학습률을 무조건 0으로 만든다"],ans:2,sol:"기존 날짜 특성에서 요일이라는 새 특성을 만드는 것은 특성 공학이다."},
+{q:"StandardScaler의 역할로 가장 적절한 것은?",choices:["모든 값을 문자열로 바꾼다","평균 0, 표준편차 1에 가깝게 변환한다","데이터를 무조건 삭제한다","모델을 시각화한다","정답을 자동 생성한다"],ans:2,sol:"StandardScaler는 표준화를 수행한다."},
+{q:"DecisionTreeClassifier(max_depth=3)에서 max_depth는 무엇인가?",choices:["특성","레이블","하이퍼파라미터","정확도","결측치"],ans:3,sol:"max_depth는 사람이 모델 생성 시 설정하는 하이퍼파라미터이다."},
+{q:"기계학습 워크플로우의 일반적 순서로 가장 적절한 것은?",choices:["평가→문제정의→전처리","문제정의→데이터준비→전처리→학습→평가","튜닝→데이터삭제→종료","예측→수집→문제삭제","모델학습→문제정의→데이터수집"],ans:2,sol:"문제를 먼저 정의하고 데이터를 준비·전처리한 뒤 모델을 학습하고 평가한다."},
+{q:"모델 평가 단계의 주된 목적은?",choices:["새로운 데이터에서 성능을 객관적으로 측정한다","코드 색상을 바꾼다","CSV 파일을 삭제한다","키보드를 점검한다","라이브러리를 제거한다"],ans:1,sol:"평가는 모델의 일반화 성능을 판단하는 과정이다."},
+{q:"하이퍼파라미터 튜닝을 하는 이유는?",choices:["모델의 일반화 성능을 개선하기 위해","항상 데이터를 줄이기 위해","출력을 없애기 위해","정답 레이블을 지우기 위해","파이썬을 종료하기 위해"],ans:1,sol:"하이퍼파라미터를 조절해 과적합·과소적합을 완화하고 성능을 개선한다."},
+{q:"테스트 데이터에 StandardScaler를 적용할 때 올바른 방식은?",choices:["테스트 데이터에 fit_transform을 새로 한다","학습 데이터로 fit한 scaler로 transform만 한다","아무 처리도 하지 않는다","정답 y에만 적용한다","문자열로 변환한다"],ans:2,sol:"데이터 누수를 막기 위해 학습 데이터 기준으로 fit한 스케일러를 테스트 데이터에 transform만 한다."},
+{q:"df.fillna(0)의 의미는?",choices:["결측치를 0으로 채운다","모든 값을 1로 바꾼다","파일을 읽는다","모델을 학습한다","정확도를 계산한다"],ans:1,sol:"fillna는 결측치를 지정한 값으로 대체한다."},
+{q:"과적합에 대한 설명으로 옳은 것은?",choices:["학습 성능은 높지만 테스트 성능이 낮을 수 있다","항상 가장 좋은 상태이다","데이터가 전혀 없는 상태이다","모델이 학습하지 않은 상태이다","출력이 없는 코드이다"],ans:1,sol:"과적합은 학습 데이터에 지나치게 맞아 새로운 데이터에 약해지는 현상이다."},
+{q:"머신러닝 프로젝트의 최종 목표로 가장 적절한 것은?",choices:["복잡한 모델만 쓰기","정의한 문제를 잘 해결하는 일반화 성능 좋은 모델 만들기","항상 정확도 100% 만들기","데이터를 무조건 많이 지우기","그래프만 예쁘게 그리기"],ans:2,sol:"문제 해결에 적합하고 새로운 데이터에서도 잘 동작하는 모델이 목표이다."}
+];
+
+function escapeHtml(s){return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");}
+function normalize(s){return s.trim().replace(/\r/g,"").split("\n").map(x=>x.trim()).filter(x=>x.length>0).join("\n");}
+function getRadio(name){const v=document.querySelector(`input[name="${name}"]:checked`);return v?v.value:"";}
+function nowStamp(){const d=new Date();const p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}-${p(d.getMinutes())}-${p(d.getSeconds())}`;}
+
+function renderCodeQuiz(){
+  document.getElementById("codeQuizList").innerHTML = codeQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">코드 서술형 ${i+1}. ${x.q}</div>
+      <pre><code>${escapeHtml(x.code)}</code></pre>
+      <textarea id="c${i}" placeholder="출력 결과를 줄바꿈까지 고려하여 입력하세요."></textarea>
+      <div class="answer hidden" id="csol${i}"><b>정답 출력</b><pre><code>${escapeHtml(x.ans)}</code></pre><b>상세 풀이</b><p>${x.sol}</p></div>
+    </div>
+  `).join("");
+}
+function renderOX(){
+  document.getElementById("oxList").innerHTML = oxQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">OX ${i+1}. ${x[0]}</div>
+      <label class="choice"><input type="radio" name="ox${i}" value="O"> O</label>
+      <label class="choice"><input type="radio" name="ox${i}" value="X"> X</label>
+      <div class="answer hidden" id="oxsol${i}"><b>정답 ${x[1]}</b> · ${x[2]}</div>
+    </div>
+  `).join("");
+}
+function renderMCQ(){
+  document.getElementById("mcqList").innerHTML = mcqQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">5지선다 ${i+1}. ${x.q}</div>
+      ${x.choices.map((c,j)=>`<label class="choice"><input type="radio" name="mcq${i}" value="${j+1}"> ${j+1}. ${c}</label>`).join("")}
+      <div class="answer hidden" id="mcqsol${i}"><b>정답 ${x.ans}</b> · ${x.sol}</div>
+    </div>
+  `).join("");
+}
+
+function gradeAndDownload(){
+  const sid=document.getElementById("studentId").value.trim()||"학번미입력";
+  const sname=document.getElementById("studentName").value.trim()||"이름미입력";
+  const stamp=nowStamp();
+  let score=0;
+  const lines=[];
+  lines.push(`학번: ${sid}`);
+  lines.push(`이름: ${sname}`);
+  lines.push(`평가명: Ⅳ. 인공지능 - 403. 기계학습을 이용한 문제 해결: 데이터에서 통찰을 빚어내는 과정`);
+  lines.push(`응시시각: ${stamp}`);
+  lines.push(`총점: 100점`);
+  lines.push("");
+
+  lines.push("[코드 출력결과 서술형] 각 3점, 총 30점");
+  codeQuestions.forEach((x,i)=>{
+    const raw=document.getElementById(`c${i}`).value;
+    const user=normalize(raw);
+    const correct=normalize(x.ans);
+    const ok=user===correct;
+    const got=ok?3:0;
+    score+=got;
+    lines.push(`코드 서술형 ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x.q}`);
+    lines.push(`제시 코드:\n${x.code}`);
+    lines.push(`학생 답안:\n${raw.trim()||"(미응답)"}`);
+    lines.push(`정답 출력:\n${x.ans}`);
+    lines.push(`상세 풀이: ${x.sol}`);
+    lines.push("");
+  });
+
+  lines.push("[OX 퀴즈] 각 3점, 총 30점");
+  oxQuestions.forEach((x,i)=>{
+    const ans=getRadio(`ox${i}`);
+    const ok=ans===x[1];
+    const got=ok?3:0;
+    score+=got;
+    lines.push(`OX ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x[0]}`);
+    lines.push(`학생 답: ${ans||"미응답"}`);
+    lines.push(`정답: ${x[1]}`);
+    lines.push(`상세 풀이: ${x[2]}`);
+    lines.push("");
+  });
+
+  lines.push("[5지선다형] 각 4점, 총 40점");
+  mcqQuestions.forEach((x,i)=>{
+    const ans=getRadio(`mcq${i}`);
+    const ok=Number(ans)===x.ans;
+    const got=ok?4:0;
+    score+=got;
+    lines.push(`5지선다 ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x.q}`);
+    lines.push(`학생 답: ${ans||"미응답"}`);
+    lines.push(`정답: ${x.ans}`);
+    lines.push(`상세 풀이: ${x.sol}`);
+    lines.push("");
+  });
+
+  lines.splice(5,0,`득점: ${score}점`);
+  const content=lines.join("\n");
+  const result=document.getElementById("result");
+  result.classList.remove("hidden");
+  result.textContent=content;
+
+  const filename=`${sid}_${sname}_403_${score}점_${stamp}.txt`;
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  URL.revokeObjectURL(a.href);
+  a.remove();
+}
+function showAllSolutions(){document.querySelectorAll(".answer").forEach(x=>x.classList.remove("hidden"));}
+function resetAnswers(){
+  document.querySelectorAll("textarea").forEach(x=>x.value="");
+  document.querySelectorAll("input[type=radio]").forEach(x=>x.checked=false);
+  document.querySelectorAll(".answer").forEach(x=>x.classList.add("hidden"));
+  document.getElementById("result").classList.add("hidden");
+}
+renderCodeQuiz();renderOX();renderMCQ();
+</script>
+</body>
+</html>

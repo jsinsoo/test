@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>402 기계학습의 이해 - 출력결과 서술형 평가</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{
+  --ink:#172033;--muted:#64748b;--blue:#2563eb;--purple:#7c3aed;--green:#059669;
+  --red:#dc2626;--orange:#ea580c;--line:#dbe3f0;--soft:#eef4ff;--code:#101828;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;
+  color:var(--ink);line-height:1.72;
+  background:linear-gradient(135deg,#eef4ff 0%,#f8fbff 52%,#fff7ed 100%);
+}
+header{
+  padding:44px 24px 34px;text-align:center;color:#fff;
+  background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+}
+header .tag{display:inline-block;padding:8px 15px;border-radius:999px;background:rgba(255,255,255,.18);font-weight:900;margin-bottom:14px}
+header h1{margin:0 auto 12px;max-width:1120px;font-size:clamp(28px,4vw,48px);line-height:1.18;letter-spacing:-.045em}
+header p{margin:0 auto;max-width:940px;font-size:18px;opacity:.95}
+.container{max-width:1240px;margin:0 auto;padding:28px 20px 72px}
+.grid{display:grid;grid-template-columns:2fr 8fr;gap:22px;align-items:start}
+nav{
+  position:sticky;top:18px;background:rgba(255,255,255,.95);border:1px solid var(--line);
+  border-radius:22px;padding:16px;box-shadow:0 18px 40px rgba(30,64,175,.09)
+}
+nav h2{font-size:18px;margin:0 0 10px}
+nav a{display:block;text-decoration:none;color:#223047;padding:9px 11px;border-radius:12px;font-weight:900;margin:3px 0}
+nav a:hover{background:var(--soft);color:var(--blue)}
+main{min-width:0}
+.card{
+  background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:26px;
+  padding:28px;margin-bottom:24px;box-shadow:0 18px 45px rgba(15,23,42,.08)
+}
+h2{margin:0 0 18px;font-size:30px;letter-spacing:-.035em}
+h3{font-size:23px;margin:24px 0 12px;color:#1e3a8a}
+.kicker{color:var(--muted);font-weight:900;letter-spacing:.02em}
+blockquote{margin:0;padding:20px 24px;background:#eff6ff;border-left:7px solid #2563eb;border-radius:18px;font-size:18px}
+.goalbox,.peas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.peas{grid-template-columns:repeat(2,1fr)}
+.goal,.item{border-radius:20px;padding:18px;background:#f8fbff;border:1px solid #dbeafe}
+.goal h3{margin-top:0;color:#1d4ed8}
+.item strong{font-size:19px;color:#1d4ed8}
+.flow{counter-reset:step}
+.flow .step{position:relative;padding:20px 20px 20px 72px;border-left:5px solid #93c5fd;background:#f8fbff;border-radius:20px;margin:16px 0}
+.flow .step:before{counter-increment:step;content:counter(step);position:absolute;left:20px;top:22px;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#2563eb;color:#fff;font-weight:900}
+pre{overflow:auto;background:var(--code);color:#f8fafc;padding:18px;border-radius:18px;font-size:15px;line-height:1.55;border:1px solid #344054}
+code{font-family:"Cascadia Code","Consolas","D2Coding",monospace}
+table{width:100%;border-collapse:collapse;margin:14px 0}
+th,td{border:1px solid var(--line);padding:12px 14px;vertical-align:top}
+th{background:#eef4ff;color:#1e3a8a}
+.student-box{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;background:#f8fbff;border:1px solid #dbeafe;border-radius:20px;padding:18px}
+label{font-weight:900}
+input[type="text"]{width:100%;padding:13px 14px;border:1px solid #cbd5e1;border-radius:14px;font-size:17px}
+.quiz{border:1px solid var(--line);background:#fff;border-radius:18px;padding:18px;margin:14px 0}
+.quiz-title{font-weight:900;font-size:18px;color:#172033}
+.choice{display:block;margin:7px 0;padding:9px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;cursor:pointer}
+.choice:hover{background:#eef4ff}
+textarea{width:100%;min-height:115px;padding:13px 14px;border:1px solid #cbd5e1;border-radius:14px;font-size:16px;line-height:1.55;font-family:"Cascadia Code","Consolas","D2Coding",monospace}
+.answer{margin-top:10px;padding:12px 14px;border-radius:14px;background:#f0fdf4;border:1px solid #bbf7d0}
+.hidden{display:none}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+button{border:0;border-radius:14px;padding:13px 18px;font-size:16px;font-weight:900;cursor:pointer}
+.primary{background:#2563eb;color:#fff}.secondary{background:#e0e7ff;color:#1e3a8a}.danger{background:#fee2e2;color:#991b1b}
+.result-box{margin-top:18px;border-radius:20px;border:1px solid #bfdbfe;background:#eff6ff;padding:18px;white-space:pre-wrap}
+.small{font-size:14px;color:#64748b}.footer{text-align:center;color:#64748b;margin-top:34px}
+@media(max-width:960px){.grid{grid-template-columns:1fr}nav{position:relative;top:0}.goalbox,.peas,.student-box{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">과학고 정보 · 목표지향적 개념기반 수업지도안 + 자동 TXT 수행평가</div>
+  <h1>Ⅳ. 인공지능 - 402. 기계학습의 이해</h1>
+  <p>데이터에게 스스로 배우게 하는 법 · 코드 출력결과 서술형 + OX 10문항 + 5지선다형 10문항</p>
+</header>
+
+<div class="container">
+<div class="grid">
+<nav>
+  <h2>📌 사이드 메뉴</h2>
+  <a href="#intro">1. 수업 시작</a>
+  <a href="#goals">2. 학습 목표</a>
+  <a href="#concepts">3. 핵심 개념</a>
+  <a href="#flow">4. 수업 흐름</a>
+  <a href="#examples">5. 핵심 예제 코드</a>
+  <a href="#codequiz">6. 코드 출력 서술형</a>
+  <a href="#ox">7. OX 퀴즈</a>
+  <a href="#mcq">8. 5지선다형</a>
+  <a href="#submit">9. 제출/TXT 저장</a>
+</nav>
+
+<main>
+<section class="card" id="intro">
+  <p class="kicker">OPENING</p>
+  <h2>🚀 수업 시작 멘트</h2>
+  <blockquote>
+    체스 챔피언을 이긴 딥 블루는 사람이 만든 규칙에 따라 움직였습니다.
+    그러나 알파고는 인간의 기보라는 <b>데이터</b>를 보고 스스로 전략을 학습했습니다.
+    오늘 우리는 규칙을 하나하나 가르치는 방식에서 벗어나,
+    컴퓨터가 데이터 속 패턴을 찾아 스스로 예측하게 하는 <b>기계학습</b>을 배웁니다.
+  </blockquote>
+</section>
+
+<section class="card" id="goals">
+  <p class="kicker">OBJECTIVES</p>
+  <h2>🎯 목표지향적 학습 목표</h2>
+  <div class="goalbox">
+    <div class="goal"><h3>🧠 개념적 목표</h3><p>기계학습, 지도 학습, 비지도 학습, 분류, 회귀, 과적합의 의미를 설명한다.</p></div>
+    <div class="goal"><h3>🛠 절차적 목표</h3><p>특성 X와 레이블 y를 구분하고, train_test_split, fit, predict, accuracy 계산 흐름을 코드로 이해한다.</p></div>
+    <div class="goal"><h3>🌱 태도적 목표</h3><p>모델의 예측을 맹신하지 않고, 테스트 데이터로 검증하는 비판적 데이터 과학 태도를 기른다.</p></div>
+  </div>
+</section>
+
+<section class="card" id="concepts">
+  <p class="kicker">CONCEPTS</p>
+  <h2>💡 핵심 개념 정리</h2>
+  <h3>1. 기계학습</h3>
+  <p>기계학습은 개발자가 모든 규칙을 직접 작성하는 대신, 컴퓨터가 <b>데이터에서 패턴과 관계를 학습</b>하여 새로운 데이터에 대한 예측이나 판단을 하도록 만드는 기술입니다.</p>
+  <h3>2. 학습의 종류</h3>
+  <div class="peas">
+    <div class="item"><strong>지도 학습</strong><p>특성 X와 정답 y가 함께 있는 데이터로 학습한다. 예: 스팸 분류, 붓꽃 품종 분류.</p></div>
+    <div class="item"><strong>비지도 학습</strong><p>정답 없이 데이터의 구조나 그룹을 찾는다. 예: 군집화, 차원 축소.</p></div>
+    <div class="item"><strong>분류</strong><p>결과가 범주형이다. 예: 개/고양이, 스팸/정상.</p></div>
+    <div class="item"><strong>회귀</strong><p>결과가 연속적인 숫자이다. 예: 집값, 기온, 시험 점수.</p></div>
+  </div>
+  <h3>3. 머신러닝 워크플로우</h3>
+  <table>
+    <tr><th>단계</th><th>핵심 코드</th><th>의미</th></tr>
+    <tr><td>데이터 준비</td><td>X, y</td><td>문제지와 정답지 분리</td></tr>
+    <tr><td>데이터 분리</td><td>train_test_split</td><td>학습용과 테스트용 분리</td></tr>
+    <tr><td>모델 생성</td><td>DecisionTreeClassifier()</td><td>학습할 모델 객체 생성</td></tr>
+    <tr><td>학습</td><td>model.fit(X_train, y_train)</td><td>데이터 패턴 학습</td></tr>
+    <tr><td>예측</td><td>model.predict(X_test)</td><td>새 데이터 결과 예측</td></tr>
+    <tr><td>평가</td><td>accuracy</td><td>예측과 정답 비교</td></tr>
+  </table>
+</section>
+
+<section class="card" id="flow">
+  <p class="kicker">LESSON FLOW</p>
+  <h2>🧭 수업 흐름</h2>
+  <div class="flow">
+    <div class="step"><h3>도입 5분</h3><p>스팸 메일 규칙 기반 필터의 한계를 통해 데이터 학습의 필요성을 제시한다.</p></div>
+    <div class="step"><h3>개념 전개 15분</h3><p>지도 학습과 비지도 학습, 분류와 회귀, 학습 데이터와 테스트 데이터의 차이를 비교한다.</p></div>
+    <div class="step"><h3>코드 실습 20분</h3><p>붓꽃 데이터 또는 작은 배열 데이터를 활용해 fit, predict, accuracy 계산 흐름을 익힌다.</p></div>
+    <div class="step"><h3>평가 및 정리 10분</h3><p>코드 출력 서술형, OX, 5지선다형을 풀고 TXT 결과를 제출한다.</p></div>
+  </div>
+</section>
+
+<section class="card" id="examples">
+  <p class="kicker">CORE EXAMPLE</p>
+  <h2>🐍 핵심 예제 코드</h2>
+<pre><code>from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+
+X, y = load_iris(return_X_y=True)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, random_state=42
+)
+
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+accuracy = (predictions == y_test).mean()
+
+print(f"모델의 예측 정확도: {accuracy:.2f}")</code></pre>
+</section>
+
+<section class="card" id="codequiz">
+  <p class="kicker">CODE OUTPUT WRITING</p>
+  <h2>✍️ 코드 보여주고 출력결과 입력 받는 서술형 코드 10문항</h2>
+  <p class="small">출력 결과가 예시 정답과 정확히 일치하면 각 3점입니다. 공백은 줄 단위로 정리하여 비교합니다.</p>
+  <div id="codeQuizList"></div>
+</section>
+
+<section class="card" id="ox">
+  <p class="kicker">OX QUIZ</p>
+  <h2>✅ OX 퀴즈 10개</h2>
+  <div id="oxList"></div>
+</section>
+
+<section class="card" id="mcq">
+  <p class="kicker">MULTIPLE CHOICE</p>
+  <h2>📝 5지선다형 10개</h2>
+  <div id="mcqList"></div>
+</section>
+
+<section class="card" id="submit">
+  <p class="kicker">SUBMIT</p>
+  <h2>📥 제출 및 TXT 산출</h2>
+  <div class="student-box">
+    <div><label for="studentId">학번</label><input id="studentId" type="text" placeholder="학번 "></div>
+    <div><label for="studentName">이름</label><input id="studentName" type="text" placeholder="이름 "></div>
+  </div>
+  <div class="btns">
+    <button class="primary" onclick="gradeAndDownload()">채점하고 TXT 다운로드</button>
+    <button class="secondary" onclick="showAllSolutions()">상세 풀이 모두 보기</button>
+    <button class="danger" onclick="resetAnswers()">답안 초기화</button>
+  </div>
+  <div id="result" class="result-box hidden"></div>
+</section>
+
+<div class="footer">과학고 정보 · Ⅳ. 인공지능 · 402. 기계학습의 이해</div>
+</main>
+</div>
+</div>
+
+<script>
+const codeQuestions = [
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`X = [[1], [2], [3]]
+y = [10, 20, 30]
+
+print(len(X))
+print(len(y))`,
+ans:`3
+3`,
+sol:"X에는 샘플 3개가 있고 y에도 정답 3개가 있으므로 각각 3이 출력된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`features = ["공부시간", "수면시간"]
+target = "시험점수"
+
+print("X:", features)
+print("y:", target)`,
+ans:`X: ['공부시간', '수면시간']
+y: 시험점수`,
+sol:"특성은 X, 맞혀야 하는 정답은 y로 표현하는 머신러닝 관례를 보여준다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`data = [80, 90, 100]
+pred = [80, 85, 100]
+
+result = [a == b for a, b in zip(data, pred)]
+print(result)
+print(sum(result))`,
+ans:`[True, False, True]
+2`,
+sol:"80==80은 True, 90==85는 False, 100==100은 True이며 True는 합계에서 1로 계산된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`predictions = [0, 1, 1, 2]
+answers =     [0, 0, 1, 2]
+
+correct = [p == a for p, a in zip(predictions, answers)]
+accuracy = sum(correct) / len(correct)
+
+print(correct)
+print(f"{accuracy:.2f}")`,
+ans:`[True, False, True, True]
+0.75`,
+sol:"4개 중 3개가 맞았으므로 정확도는 3/4 = 0.75이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`problem = "classification"
+
+if problem == "classification":
+    print("분류")
+else:
+    print("회귀")`,
+ans:`분류`,
+sol:"problem 값이 classification이므로 if 조건이 참이 되어 '분류'가 출력된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`values = [2, 4, 6, 8]
+x = 5
+
+print(values[0])
+print(x * 2)`,
+ans:`2
+10`,
+sol:"values[0]은 첫 번째 값 2이고, x*2는 10이다. 선형 관계 y=2x의 예이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`train = ["교과서", "연습문제"]
+test = ["실전시험"]
+
+print("학습:", len(train))
+print("테스트:", len(test))`,
+ans:`학습: 2
+테스트: 1`,
+sol:"train 리스트에는 2개, test 리스트에는 1개 원소가 있다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`method = "fit"
+
+if method == "fit":
+    print("학습")
+elif method == "predict":
+    print("예측")
+else:
+    print("평가")`,
+ans:`학습`,
+sol:"fit은 모델을 학습시키는 메서드이므로 '학습'이 출력된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`method = "predict"
+
+if method == "fit":
+    print("학습")
+elif method == "predict":
+    print("예측")
+else:
+    print("평가")`,
+ans:`예측`,
+sol:"method가 predict이므로 두 번째 조건이 참이 되어 '예측'이 출력된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`score_train = 1.00
+score_test = 0.60
+
+if score_train > 0.95 and score_test < 0.70:
+    print("overfitting")
+else:
+    print("good")`,
+ans:`overfitting`,
+sol:"학습 성능은 매우 높지만 테스트 성능이 낮으므로 과적합 상황으로 볼 수 있다."
+}
+];
+
+const oxQuestions = [
+["기계학습은 개발자가 모든 세부 규칙을 직접 프로그래밍하는 방식이다.","X","기계학습은 명시적 규칙 대신 데이터로부터 패턴을 학습하는 방식이다."],
+["지도 학습에는 특성 X와 레이블 y가 함께 필요하다.","O","지도 학습은 문제지와 정답지를 함께 제공해 관계를 학습한다."],
+["회귀는 개/고양이처럼 범주를 예측하는 문제이다.","X","범주 예측은 분류이고, 회귀는 연속적인 숫자를 예측한다."],
+["분류는 정해진 범주 중 하나를 예측하는 문제이다.","O","스팸/정상, 개/고양이 분류가 대표 예이다."],
+["학습 데이터와 테스트 데이터를 나누는 이유는 일반화 성능을 평가하기 위해서이다.","O","처음 보는 데이터에서 성능을 확인해야 실제 실력을 알 수 있다."],
+["fit()은 모델을 학습시키고 predict()는 예측을 수행한다.","O","scikit-learn의 대표적인 일관된 API 사용 방식이다."],
+["과적합 모델은 학습 데이터에는 잘 맞지만 테스트 데이터에서는 성능이 낮을 수 있다.","O","학습 데이터를 암기하면 새로운 데이터에 약해진다."],
+["비지도 학습은 정답 레이블 없이 데이터 구조를 찾는 방식이다.","O","군집화나 차원 축소가 대표적이다."],
+["scikit-learn은 파이썬의 기본 내장 라이브러리이므로 설치가 전혀 필요 없다.","X","scikit-learn은 별도로 설치하는 외부 라이브러리이다."],
+["Garbage In, Garbage Out은 데이터 품질이 모델 결과에 중요하다는 의미이다.","O","나쁜 데이터를 넣으면 모델 결과도 신뢰하기 어렵다."]
+];
+
+const mcqQuestions = [
+{q:"기계학습의 핵심 설명으로 가장 적절한 것은?",choices:["모든 규칙을 직접 if문으로 작성한다","데이터에서 패턴을 학습해 예측한다","컴퓨터를 빠르게 종료한다","HTML을 꾸미는 기술이다","파일 압축만 수행한다"],ans:2,sol:"기계학습은 데이터로부터 패턴과 관계를 학습하여 예측하는 기술이다."},
+{q:"지도 학습에서 X는 보통 무엇을 의미하는가?",choices:["예측 결과","특성 데이터","정답 레이블","모델 이름","정확도"],ans:2,sol:"X는 모델이 입력으로 사용하는 특성 데이터이다."},
+{q:"지도 학습에서 y는 보통 무엇을 의미하는가?",choices:["특성 데이터","정답 레이블 또는 타겟","라이브러리 이름","그래프 색상","반복 횟수"],ans:2,sol:"y는 모델이 맞혀야 하는 정답, 즉 레이블 또는 타겟이다."},
+{q:"다음 중 분류 문제에 해당하는 것은?",choices:["내일 기온 예측","주택 가격 예측","사진 속 동물이 개인지 고양이인지 구분","키로 몸무게 예측","다음 달 매출액 예측"],ans:3,sol:"개/고양이는 정해진 범주이므로 분류 문제이다."},
+{q:"다음 중 회귀 문제에 해당하는 것은?",choices:["스팸/정상 메일 구분","붓꽃 품종 구분","내일 기온 예측","숫자 0~9 이미지 분류","합격/불합격 예측"],ans:3,sol:"기온은 연속적인 숫자이므로 회귀 문제이다."},
+{q:"train_test_split의 주된 목적은?",choices:["코드를 삭제하기 위해","데이터를 학습용과 테스트용으로 나누기 위해","모델을 화면에 그리기 위해","파이썬을 설치하기 위해","문자열을 정렬하기 위해"],ans:2,sol:"모델을 학습시킬 데이터와 객관적으로 평가할 데이터를 분리한다."},
+{q:"scikit-learn에서 모델 학습에 사용하는 대표 메서드는?",choices:["fit","predict","print","append","split"],ans:1,sol:"fit()은 입력 X와 정답 y 사이의 관계를 학습시키는 메서드이다."},
+{q:"scikit-learn에서 학습된 모델로 예측할 때 사용하는 대표 메서드는?",choices:["fit","predict","install","read","write"],ans:2,sol:"predict()는 학습된 모델로 새 데이터의 결과를 예측한다."},
+{q:"과적합에 대한 설명으로 가장 적절한 것은?",choices:["학습 데이터와 테스트 데이터 모두 전혀 맞히지 못한다","학습 데이터에 지나치게 맞아 새 데이터에 약해진다","데이터가 하나도 없다","모델이 실행되지 않는다","항상 좋은 현상이다"],ans:2,sol:"과적합은 학습 데이터의 세부 노이즈까지 암기해 일반화 성능이 낮아지는 현상이다."},
+{q:"scikit-learn의 일관된 API 장점은?",choices:["모든 모델이 같은 정확도를 낸다","fit, predict 같은 비슷한 방식으로 다양한 모델을 사용할 수 있다","모든 코드가 자동으로 한글화된다","그래프만 그릴 수 있다","데이터가 없어도 학습된다"],ans:2,sol:"다양한 모델을 비슷한 코드 패턴으로 실험할 수 있다는 점이 큰 장점이다."}
+];
+
+function escapeHtml(s){return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");}
+function normalize(s){return s.trim().replace(/\r/g,"").split("\n").map(x=>x.trim()).filter(x=>x.length>0).join("\n");}
+function getRadio(name){const v=document.querySelector(`input[name="${name}"]:checked`);return v?v.value:"";}
+function nowStamp(){const d=new Date();const p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}-${p(d.getMinutes())}-${p(d.getSeconds())}`;}
+
+function renderCodeQuiz(){
+  document.getElementById("codeQuizList").innerHTML = codeQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">코드 서술형 ${i+1}. ${x.q}</div>
+      <pre><code>${escapeHtml(x.code)}</code></pre>
+      <textarea id="c${i}" placeholder="출력 결과를 줄바꿈까지 고려하여 입력하세요."></textarea>
+      <div class="answer hidden" id="csol${i}"><b>정답 출력</b><pre><code>${escapeHtml(x.ans)}</code></pre><b>상세 풀이</b><p>${x.sol}</p></div>
+    </div>
+  `).join("");
+}
+function renderOX(){
+  document.getElementById("oxList").innerHTML = oxQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">OX ${i+1}. ${x[0]}</div>
+      <label class="choice"><input type="radio" name="ox${i}" value="O"> O</label>
+      <label class="choice"><input type="radio" name="ox${i}" value="X"> X</label>
+      <div class="answer hidden" id="oxsol${i}"><b>정답 ${x[1]}</b> · ${x[2]}</div>
+    </div>
+  `).join("");
+}
+function renderMCQ(){
+  document.getElementById("mcqList").innerHTML = mcqQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">5지선다 ${i+1}. ${x.q}</div>
+      ${x.choices.map((c,j)=>`<label class="choice"><input type="radio" name="mcq${i}" value="${j+1}"> ${j+1}. ${c}</label>`).join("")}
+      <div class="answer hidden" id="mcqsol${i}"><b>정답 ${x.ans}</b> · ${x.sol}</div>
+    </div>
+  `).join("");
+}
+
+function gradeAndDownload(){
+  const sid=document.getElementById("studentId").value.trim()||"학번미입력";
+  const sname=document.getElementById("studentName").value.trim()||"이름미입력";
+  const stamp=nowStamp();
+  let score=0;
+  const lines=[];
+  lines.push(`학번: ${sid}`);
+  lines.push(`이름: ${sname}`);
+  lines.push(`평가명: Ⅳ. 인공지능 - 402. 기계학습의 이해: 데이터에게 스스로 배우게 하는 법`);
+  lines.push(`응시시각: ${stamp}`);
+  lines.push(`총점: 100점`);
+  lines.push("");
+
+  lines.push("[코드 출력결과 서술형] 각 3점, 총 30점");
+  codeQuestions.forEach((x,i)=>{
+    const raw=document.getElementById(`c${i}`).value;
+    const user=normalize(raw);
+    const correct=normalize(x.ans);
+    const ok=user===correct;
+    const got=ok?3:0;
+    score+=got;
+    lines.push(`코드 서술형 ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x.q}`);
+    lines.push(`제시 코드:\n${x.code}`);
+    lines.push(`학생 답안:\n${raw.trim()||"(미응답)"}`);
+    lines.push(`정답 출력:\n${x.ans}`);
+    lines.push(`상세 풀이: ${x.sol}`);
+    lines.push("");
+  });
+
+  lines.push("[OX 퀴즈] 각 3점, 총 30점");
+  oxQuestions.forEach((x,i)=>{
+    const ans=getRadio(`ox${i}`);
+    const ok=ans===x[1];
+    const got=ok?3:0;
+    score+=got;
+    lines.push(`OX ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x[0]}`);
+    lines.push(`학생 답: ${ans||"미응답"}`);
+    lines.push(`정답: ${x[1]}`);
+    lines.push(`상세 풀이: ${x[2]}`);
+    lines.push("");
+  });
+
+  lines.push("[5지선다형] 각 4점, 총 40점");
+  mcqQuestions.forEach((x,i)=>{
+    const ans=getRadio(`mcq${i}`);
+    const ok=Number(ans)===x.ans;
+    const got=ok?4:0;
+    score+=got;
+    lines.push(`5지선다 ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x.q}`);
+    lines.push(`학생 답: ${ans||"미응답"}`);
+    lines.push(`정답: ${x.ans}`);
+    lines.push(`상세 풀이: ${x.sol}`);
+    lines.push("");
+  });
+
+  lines.splice(5,0,`득점: ${score}점`);
+  const content=lines.join("\n");
+  const result=document.getElementById("result");
+  result.classList.remove("hidden");
+  result.textContent=content;
+
+  const filename=`${sid}_${sname}_402_${score}점_${stamp}.txt`;
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  URL.revokeObjectURL(a.href);
+  a.remove();
+}
+function showAllSolutions(){document.querySelectorAll(".answer").forEach(x=>x.classList.remove("hidden"));}
+function resetAnswers(){
+  document.querySelectorAll("textarea").forEach(x=>x.value="");
+  document.querySelectorAll("input[type=radio]").forEach(x=>x.checked=false);
+  document.querySelectorAll(".answer").forEach(x=>x.classList.add("hidden"));
+  document.getElementById("result").classList.add("hidden");
+}
+renderCodeQuiz();renderOX();renderMCQ();
+</script>
+</body>
+</html>
