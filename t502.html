@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>502 정보 공유와 보호 - 출력결과 서술형 평가</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{
+  --ink:#172033;--muted:#64748b;--blue:#2563eb;--purple:#7c3aed;--green:#059669;
+  --red:#dc2626;--orange:#ea580c;--line:#dbe3f0;--soft:#eef4ff;--code:#101828;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;
+  color:var(--ink);line-height:1.72;
+  background:linear-gradient(135deg,#eef4ff 0%,#f8fbff 52%,#fff7ed 100%);
+}
+header{
+  padding:44px 24px 34px;text-align:center;color:#fff;
+  background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+}
+header .tag{display:inline-block;padding:8px 15px;border-radius:999px;background:rgba(255,255,255,.18);font-weight:900;margin-bottom:14px}
+header h1{margin:0 auto 12px;max-width:1120px;font-size:clamp(28px,4vw,48px);line-height:1.18;letter-spacing:-.045em}
+header p{margin:0 auto;max-width:940px;font-size:18px;opacity:.95}
+.container{max-width:1240px;margin:0 auto;padding:28px 20px 72px}
+.grid{display:grid;grid-template-columns:2fr 8fr;gap:22px;align-items:start}
+nav{
+  position:sticky;top:18px;background:rgba(255,255,255,.95);border:1px solid var(--line);
+  border-radius:22px;padding:16px;box-shadow:0 18px 40px rgba(30,64,175,.09)
+}
+nav h2{font-size:18px;margin:0 0 10px}
+nav a{display:block;text-decoration:none;color:#223047;padding:9px 11px;border-radius:12px;font-weight:900;margin:3px 0}
+nav a:hover{background:var(--soft);color:var(--blue)}
+main{min-width:0}
+.card{
+  background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:26px;
+  padding:28px;margin-bottom:24px;box-shadow:0 18px 45px rgba(15,23,42,.08)
+}
+h2{margin:0 0 18px;font-size:30px;letter-spacing:-.035em}
+h3{font-size:23px;margin:24px 0 12px;color:#1e3a8a}
+.kicker{color:var(--muted);font-weight:900;letter-spacing:.02em}
+blockquote{margin:0;padding:20px 24px;background:#eff6ff;border-left:7px solid #2563eb;border-radius:18px;font-size:18px}
+.goalbox,.peas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.peas{grid-template-columns:repeat(2,1fr)}
+.goal,.item{border-radius:20px;padding:18px;background:#f8fbff;border:1px solid #dbeafe}
+.goal h3{margin-top:0;color:#1d4ed8}
+.item strong{font-size:19px;color:#1d4ed8}
+.flow{counter-reset:step}
+.flow .step{position:relative;padding:20px 20px 20px 72px;border-left:5px solid #93c5fd;background:#f8fbff;border-radius:20px;margin:16px 0}
+.flow .step:before{counter-increment:step;content:counter(step);position:absolute;left:20px;top:22px;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#2563eb;color:#fff;font-weight:900}
+pre{overflow:auto;background:var(--code);color:#f8fafc;padding:18px;border-radius:18px;font-size:15px;line-height:1.55;border:1px solid #344054}
+code{font-family:"Cascadia Code","Consolas","D2Coding",monospace}
+table{width:100%;border-collapse:collapse;margin:14px 0}
+th,td{border:1px solid var(--line);padding:12px 14px;vertical-align:top}
+th{background:#eef4ff;color:#1e3a8a}
+.student-box{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;background:#f8fbff;border:1px solid #dbeafe;border-radius:20px;padding:18px}
+label{font-weight:900}
+input[type="text"]{width:100%;padding:13px 14px;border:1px solid #cbd5e1;border-radius:14px;font-size:17px}
+.quiz{border:1px solid var(--line);background:#fff;border-radius:18px;padding:18px;margin:14px 0}
+.quiz-title{font-weight:900;font-size:18px;color:#172033}
+.choice{display:block;margin:7px 0;padding:9px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;cursor:pointer}
+.choice:hover{background:#eef4ff}
+textarea{width:100%;min-height:115px;padding:13px 14px;border:1px solid #cbd5e1;border-radius:14px;font-size:16px;line-height:1.55;font-family:"Cascadia Code","Consolas","D2Coding",monospace}
+.answer{margin-top:10px;padding:12px 14px;border-radius:14px;background:#f0fdf4;border:1px solid #bbf7d0}
+.hidden{display:none}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+button{border:0;border-radius:14px;padding:13px 18px;font-size:16px;font-weight:900;cursor:pointer}
+.primary{background:#2563eb;color:#fff}.secondary{background:#e0e7ff;color:#1e3a8a}.danger{background:#fee2e2;color:#991b1b}
+.result-box{margin-top:18px;border-radius:20px;border:1px solid #bfdbfe;background:#eff6ff;padding:18px;white-space:pre-wrap}
+.small{font-size:14px;color:#64748b}.footer{text-align:center;color:#64748b;margin-top:34px}
+@media(max-width:960px){.grid{grid-template-columns:1fr}nav{position:relative;top:0}.goalbox,.peas,.student-box{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">과학고 정보 · 목표지향적 개념기반 수업지도안 + 자동 TXT 수행평가</div>
+  <h1>Ⅴ. 디지털 문화 - 502. 정보 공유와 보호</h1>
+  <p>연결된 지성과 데이터의 방패 · 코드 출력결과 서술형 + OX 10문항 + 5지선다형 10문항</p>
+</header>
+
+<div class="container">
+<div class="grid">
+<nav>
+  <h2>📌 사이드 메뉴</h2>
+  <a href="#intro">1. 수업 시작</a>
+  <a href="#goals">2. 학습 목표</a>
+  <a href="#concepts">3. 핵심 개념</a>
+  <a href="#flow">4. 수업 흐름</a>
+  <a href="#examples">5. 핵심 예제 코드</a>
+  <a href="#codequiz">6. 코드 출력 서술형</a>
+  <a href="#ox">7. OX 퀴즈</a>
+  <a href="#mcq">8. 5지선다형</a>
+  <a href="#submit">9. 제출/TXT 저장</a>
+</nav>
+
+<main>
+<section class="card" id="intro">
+  <p class="kicker">OPENING</p>
+  <h2>🚀 수업 시작 멘트</h2>
+  <blockquote>
+    뉴턴은 “내가 더 멀리 볼 수 있었다면, 그것은 거인들의 어깨 위에 서 있었기 때문이다.”라고 말했습니다.
+    오늘날 오픈소스와 오픈 데이터는 현대의 거인입니다.
+    하지만 강력한 공유의 시대에는 <b>저작권 존중</b>과 <b>개인정보 보호</b>라는 책임도 함께 따릅니다.
+  </blockquote>
+</section>
+
+<section class="card" id="goals">
+  <p class="kicker">OBJECTIVES</p>
+  <h2>🎯 목표지향적 학습 목표</h2>
+  <div class="goalbox">
+    <div class="goal"><h3>🧠 개념적 목표</h3><p>오픈소스, CCL, 개인정보, 데이터 비식별화, 마스킹의 의미를 설명한다.</p></div>
+    <div class="goal"><h3>🛠 절차적 목표</h3><p>파이썬 문자열 처리와 파일 처리로 이름, 전화번호, 이메일 마스킹 결과를 해석한다.</p></div>
+    <div class="goal"><h3>🌱 태도적 목표</h3><p>정보 공유의 가치와 개인정보 보호의 책임 사이에서 균형을 찾는 디지털 시민 태도를 기른다.</p></div>
+  </div>
+</section>
+
+<section class="card" id="concepts">
+  <p class="kicker">CONCEPTS</p>
+  <h2>💡 핵심 개념 정리</h2>
+  <h3>1. 정보 공유</h3>
+  <p><b>오픈소스</b>는 소스 코드를 공개하여 누구나 사용, 수정, 배포할 수 있게 하는 모델입니다. <b>CCL</b>은 저작자가 정한 조건 아래 창작물을 공유할 수 있도록 허락하는 라이선스입니다.</p>
+  <h3>2. 정보 보호</h3>
+  <div class="peas">
+    <div class="item"><strong>개인정보</strong><p>이름, 전화번호, 주소, 이메일처럼 살아 있는 개인을 식별할 수 있는 정보입니다.</p></div>
+    <div class="item"><strong>비식별화</strong><p>개인을 특정할 수 있는 요소를 제거하거나 바꾸어 안전하게 활용하는 기술입니다.</p></div>
+    <div class="item"><strong>마스킹</strong><p>정보 일부를 * 또는 X로 가리는 방법입니다. 예: 홍길동 → 홍*동.</p></div>
+    <div class="item"><strong>디지털 시민성</strong><p>공유할 때는 라이선스를 확인하고, 데이터를 다룰 때는 개인정보를 보호하는 태도입니다.</p></div>
+  </div>
+  <h3>3. 데이터 보호 처리 흐름</h3>
+  <table>
+    <tr><th>단계</th><th>핵심 코드</th><th>의미</th></tr>
+    <tr><td>분리</td><td>split</td><td>전화번호·이메일을 부분으로 나눔</td></tr>
+    <tr><td>가림</td><td>"*" * n</td><td>민감한 부분을 별표로 대체</td></tr>
+    <tr><td>합치기</td><td>join</td><td>마스킹된 부분을 다시 문자열로 결합</td></tr>
+    <tr><td>파일 처리</td><td>open, read, write</td><td>데이터 읽기→처리→쓰기</td></tr>
+  </table>
+</section>
+
+<section class="card" id="flow">
+  <p class="kicker">LESSON FLOW</p>
+  <h2>🧭 수업 흐름</h2>
+  <div class="flow">
+    <div class="step"><h3>도입 5분</h3><p>데이터 분석의 힘과 사생활 침해 가능성을 함께 보여주며 데이터가 양날의 검임을 질문한다.</p></div>
+    <div class="step"><h3>개념 전개 15분</h3><p>오픈소스, CCL, 개인정보, 비식별화, 마스킹의 개념을 사례 중심으로 이해한다.</p></div>
+    <div class="step"><h3>코드 실습 20분</h3><p>파이썬 split, join, 슬라이싱, replace로 이름·전화번호·이메일 마스킹 결과를 해석한다.</p></div>
+    <div class="step"><h3>평가 및 정리 10분</h3><p>코드 출력 서술형, OX, 5지선다형을 풀고 TXT 결과를 제출한다.</p></div>
+  </div>
+</section>
+
+<section class="card" id="examples">
+  <p class="kicker">CORE EXAMPLE</p>
+  <h2>🐍 핵심 예제 코드</h2>
+<pre><code>phone_number = "010-1234-5678"
+
+parts = phone_number.split("-")
+parts[1] = "****"
+masked_phone = "-".join(parts)
+
+print("원본:", phone_number)
+print("마스킹 후:", masked_phone)</code></pre>
+</section>
+
+<section class="card" id="codequiz">
+  <p class="kicker">CODE OUTPUT WRITING</p>
+  <h2>✍️ 코드 보여주고 출력결과 입력 받는 서술형 코드 10문항</h2>
+  <p class="small">출력 결과가 예시 정답과 정확히 일치하면 각 3점입니다. 공백은 줄 단위로 정리하여 비교합니다.</p>
+  <div id="codeQuizList"></div>
+</section>
+
+<section class="card" id="ox">
+  <p class="kicker">OX QUIZ</p>
+  <h2>✅ OX 퀴즈 10개</h2>
+  <div id="oxList"></div>
+</section>
+
+<section class="card" id="mcq">
+  <p class="kicker">MULTIPLE CHOICE</p>
+  <h2>📝 5지선다형 10개</h2>
+  <div id="mcqList"></div>
+</section>
+
+<section class="card" id="submit">
+  <p class="kicker">SUBMIT</p>
+  <h2>📥 제출 및 TXT 산출</h2>
+  <div class="student-box">
+    <div><label for="studentId">학번</label><input id="studentId" type="text" placeholder="학번 "></div>
+    <div><label for="studentName">이름</label><input id="studentName" type="text" placeholder="이름 "></div>
+  </div>
+  <div class="btns">
+    <button class="primary" onclick="gradeAndDownload()">채점하고 TXT 다운로드</button>
+    <button class="secondary" onclick="showAllSolutions()">상세 풀이 모두 보기</button>
+    <button class="danger" onclick="resetAnswers()">답안 초기화</button>
+  </div>
+  <div id="result" class="result-box hidden"></div>
+</section>
+
+<div class="footer">과학고 정보 · Ⅴ. 디지털 문화 · 502. 정보 공유와 보호</div>
+</main>
+</div>
+</div>
+
+<script>
+const codeQuestions = [
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`name = "홍길동"
+masked = name[0] + "*" + name[-1]
+
+print(masked)`,
+ans:`홍*동`,
+sol:"name[0]은 홍, name[-1]은 동이며 가운데 글자를 *로 가렸다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`phone = "010-1234-5678"
+parts = phone.split("-")
+
+print(parts)
+print(parts[1])`,
+ans:`['010', '1234', '5678']
+1234`,
+sol:"split('-')는 하이픈 기준으로 문자열을 세 부분 리스트로 나눈다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`phone = "010-1234-5678"
+parts = phone.split("-")
+parts[1] = "****"
+
+print("-".join(parts))`,
+ans:`010-****-5678`,
+sol:"가운데 번호를 ****로 바꾼 뒤 join으로 다시 합쳤다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`email = "test@example.com"
+masked = email.replace("example", "******")
+
+print(masked)`,
+ans:`test@******.com`,
+sol:"replace는 example 부분을 ******로 바꾼 새 문자열을 반환한다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`user_id = "myuserid"
+masked = user_id[:2] + "*" * (len(user_id) - 2)
+
+print(masked)`,
+ans:`my*****`,
+sol:"앞 두 글자 my만 남기고 나머지 5글자를 *로 가렸다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`emails = ["testuser@example.com", "me@home.net"]
+
+for email in emails:
+    user, domain = email.split("@")
+    print(user[:2] + "***@" + domain)`,
+ans:`te***@example.com
+me***@home.net`,
+sol:"각 이메일을 @ 기준으로 나눈 뒤 아이디 앞 두 글자만 남기고 ***를 붙인다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`licenses = ["BY", "NC", "ND"]
+
+print("BY" in licenses)
+print("SA" in licenses)`,
+ans:`True
+False`,
+sol:"licenses 리스트에는 BY가 있지만 SA는 없다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`text = "Open Source"
+print(text.lower())
+print(text.upper())`,
+ans:`open source
+OPEN SOURCE`,
+sol:"lower는 소문자, upper는 대문자로 변환한 새 문자열을 반환한다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`data = "홍길동,010-1111-2222"
+name, phone = data.split(",")
+
+print(name)
+print(phone)`,
+ans:`홍길동
+010-1111-2222`,
+sol:"쉼표 기준으로 이름과 전화번호를 분리하여 각각 출력한다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`password = "secret123"
+stored = "*" * len(password)
+
+print(stored)
+print(len(stored))`,
+ans:`*********
+9`,
+sol:"password 길이는 9이므로 별표 9개가 만들어진다."
+}
+];
+
+const oxQuestions = [
+["오픈소스 소프트웨어는 소스 코드가 공개되어 누구나 사용, 수정, 배포할 수 있는 모델이다.","O","오픈소스의 핵심은 소스 코드 공개와 자유로운 활용이다."],
+["CCL이 적용된 창작물은 저작권이 완전히 사라졌으므로 아무 조건 없이 써도 된다.","X","CCL은 저작자가 정한 조건을 지켜야 자유롭게 사용할 수 있다."],
+["이름, 전화번호, 주소는 개인정보에 해당한다.","O","개인을 식별할 수 있는 정보이므로 개인정보이다."],
+["데이터 비식별화는 데이터를 분석할 수 없도록 모두 삭제하는 것이다.","X","식별 가능성을 낮추면서 통계적·분석적 활용 가능성을 남기는 과정이다."],
+["홍길동을 홍*동으로 바꾸는 것은 마스킹의 예이다.","O","민감한 일부 문자를 *로 가리는 기법이다."],
+["웹사이트의 모든 자료는 저작권이 없으므로 마음대로 복사해도 된다.","X","웹의 글, 사진, 영상도 저작권 보호를 받는다."],
+["비밀번호를 해시로 저장하는 것은 정보 보호 기술의 한 예이다.","O","해시는 원본 비밀번호 노출 위험을 줄인다."],
+["파이썬 문자열 replace 메서드는 원본 문자열 자체를 직접 수정한다.","X","문자열은 불변이며 replace는 새 문자열을 반환한다."],
+["robots.txt는 웹 크롤러에게 수집 허용·제한 규칙을 알려주는 파일이다.","O","개인정보 보호 정책 파일이 아니라 크롤링 규칙 파일이다."],
+["데이터를 사용할 때는 라이선스와 개인정보 보호를 함께 확인해야 한다.","O","공유의 가치와 보호의 책임을 모두 고려해야 한다."]
+];
+
+const mcqQuestions = [
+{q:"오픈소스에 대한 설명으로 가장 적절한 것은?",choices:["소스 코드를 절대 공개하지 않는다","소스 코드를 공개하고 사용·수정·배포를 허용할 수 있다","저작권이 항상 없다","개인정보를 공개하는 것이다","비밀번호를 공유하는 것이다"],ans:2,sol:"오픈소스는 소스 코드 공개와 자유로운 활용을 핵심으로 한다."},
+{q:"CCL의 의미로 가장 적절한 것은?",choices:["저작권 완전 소멸","조건부 이용 허락 라이선스","비밀번호 저장 방식","데이터 압축 방식","파일 삭제 명령"],ans:2,sol:"CCL은 저작자가 정한 조건 아래 창작물 이용을 허락하는 라이선스이다."},
+{q:"010-1234-5678의 가운데 번호를 마스킹하는 가장 일반적인 방식은?",choices:["phone[4:8] = '****'","parts=phone.split('-'); parts[1]='****'; '-'.join(parts)","phone.strip('1234')","phone.mask()","phone.delete()"],ans:2,sol:"문자열은 불변이므로 split으로 나누고 리스트 요소를 바꾼 뒤 join하는 방식이 안정적이다."},
+{q:"데이터 비식별화의 목적은?",choices:["개인을 특정하기 어렵게 하면서 데이터를 안전하게 활용하기","모든 데이터를 영구 삭제하기","파일 이름만 바꾸기","컴퓨터를 종료하기","저작권을 없애기"],ans:1,sol:"비식별화는 개인정보 보호와 데이터 활용의 균형을 위한 기술이다."},
+{q:"개인정보에 해당하는 것은?",choices:["전국 도서관 목록","이름과 전화번호","공개된 날씨 통계","무작위 숫자 1개","빈 문자열"],ans:2,sol:"이름과 전화번호는 개인을 식별할 수 있으므로 개인정보이다."},
+{q:"BY-NC 조건의 CCL 의미는?",choices:["저작자 표시와 비영리 조건","변경 금지와 동일 조건","무조건 상업적 이용 허용","출처 표시 금지","저작권 포기"],ans:1,sol:"BY는 저작자 표시, NC는 비영리 조건이다."},
+{q:".gitignore의 주된 역할은?",choices:["민감 파일이 Git에 추적되지 않도록 제외하기","코드 실행하기","이미지 편집하기","라이선스 삭제하기","비밀번호 해독하기"],ans:1,sol:".gitignore는 API 키나 비밀번호 파일 등이 저장소에 올라가는 실수를 줄인다."},
+{q:"파이썬 문자열 처리가 편리한 이유는?",choices:["split, join, slicing 같은 고수준 기능이 풍부하기 때문","문자열을 전혀 다룰 수 없기 때문","항상 C++보다 빠르기 때문","저작권을 자동 삭제하기 때문","개인정보를 자동 수집하기 때문"],ans:1,sol:"파이썬은 텍스트 데이터 가공을 위한 직관적 메서드가 많다."},
+{q:"오픈 데이터의 가치에 해당하는 사례는?",choices:["공공 버스 위치 API를 공개해 다양한 앱 개발에 활용","친구의 시험지를 무단 공유","개인 이메일 목록 공개","회사 기밀 공개","비밀번호 유출"],ans:1,sol:"공공 데이터는 시민 편의와 새로운 서비스 창출에 활용될 수 있다."},
+{q:"비밀번호 저장 방식으로 가장 안전한 표준에 가까운 것은?",choices:["평문 그대로 저장","단방향 해시 값으로 저장","게시판에 공개","관리자 수첩에 적기","파일명으로 저장"],ans:2,sol:"해시 값은 원본 비밀번호 복원이 어렵기 때문에 안전한 저장 방식으로 사용된다."}
+];
+
+function escapeHtml(s){return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");}
+function normalize(s){return s.trim().replace(/\r/g,"").split("\n").map(x=>x.trim()).filter(x=>x.length>0).join("\n");}
+function getRadio(name){const v=document.querySelector(`input[name="${name}"]:checked`);return v?v.value:"";}
+function nowStamp(){const d=new Date();const p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}-${p(d.getMinutes())}-${p(d.getSeconds())}`;}
+
+function renderCodeQuiz(){
+  document.getElementById("codeQuizList").innerHTML = codeQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">코드 서술형 ${i+1}. ${x.q}</div>
+      <pre><code>${escapeHtml(x.code)}</code></pre>
+      <textarea id="c${i}" placeholder="출력 결과를 줄바꿈까지 고려하여 입력하세요."></textarea>
+      <div class="answer hidden" id="csol${i}"><b>정답 출력</b><pre><code>${escapeHtml(x.ans)}</code></pre><b>상세 풀이</b><p>${x.sol}</p></div>
+    </div>
+  `).join("");
+}
+function renderOX(){
+  document.getElementById("oxList").innerHTML = oxQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">OX ${i+1}. ${x[0]}</div>
+      <label class="choice"><input type="radio" name="ox${i}" value="O"> O</label>
+      <label class="choice"><input type="radio" name="ox${i}" value="X"> X</label>
+      <div class="answer hidden" id="oxsol${i}"><b>정답 ${x[1]}</b> · ${x[2]}</div>
+    </div>
+  `).join("");
+}
+function renderMCQ(){
+  document.getElementById("mcqList").innerHTML = mcqQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">5지선다 ${i+1}. ${x.q}</div>
+      ${x.choices.map((c,j)=>`<label class="choice"><input type="radio" name="mcq${i}" value="${j+1}"> ${j+1}. ${c}</label>`).join("")}
+      <div class="answer hidden" id="mcqsol${i}"><b>정답 ${x.ans}</b> · ${x.sol}</div>
+    </div>
+  `).join("");
+}
+
+function gradeAndDownload(){
+  const sid=document.getElementById("studentId").value.trim()||"학번미입력";
+  const sname=document.getElementById("studentName").value.trim()||"이름미입력";
+  const stamp=nowStamp();
+  let score=0;
+  const lines=[];
+  lines.push(`학번: ${sid}`);
+  lines.push(`이름: ${sname}`);
+  lines.push(`평가명: Ⅴ. 디지털 문화 - 502. 정보 공유와 보호: 연결된 지성과 데이터의 방패`);
+  lines.push(`응시시각: ${stamp}`);
+  lines.push(`총점: 100점`);
+  lines.push("");
+
+  lines.push("[코드 출력결과 서술형] 각 3점, 총 30점");
+  codeQuestions.forEach((x,i)=>{
+    const raw=document.getElementById(`c${i}`).value;
+    const user=normalize(raw);
+    const correct=normalize(x.ans);
+    const ok=user===correct;
+    const got=ok?3:0;
+    score+=got;
+    lines.push(`코드 서술형 ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x.q}`);
+    lines.push(`제시 코드:\n${x.code}`);
+    lines.push(`학생 답안:\n${raw.trim()||"(미응답)"}`);
+    lines.push(`정답 출력:\n${x.ans}`);
+    lines.push(`상세 풀이: ${x.sol}`);
+    lines.push("");
+  });
+
+  lines.push("[OX 퀴즈] 각 3점, 총 30점");
+  oxQuestions.forEach((x,i)=>{
+    const ans=getRadio(`ox${i}`);
+    const ok=ans===x[1];
+    const got=ok?3:0;
+    score+=got;
+    lines.push(`OX ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x[0]}`);
+    lines.push(`학생 답: ${ans||"미응답"}`);
+    lines.push(`정답: ${x[1]}`);
+    lines.push(`상세 풀이: ${x[2]}`);
+    lines.push("");
+  });
+
+  lines.push("[5지선다형] 각 4점, 총 40점");
+  mcqQuestions.forEach((x,i)=>{
+    const ans=getRadio(`mcq${i}`);
+    const ok=Number(ans)===x.ans;
+    const got=ok?4:0;
+    score+=got;
+    lines.push(`5지선다 ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x.q}`);
+    lines.push(`학생 답: ${ans||"미응답"}`);
+    lines.push(`정답: ${x.ans}`);
+    lines.push(`상세 풀이: ${x.sol}`);
+    lines.push("");
+  });
+
+  lines.splice(5,0,`득점: ${score}점`);
+  const content=lines.join("\n");
+  const result=document.getElementById("result");
+  result.classList.remove("hidden");
+  result.textContent=content;
+
+  const filename=`${sid}_${sname}_502_${score}점_${stamp}.txt`;
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  URL.revokeObjectURL(a.href);
+  a.remove();
+}
+function showAllSolutions(){document.querySelectorAll(".answer").forEach(x=>x.classList.remove("hidden"));}
+function resetAnswers(){
+  document.querySelectorAll("textarea").forEach(x=>x.value="");
+  document.querySelectorAll("input[type=radio]").forEach(x=>x.checked=false);
+  document.querySelectorAll(".answer").forEach(x=>x.classList.add("hidden"));
+  document.getElementById("result").classList.add("hidden");
+}
+renderCodeQuiz();renderOX();renderMCQ();
+</script>
+</body>
+</html>

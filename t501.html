@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>501 디지털 기술과 진로 설계 - 출력결과 서술형 평가</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{
+  --ink:#172033;--muted:#64748b;--blue:#2563eb;--purple:#7c3aed;--green:#059669;
+  --red:#dc2626;--orange:#ea580c;--line:#dbe3f0;--soft:#eef4ff;--code:#101828;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;
+  color:var(--ink);line-height:1.72;
+  background:linear-gradient(135deg,#eef4ff 0%,#f8fbff 52%,#fff7ed 100%);
+}
+header{
+  padding:44px 24px 34px;text-align:center;color:#fff;
+  background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+}
+header .tag{display:inline-block;padding:8px 15px;border-radius:999px;background:rgba(255,255,255,.18);font-weight:900;margin-bottom:14px}
+header h1{margin:0 auto 12px;max-width:1120px;font-size:clamp(28px,4vw,48px);line-height:1.18;letter-spacing:-.045em}
+header p{margin:0 auto;max-width:940px;font-size:18px;opacity:.95}
+.container{max-width:1240px;margin:0 auto;padding:28px 20px 72px}
+.grid{display:grid;grid-template-columns:2fr 8fr;gap:22px;align-items:start}
+nav{
+  position:sticky;top:18px;background:rgba(255,255,255,.95);border:1px solid var(--line);
+  border-radius:22px;padding:16px;box-shadow:0 18px 40px rgba(30,64,175,.09)
+}
+nav h2{font-size:18px;margin:0 0 10px}
+nav a{display:block;text-decoration:none;color:#223047;padding:9px 11px;border-radius:12px;font-weight:900;margin:3px 0}
+nav a:hover{background:var(--soft);color:var(--blue)}
+main{min-width:0}
+.card{
+  background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:26px;
+  padding:28px;margin-bottom:24px;box-shadow:0 18px 45px rgba(15,23,42,.08)
+}
+h2{margin:0 0 18px;font-size:30px;letter-spacing:-.035em}
+h3{font-size:23px;margin:24px 0 12px;color:#1e3a8a}
+.kicker{color:var(--muted);font-weight:900;letter-spacing:.02em}
+blockquote{margin:0;padding:20px 24px;background:#eff6ff;border-left:7px solid #2563eb;border-radius:18px;font-size:18px}
+.goalbox,.peas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.peas{grid-template-columns:repeat(2,1fr)}
+.goal,.item{border-radius:20px;padding:18px;background:#f8fbff;border:1px solid #dbeafe}
+.goal h3{margin-top:0;color:#1d4ed8}
+.item strong{font-size:19px;color:#1d4ed8}
+.flow{counter-reset:step}
+.flow .step{position:relative;padding:20px 20px 20px 72px;border-left:5px solid #93c5fd;background:#f8fbff;border-radius:20px;margin:16px 0}
+.flow .step:before{counter-increment:step;content:counter(step);position:absolute;left:20px;top:22px;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#2563eb;color:#fff;font-weight:900}
+pre{overflow:auto;background:var(--code);color:#f8fafc;padding:18px;border-radius:18px;font-size:15px;line-height:1.55;border:1px solid #344054}
+code{font-family:"Cascadia Code","Consolas","D2Coding",monospace}
+table{width:100%;border-collapse:collapse;margin:14px 0}
+th,td{border:1px solid var(--line);padding:12px 14px;vertical-align:top}
+th{background:#eef4ff;color:#1e3a8a}
+.student-box{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;background:#f8fbff;border:1px solid #dbeafe;border-radius:20px;padding:18px}
+label{font-weight:900}
+input[type="text"]{width:100%;padding:13px 14px;border:1px solid #cbd5e1;border-radius:14px;font-size:17px}
+.quiz{border:1px solid var(--line);background:#fff;border-radius:18px;padding:18px;margin:14px 0}
+.quiz-title{font-weight:900;font-size:18px;color:#172033}
+.choice{display:block;margin:7px 0;padding:9px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;cursor:pointer}
+.choice:hover{background:#eef4ff}
+textarea{width:100%;min-height:115px;padding:13px 14px;border:1px solid #cbd5e1;border-radius:14px;font-size:16px;line-height:1.55;font-family:"Cascadia Code","Consolas","D2Coding",monospace}
+.answer{margin-top:10px;padding:12px 14px;border-radius:14px;background:#f0fdf4;border:1px solid #bbf7d0}
+.hidden{display:none}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+button{border:0;border-radius:14px;padding:13px 18px;font-size:16px;font-weight:900;cursor:pointer}
+.primary{background:#2563eb;color:#fff}.secondary{background:#e0e7ff;color:#1e3a8a}.danger{background:#fee2e2;color:#991b1b}
+.result-box{margin-top:18px;border-radius:20px;border:1px solid #bfdbfe;background:#eff6ff;padding:18px;white-space:pre-wrap}
+.small{font-size:14px;color:#64748b}.footer{text-align:center;color:#64748b;margin-top:34px}
+@media(max-width:960px){.grid{grid-template-columns:1fr}nav{position:relative;top:0}.goalbox,.peas,.student-box{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">과학고 정보 · 목표지향적 개념기반 수업지도안 + 자동 TXT 수행평가</div>
+  <h1>Ⅴ. 디지털 문화 - 501. 디지털 기술과 진로 설계</h1>
+  <p>나의 지식을 미래와 연결하는 법 · 코드 출력결과 서술형 + OX 10문항 + 5지선다형 10문항</p>
+</header>
+
+<div class="container">
+<div class="grid">
+<nav>
+  <h2>📌 사이드 메뉴</h2>
+  <a href="#intro">1. 수업 시작</a>
+  <a href="#goals">2. 학습 목표</a>
+  <a href="#concepts">3. 핵심 개념</a>
+  <a href="#flow">4. 수업 흐름</a>
+  <a href="#examples">5. 핵심 예제 코드</a>
+  <a href="#codequiz">6. 코드 출력 서술형</a>
+  <a href="#ox">7. OX 퀴즈</a>
+  <a href="#mcq">8. 5지선다형</a>
+  <a href="#submit">9. 제출/TXT 저장</a>
+</nav>
+
+<main>
+<section class="card" id="intro">
+  <p class="kicker">OPENING</p>
+  <h2>🚀 수업 시작 멘트</h2>
+  <blockquote>
+    스티브 잡스는 “미래를 내다보며 점들을 연결할 수는 없습니다. 오직 과거를 돌아볼 때만 그것들을 연결할 수 있죠.”라고 말했습니다.
+    오늘 우리는 수학, 과학, 정보라는 점들이 미래의 진로와 어떻게 연결될 수 있는지 탐색합니다.
+    핵심 질문은 <b>“나의 전공 지식과 디지털 기술을 결합하면 어떤 새로운 가능성이 생길까?”</b>입니다.
+  </blockquote>
+</section>
+
+<section class="card" id="goals">
+  <p class="kicker">OBJECTIVES</p>
+  <h2>🎯 목표지향적 학습 목표</h2>
+  <div class="goalbox">
+    <div class="goal"><h3>🧠 개념적 목표</h3><p>디지털 전환, 융합, T자형 인재, 평생 학습의 의미를 설명한다.</p></div>
+    <div class="goal"><h3>🛠 절차적 목표</h3><p>관심 분야와 IT 기술을 결합한 진로를 탐색하고, 파이썬 데이터 분석 코드의 출력 결과를 해석한다.</p></div>
+    <div class="goal"><h3>🌱 태도적 목표</h3><p>전공 지식과 디지털 기술을 연결해 새로운 진로 가능성을 찾는 개방적 태도를 기른다.</p></div>
+  </div>
+</section>
+
+<section class="card" id="concepts">
+  <p class="kicker">CONCEPTS</p>
+  <h2>💡 핵심 개념 정리</h2>
+  <h3>1. 디지털 전환 DX</h3>
+  <p>디지털 전환은 단순한 도구 교체가 아니라, 디지털 기술을 활용하여 산업의 전략, 문화, 업무 방식, 비즈니스 모델을 근본적으로 바꾸는 과정입니다.</p>
+  <h3>2. 융합과 T자형 인재</h3>
+  <div class="peas">
+    <div class="item"><strong>융합</strong><p>서로 다른 학문과 기술이 결합해 새로운 가치를 만드는 현상입니다.</p></div>
+    <div class="item"><strong>생물정보학</strong><p>생명과학 + 정보과학. 유전체 데이터를 분석해 질병과 신약 개발에 활용합니다.</p></div>
+    <div class="item"><strong>T자형 인재</strong><p>깊은 전공 전문성 I와 넓은 IT 활용 능력 ㅡ를 함께 갖춘 인재입니다.</p></div>
+    <div class="item"><strong>평생 학습</strong><p>빠르게 변하는 기술 환경에서 계속 배우고 다시 배우는 태도입니다.</p></div>
+  </div>
+  <h3>3. 진로 설계 데이터 분석 흐름</h3>
+  <table>
+    <tr><th>단계</th><th>핵심 코드/활동</th><th>의미</th></tr>
+    <tr><td>자기 분석</td><td>my_interests, my_skills</td><td>관심사와 기술 스택 정리</td></tr>
+    <tr><td>직업 데이터 구조화</td><td>list, dict, DataFrame</td><td>직업 정보를 데이터로 표현</td></tr>
+    <tr><td>관련성 탐색</td><td>in, set 교집합</td><td>나와 직업의 연결점 찾기</td></tr>
+    <tr><td>정렬·필터링</td><td>sort_values, contains</td><td>조건에 맞는 진로 후보 찾기</td></tr>
+    <tr><td>시각화</td><td>matplotlib</td><td>진로 정보를 그래프로 해석</td></tr>
+  </table>
+</section>
+
+<section class="card" id="flow">
+  <p class="kicker">LESSON FLOW</p>
+  <h2>🧭 수업 흐름</h2>
+  <div class="flow">
+    <div class="step"><h3>도입 5분</h3><p>스티브 잡스의 connecting the dots 사례를 통해 현재의 학습 경험이 미래 진로와 연결될 수 있음을 제시한다.</p></div>
+    <div class="step"><h3>개념 전개 15분</h3><p>디지털 전환, 융합, T자형 인재, 평생 학습의 의미를 사례 중심으로 이해한다.</p></div>
+    <div class="step"><h3>코드 실습 20분</h3><p>직업 데이터, 관심사, 기술 스택을 리스트·딕셔너리·DataFrame으로 표현하고 출력 결과를 해석한다.</p></div>
+    <div class="step"><h3>평가 및 정리 10분</h3><p>코드 출력 서술형, OX, 5지선다형을 풀고 TXT 결과를 제출한다.</p></div>
+  </div>
+</section>
+
+<section class="card" id="examples">
+  <p class="kicker">CORE EXAMPLE</p>
+  <h2>🐍 핵심 예제 코드</h2>
+<pre><code>import pandas as pd
+
+data = {
+    "job": ["데이터 과학자", "AI 전문가", "생물정보학자"],
+    "major": ["통계/컴공", "컴공/수학", "생명과학/컴공"],
+    "salary": [12000, 15000, 11000]
+}
+
+df = pd.DataFrame(data)
+cs_jobs = df[df["major"].str.contains("컴공")]
+
+print(df)
+print("--- 컴공 역량이 필요한 직업 ---")
+print(cs_jobs[["job", "salary"]])</code></pre>
+</section>
+
+<section class="card" id="codequiz">
+  <p class="kicker">CODE OUTPUT WRITING</p>
+  <h2>✍️ 코드 보여주고 출력결과 입력 받는 서술형 코드 10문항</h2>
+  <p class="small">출력 결과가 예시 정답과 정확히 일치하면 각 3점입니다. 공백은 줄 단위로 정리하여 비교합니다.</p>
+  <div id="codeQuizList"></div>
+</section>
+
+<section class="card" id="ox">
+  <p class="kicker">OX QUIZ</p>
+  <h2>✅ OX 퀴즈 10개</h2>
+  <div id="oxList"></div>
+</section>
+
+<section class="card" id="mcq">
+  <p class="kicker">MULTIPLE CHOICE</p>
+  <h2>📝 5지선다형 10개</h2>
+  <div id="mcqList"></div>
+</section>
+
+<section class="card" id="submit">
+  <p class="kicker">SUBMIT</p>
+  <h2>📥 제출 및 TXT 산출</h2>
+  <div class="student-box">
+    <div><label for="studentId">학번</label><input id="studentId" type="text" placeholder="학번 "></div>
+    <div><label for="studentName">이름</label><input id="studentName" type="text" placeholder="이름 "></div>
+  </div>
+  <div class="btns">
+    <button class="primary" onclick="gradeAndDownload()">채점하고 TXT 다운로드</button>
+    <button class="secondary" onclick="showAllSolutions()">상세 풀이 모두 보기</button>
+    <button class="danger" onclick="resetAnswers()">답안 초기화</button>
+  </div>
+  <div id="result" class="result-box hidden"></div>
+</section>
+
+<div class="footer">과학고 정보 · Ⅴ. 디지털 문화 · 501. 디지털 기술과 진로 설계</div>
+</main>
+</div>
+</div>
+
+<script>
+const codeQuestions = [
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`my_interests = ["우주", "물리학", "데이터 분석"]
+my_skills = ["Python", "알고리즘"]
+
+print(my_interests[0])
+print(my_skills[-1])`,
+ans:`우주
+알고리즘`,
+sol:"리스트의 첫 원소는 인덱스 0, 마지막 원소는 인덱스 -1로 접근한다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`job = {"name": "생물정보학자", "major": "생명과학", "skill": "Python"}
+
+print(job["name"])
+print(job["skill"])`,
+ans:`생물정보학자
+Python`,
+sol:"딕셔너리는 key를 이용해 value를 꺼낸다. name은 생물정보학자, skill은 Python이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`my_skills = ["Python", "자료구조", "알고리즘"]
+required = ["Python", "AI", "알고리즘"]
+
+score = len(set(my_skills) & set(required))
+print(score)`,
+ans:`2`,
+sol:"두 리스트의 공통 기술은 Python과 알고리즘이므로 교집합 크기는 2이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`jobs = [
+    {"name": "AI 전문가", "major": "컴공"},
+    {"name": "계산화학자", "major": "화학"},
+    {"name": "로보틱스 연구원", "major": "물리"}
+]
+
+for job in jobs:
+    if job["major"] == "화학":
+        print(job["name"])`,
+ans:`계산화학자`,
+sol:"major 값이 화학인 딕셔너리의 name만 출력하므로 계산화학자가 출력된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`jobs = {"데이터 과학자": 12000, "AI 전문가": 15000, "스마트팜 전문가": 9000}
+
+best = max(jobs, key=jobs.get)
+print(best)
+print(jobs[best])`,
+ans:`AI 전문가
+15000`,
+sol:"딕셔너리 값이 가장 큰 key는 AI 전문가이고, 그 값은 15000이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`skills = ["Python", "AI"]
+skills.append("데이터 분석")
+
+print(skills)
+print(len(skills))`,
+ans:`['Python', 'AI', '데이터 분석']
+3`,
+sol:"append로 데이터 분석이 추가되어 리스트 원소 수가 3개가 된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`required = ["Python", "AI", "Docker"]
+mine = ["Python"]
+
+to_learn = list(set(required) - set(mine))
+print("AI" in to_learn)
+print("Python" in to_learn)`,
+ans:`True
+False`,
+sol:"배워야 할 기술은 required에서 mine을 뺀 AI와 Docker이다. Python은 이미 알고 있으므로 포함되지 않는다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`field = "생명과학"
+tech = "AI"
+
+print(field + " + " + tech)
+print("융합")`,
+ans:`생명과학 + AI
+융합`,
+sol:"문자열 덧셈으로 생명과학 + AI가 만들어지고 다음 줄에 융합이 출력된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`jobs = ["데이터 과학자", "AI 전문가", "양자 컴퓨터 연구원"]
+
+for i, job in enumerate(jobs, start=1):
+    if i <= 2:
+        print(i, job)`,
+ans:`1 데이터 과학자
+2 AI 전문가`,
+sol:"enumerate가 1부터 번호를 붙이고, i가 2 이하인 첫 두 직업만 출력한다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`talent = {"depth": "전공 전문성", "width": "IT 활용 능력"}
+
+print(talent["depth"])
+print(talent["width"])
+print("T자형 인재")`,
+ans:`전공 전문성
+IT 활용 능력
+T자형 인재`,
+sol:"T자형 인재는 깊은 전공 전문성과 넓은 IT 활용 능력을 함께 갖춘 사람을 의미한다."
+}
+];
+
+const oxQuestions = [
+["디지털 전환은 IT 기업에만 해당하는 변화이다.","X","디지털 전환은 농업, 의료, 금융, 제조업 등 모든 산업에서 일어난다."],
+["생물정보학은 생명과학과 정보과학이 결합된 융합 분야이다.","O","유전체 데이터 분석 등 생명과학 문제를 컴퓨터로 해결한다."],
+["T자형 인재는 여러 분야를 얕게만 아는 사람을 의미한다.","X","깊은 전문성과 넓은 이해를 함께 갖춘 인재를 뜻한다."],
+["pandas는 표 형태 데이터를 분석하는 데 자주 사용된다.","O","DataFrame을 통해 행과 열 구조의 데이터를 다룬다."],
+["matplotlib은 데이터 시각화에 사용되는 대표적인 파이썬 라이브러리이다.","O","막대그래프, 선그래프, 산점도 등을 그릴 수 있다."],
+["융합은 서로 다른 분야가 결합해 새로운 가치를 만드는 과정이다.","O","21세기 혁신의 중요한 동력이다."],
+["자신의 전공에 프로그래밍을 접목하면 새로운 진로 기회를 만들 수 있다.","O","도메인 지식과 IT 역량의 결합은 강한 경쟁력이 된다."],
+["평생 학습은 학교 졸업 후에는 더 이상 필요하지 않다.","X","기술 변화가 빠르므로 계속 배우고 적응해야 한다."],
+["진로 설계에서 현재 인기 직업만 보면 충분하다.","X","기술 변화와 자신의 흥미, 강점, 미래 가능성을 함께 고려해야 한다."],
+["connecting the dots는 현재의 경험이 미래에 연결될 수 있음을 의미한다.","O","당장은 무관해 보이는 경험도 미래에 중요한 연결점이 될 수 있다."]
+];
+
+const mcqQuestions = [
+{q:"디지털 전환 DX의 사례로 가장 적절한 것은?",choices:["종이 노트를 워드로 옮겨 적기","스마트팜에서 IoT 센서 데이터를 분석해 물과 비료를 자동 공급하기","컴퓨터 책상 구입하기","종이 사전 대신 전자 사전 쓰기","이메일 주소 만들기"],ans:2,sol:"스마트팜은 데이터 기반 의사결정으로 운영 방식 자체를 혁신하므로 DX 사례이다."},
+{q:"생물정보학은 어떤 분야의 융합인가?",choices:["생명과학 + 정보과학","체육 + 음악","문학 + 미술","지리 + 역사","법학 + 무용"],ans:1,sol:"생물정보학은 생명과학 데이터와 컴퓨터 알고리즘을 결합한다."},
+{q:"T자형 인재의 의미로 가장 적절한 것은?",choices:["한 분야만 매우 얕게 아는 사람","깊은 전공 전문성과 넓은 융합 역량을 가진 사람","아무 분야도 배우지 않는 사람","오직 프로그래밍만 하는 사람","항상 혼자 일하는 사람"],ans:2,sol:"T의 세로는 깊이, 가로는 넓이를 의미한다."},
+{q:"pandas의 주요 역할은?",choices:["표 형태 데이터 분석","컴퓨터 종료","바이러스 제작","문서 암호화만 수행","하드웨어 조립"],ans:1,sol:"pandas는 DataFrame으로 표 형태 데이터를 처리하고 분석한다."},
+{q:"matplotlib의 주요 역할은?",choices:["데이터 시각화","파일 삭제","운영체제 설치","네트워크 차단","프린터 수리"],ans:1,sol:"matplotlib은 그래프를 그려 분석 결과를 시각화한다."},
+{q:"df['major'].str.contains('컴공')의 의미로 옳은 것은?",choices:["major 열을 모두 삭제한다","major 열 값이 컴공을 포함하는지 True/False로 검사한다","major 열을 숫자로 바꾼다","컴공이라는 새 열을 만든다","DataFrame을 종료한다"],ans:2,sol:"contains는 문자열 포함 여부를 검사해 필터링에 활용된다."},
+{q:"과학고 학생이 IT 기술을 대하는 바람직한 태도는?",choices:["전공과 무관하니 배우지 않는다","전공 문제 해결 도구로 활용한다","AI가 모든 전공 공부를 대체한다고 믿는다","한 번 배운 기술만 평생 사용한다","윤리를 고려하지 않는다"],ans:2,sol:"IT 기술은 전공 지식을 확장하고 문제 해결력을 높이는 도구가 될 수 있다."},
+{q:"평생 학습이 중요한 이유는?",choices:["기술 환경이 빠르게 변하기 때문","학교 숙제가 줄어들기 때문","컴퓨터가 사라지기 때문","모든 지식이 변하지 않기 때문","책을 읽지 않아도 되기 때문"],ans:1,sol:"새로운 도구와 기술이 계속 등장하므로 배우고 다시 배우는 능력이 중요하다."},
+{q:"진로 데이터 분석 프로젝트의 첫 단계로 가장 적절한 것은?",choices:["그래프 색 먼저 고르기","분석할 진로 질문과 필요한 데이터 정하기","컴퓨터 끄기","결과부터 발표하기","무작위로 답 쓰기"],ans:2,sol:"데이터 분석은 질문 정의와 데이터 수집 계획에서 시작한다."},
+{q:"프로그래밍 기술 사용에서 가장 중요한 윤리 원칙은?",choices:["남에게 피해를 주지 않고 책임 있게 사용한다","친구 컴퓨터에 악성코드를 설치한다","개인정보를 무단 수집한다","출처를 숨긴다","보안을 무시한다"],ans:1,sol:"디지털 기술은 강력한 도구이므로 윤리적 책임이 반드시 따른다."}
+];
+
+function escapeHtml(s){return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");}
+function normalize(s){return s.trim().replace(/\r/g,"").split("\n").map(x=>x.trim()).filter(x=>x.length>0).join("\n");}
+function getRadio(name){const v=document.querySelector(`input[name="${name}"]:checked`);return v?v.value:"";}
+function nowStamp(){const d=new Date();const p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}-${p(d.getMinutes())}-${p(d.getSeconds())}`;}
+
+function renderCodeQuiz(){
+  document.getElementById("codeQuizList").innerHTML = codeQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">코드 서술형 ${i+1}. ${x.q}</div>
+      <pre><code>${escapeHtml(x.code)}</code></pre>
+      <textarea id="c${i}" placeholder="출력 결과를 줄바꿈까지 고려하여 입력하세요."></textarea>
+      <div class="answer hidden" id="csol${i}"><b>정답 출력</b><pre><code>${escapeHtml(x.ans)}</code></pre><b>상세 풀이</b><p>${x.sol}</p></div>
+    </div>
+  `).join("");
+}
+function renderOX(){
+  document.getElementById("oxList").innerHTML = oxQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">OX ${i+1}. ${x[0]}</div>
+      <label class="choice"><input type="radio" name="ox${i}" value="O"> O</label>
+      <label class="choice"><input type="radio" name="ox${i}" value="X"> X</label>
+      <div class="answer hidden" id="oxsol${i}"><b>정답 ${x[1]}</b> · ${x[2]}</div>
+    </div>
+  `).join("");
+}
+function renderMCQ(){
+  document.getElementById("mcqList").innerHTML = mcqQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">5지선다 ${i+1}. ${x.q}</div>
+      ${x.choices.map((c,j)=>`<label class="choice"><input type="radio" name="mcq${i}" value="${j+1}"> ${j+1}. ${c}</label>`).join("")}
+      <div class="answer hidden" id="mcqsol${i}"><b>정답 ${x.ans}</b> · ${x.sol}</div>
+    </div>
+  `).join("");
+}
+
+function gradeAndDownload(){
+  const sid=document.getElementById("studentId").value.trim()||"학번미입력";
+  const sname=document.getElementById("studentName").value.trim()||"이름미입력";
+  const stamp=nowStamp();
+  let score=0;
+  const lines=[];
+  lines.push(`학번: ${sid}`);
+  lines.push(`이름: ${sname}`);
+  lines.push(`평가명: Ⅴ. 디지털 문화 - 501. 디지털 기술과 진로 설계: 나의 지식을 미래와 연결하는 법`);
+  lines.push(`응시시각: ${stamp}`);
+  lines.push(`총점: 100점`);
+  lines.push("");
+
+  lines.push("[코드 출력결과 서술형] 각 3점, 총 30점");
+  codeQuestions.forEach((x,i)=>{
+    const raw=document.getElementById(`c${i}`).value;
+    const user=normalize(raw);
+    const correct=normalize(x.ans);
+    const ok=user===correct;
+    const got=ok?3:0;
+    score+=got;
+    lines.push(`코드 서술형 ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x.q}`);
+    lines.push(`제시 코드:\n${x.code}`);
+    lines.push(`학생 답안:\n${raw.trim()||"(미응답)"}`);
+    lines.push(`정답 출력:\n${x.ans}`);
+    lines.push(`상세 풀이: ${x.sol}`);
+    lines.push("");
+  });
+
+  lines.push("[OX 퀴즈] 각 3점, 총 30점");
+  oxQuestions.forEach((x,i)=>{
+    const ans=getRadio(`ox${i}`);
+    const ok=ans===x[1];
+    const got=ok?3:0;
+    score+=got;
+    lines.push(`OX ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x[0]}`);
+    lines.push(`학생 답: ${ans||"미응답"}`);
+    lines.push(`정답: ${x[1]}`);
+    lines.push(`상세 풀이: ${x[2]}`);
+    lines.push("");
+  });
+
+  lines.push("[5지선다형] 각 4점, 총 40점");
+  mcqQuestions.forEach((x,i)=>{
+    const ans=getRadio(`mcq${i}`);
+    const ok=Number(ans)===x.ans;
+    const got=ok?4:0;
+    score+=got;
+    lines.push(`5지선다 ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x.q}`);
+    lines.push(`학생 답: ${ans||"미응답"}`);
+    lines.push(`정답: ${x.ans}`);
+    lines.push(`상세 풀이: ${x.sol}`);
+    lines.push("");
+  });
+
+  lines.splice(5,0,`득점: ${score}점`);
+  const content=lines.join("\n");
+  const result=document.getElementById("result");
+  result.classList.remove("hidden");
+  result.textContent=content;
+
+  const filename=`${sid}_${sname}_501_${score}점_${stamp}.txt`;
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  URL.revokeObjectURL(a.href);
+  a.remove();
+}
+function showAllSolutions(){document.querySelectorAll(".answer").forEach(x=>x.classList.remove("hidden"));}
+function resetAnswers(){
+  document.querySelectorAll("textarea").forEach(x=>x.value="");
+  document.querySelectorAll("input[type=radio]").forEach(x=>x.checked=false);
+  document.querySelectorAll(".answer").forEach(x=>x.classList.add("hidden"));
+  document.getElementById("result").classList.add("hidden");
+}
+renderCodeQuiz();renderOX();renderMCQ();
+</script>
+</body>
+</html>

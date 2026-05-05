@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>503 정보 보안과 디지털 윤리 - 출력결과 서술형 평가</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{
+  --ink:#172033;--muted:#64748b;--blue:#2563eb;--purple:#7c3aed;--green:#059669;
+  --red:#dc2626;--orange:#ea580c;--line:#dbe3f0;--soft:#eef4ff;--code:#101828;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;
+  color:var(--ink);line-height:1.72;
+  background:linear-gradient(135deg,#eef4ff 0%,#f8fbff 52%,#fff7ed 100%);
+}
+header{
+  padding:44px 24px 34px;text-align:center;color:#fff;
+  background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+}
+header .tag{display:inline-block;padding:8px 15px;border-radius:999px;background:rgba(255,255,255,.18);font-weight:900;margin-bottom:14px}
+header h1{margin:0 auto 12px;max-width:1120px;font-size:clamp(28px,4vw,48px);line-height:1.18;letter-spacing:-.045em}
+header p{margin:0 auto;max-width:940px;font-size:18px;opacity:.95}
+.container{max-width:1240px;margin:0 auto;padding:28px 20px 72px}
+.grid{display:grid;grid-template-columns:2fr 8fr;gap:22px;align-items:start}
+nav{
+  position:sticky;top:18px;background:rgba(255,255,255,.95);border:1px solid var(--line);
+  border-radius:22px;padding:16px;box-shadow:0 18px 40px rgba(30,64,175,.09)
+}
+nav h2{font-size:18px;margin:0 0 10px}
+nav a{display:block;text-decoration:none;color:#223047;padding:9px 11px;border-radius:12px;font-weight:900;margin:3px 0}
+nav a:hover{background:var(--soft);color:var(--blue)}
+main{min-width:0}
+.card{
+  background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:26px;
+  padding:28px;margin-bottom:24px;box-shadow:0 18px 45px rgba(15,23,42,.08)
+}
+h2{margin:0 0 18px;font-size:30px;letter-spacing:-.035em}
+h3{font-size:23px;margin:24px 0 12px;color:#1e3a8a}
+.kicker{color:var(--muted);font-weight:900;letter-spacing:.02em}
+blockquote{margin:0;padding:20px 24px;background:#eff6ff;border-left:7px solid #2563eb;border-radius:18px;font-size:18px}
+.goalbox,.peas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.peas{grid-template-columns:repeat(2,1fr)}
+.goal,.item{border-radius:20px;padding:18px;background:#f8fbff;border:1px solid #dbeafe}
+.goal h3{margin-top:0;color:#1d4ed8}
+.item strong{font-size:19px;color:#1d4ed8}
+.flow{counter-reset:step}
+.flow .step{position:relative;padding:20px 20px 20px 72px;border-left:5px solid #93c5fd;background:#f8fbff;border-radius:20px;margin:16px 0}
+.flow .step:before{counter-increment:step;content:counter(step);position:absolute;left:20px;top:22px;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#2563eb;color:#fff;font-weight:900}
+pre{overflow:auto;background:var(--code);color:#f8fafc;padding:18px;border-radius:18px;font-size:15px;line-height:1.55;border:1px solid #344054}
+code{font-family:"Cascadia Code","Consolas","D2Coding",monospace}
+table{width:100%;border-collapse:collapse;margin:14px 0}
+th,td{border:1px solid var(--line);padding:12px 14px;vertical-align:top}
+th{background:#eef4ff;color:#1e3a8a}
+.student-box{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;background:#f8fbff;border:1px solid #dbeafe;border-radius:20px;padding:18px}
+label{font-weight:900}
+input[type="text"]{width:100%;padding:13px 14px;border:1px solid #cbd5e1;border-radius:14px;font-size:17px}
+.quiz{border:1px solid var(--line);background:#fff;border-radius:18px;padding:18px;margin:14px 0}
+.quiz-title{font-weight:900;font-size:18px;color:#172033}
+.choice{display:block;margin:7px 0;padding:9px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;cursor:pointer}
+.choice:hover{background:#eef4ff}
+textarea{width:100%;min-height:115px;padding:13px 14px;border:1px solid #cbd5e1;border-radius:14px;font-size:16px;line-height:1.55;font-family:"Cascadia Code","Consolas","D2Coding",monospace}
+.answer{margin-top:10px;padding:12px 14px;border-radius:14px;background:#f0fdf4;border:1px solid #bbf7d0}
+.hidden{display:none}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+button{border:0;border-radius:14px;padding:13px 18px;font-size:16px;font-weight:900;cursor:pointer}
+.primary{background:#2563eb;color:#fff}.secondary{background:#e0e7ff;color:#1e3a8a}.danger{background:#fee2e2;color:#991b1b}
+.result-box{margin-top:18px;border-radius:20px;border:1px solid #bfdbfe;background:#eff6ff;padding:18px;white-space:pre-wrap}
+.small{font-size:14px;color:#64748b}.footer{text-align:center;color:#64748b;margin-top:34px}
+@media(max-width:960px){.grid{grid-template-columns:1fr}nav{position:relative;top:0}.goalbox,.peas,.student-box{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">과학고 정보 · 목표지향적 개념기반 수업지도안 + 자동 TXT 수행평가</div>
+  <h1>Ⅴ. 디지털 문화 - 503. 정보 보안과 디지털 윤리</h1>
+  <p>보이지 않는 위협에 맞서는 기술과 양심 · 코드 출력결과 서술형 + OX 10문항 + 5지선다형 10문항</p>
+</header>
+
+<div class="container">
+<div class="grid">
+<nav>
+  <h2>📌 사이드 메뉴</h2>
+  <a href="#intro">1. 수업 시작</a>
+  <a href="#goals">2. 학습 목표</a>
+  <a href="#concepts">3. 핵심 개념</a>
+  <a href="#flow">4. 수업 흐름</a>
+  <a href="#examples">5. 핵심 예제 코드</a>
+  <a href="#codequiz">6. 코드 출력 서술형</a>
+  <a href="#ox">7. OX 퀴즈</a>
+  <a href="#mcq">8. 5지선다형</a>
+  <a href="#submit">9. 제출/TXT 저장</a>
+</nav>
+
+<main>
+<section class="card" id="intro">
+  <p class="kicker">OPENING</p>
+  <h2>🚀 수업 시작 멘트</h2>
+  <blockquote>
+    정보 보안의 세계에서는 사소해 보이는 코드 한 줄, 무심코 클릭한 링크 하나가 시스템 전체를 흔들 수 있습니다.
+    오늘 우리는 보이지 않는 위협에 맞서는 <b>정보 보안</b>의 방패와,
+    기술을 올바르게 사용하게 하는 <b>디지털 윤리</b>의 나침반을 함께 배웁니다.
+  </blockquote>
+</section>
+
+<section class="card" id="goals">
+  <p class="kicker">OBJECTIVES</p>
+  <h2>🎯 목표지향적 학습 목표</h2>
+  <div class="goalbox">
+    <div class="goal"><h3>🧠 개념적 목표</h3><p>정보 보안의 3대 목표인 기밀성, 무결성, 가용성과 악성코드, SQL 인젝션, XSS의 기본 개념을 설명한다.</p></div>
+    <div class="goal"><h3>🛠 절차적 목표</h3><p>입력값 검증, 비밀번호 해싱, 개인정보 마스킹 코드의 출력 결과를 해석한다.</p></div>
+    <div class="goal"><h3>🌱 태도적 목표</h3><p>기술적 능력에는 윤리적 책임이 따름을 이해하고 안전한 코딩과 책임 있는 디지털 시민성을 기른다.</p></div>
+  </div>
+</section>
+
+<section class="card" id="concepts">
+  <p class="kicker">CONCEPTS</p>
+  <h2>💡 핵심 개념 정리</h2>
+  <h3>1. 정보 보안의 3대 목표 CIA</h3>
+  <div class="peas">
+    <div class="item"><strong>기밀성 Confidentiality</strong><p>허가된 사용자만 정보에 접근할 수 있게 하는 것. 예: 암호화, 접근 제어.</p></div>
+    <div class="item"><strong>무결성 Integrity</strong><p>데이터가 위변조되지 않고 정확하게 유지되도록 하는 것. 예: 해싱, 로그 기록.</p></div>
+    <div class="item"><strong>가용성 Availability</strong><p>필요할 때 서비스와 정보에 접근할 수 있게 하는 것. 예: 백업, DDoS 방어.</p></div>
+    <div class="item"><strong>디지털 윤리</strong><p>기술을 사용할 때 타인의 정보, 권리, 시스템을 존중하는 태도와 규범.</p></div>
+  </div>
+  <h3>2. 대표 위협과 방어</h3>
+  <table>
+    <tr><th>개념</th><th>설명</th><th>대응 태도/기술</th></tr>
+    <tr><td>악성코드</td><td>시스템에 해를 끼치거나 정보를 유출하는 소프트웨어</td><td>백신, 업데이트, 의심 파일 주의</td></tr>
+    <tr><td>랜섬웨어</td><td>파일을 암호화하고 금전을 요구</td><td>백업, 출처 불명 파일 주의</td></tr>
+    <tr><td>SQL 인젝션</td><td>입력값으로 SQL 구조를 조작</td><td>입력값 검증, 준비된 구문</td></tr>
+    <tr><td>XSS</td><td>웹 페이지에 악성 스크립트 삽입</td><td>입력값 필터링, 출력 인코딩</td></tr>
+    <tr><td>해싱</td><td>원본을 복원하기 어려운 고정 길이 값으로 변환</td><td>비밀번호 저장, 무결성 확인</td></tr>
+  </table>
+</section>
+
+<section class="card" id="flow">
+  <p class="kicker">LESSON FLOW</p>
+  <h2>🧭 수업 흐름</h2>
+  <div class="flow">
+    <div class="step"><h3>도입 5분</h3><p>디지털 트로이 목마 비유로 위장된 파일, 링크, 입력값의 위험을 질문한다.</p></div>
+    <div class="step"><h3>개념 전개 15분</h3><p>CIA Triad, 악성코드, SQL 인젝션, XSS, 디지털 윤리를 사례 중심으로 이해한다.</p></div>
+    <div class="step"><h3>코드 실습 20분</h3><p>해싱, 입력값 검증, 마스킹, 로그 기록 예제의 출력 결과를 해석한다.</p></div>
+    <div class="step"><h3>평가 및 정리 10분</h3><p>코드 출력 서술형, OX, 5지선다형을 풀고 TXT 결과를 제출한다.</p></div>
+  </div>
+</section>
+
+<section class="card" id="examples">
+  <p class="kicker">CORE EXAMPLE</p>
+  <h2>🐍 핵심 예제 코드</h2>
+<pre><code>import hashlib
+
+password = "safe1234"
+hashed = hashlib.sha256(password.encode()).hexdigest()
+
+print("원본 비밀번호:", password)
+print("해시 길이:", len(hashed))
+print("동일 여부:", hashed == hashlib.sha256("safe1234".encode()).hexdigest())</code></pre>
+</section>
+
+<section class="card" id="codequiz">
+  <p class="kicker">CODE OUTPUT WRITING</p>
+  <h2>✍️ 코드 보여주고 출력결과 입력 받는 서술형 코드 10문항</h2>
+  <p class="small">출력 결과가 예시 정답과 정확히 일치하면 각 3점입니다. 공백은 줄 단위로 정리하여 비교합니다.</p>
+  <div id="codeQuizList"></div>
+</section>
+
+<section class="card" id="ox">
+  <p class="kicker">OX QUIZ</p>
+  <h2>✅ OX 퀴즈 10개</h2>
+  <div id="oxList"></div>
+</section>
+
+<section class="card" id="mcq">
+  <p class="kicker">MULTIPLE CHOICE</p>
+  <h2>📝 5지선다형 10개</h2>
+  <div id="mcqList"></div>
+</section>
+
+<section class="card" id="submit">
+  <p class="kicker">SUBMIT</p>
+  <h2>📥 제출 및 TXT 산출</h2>
+  <div class="student-box">
+    <div><label for="studentId">학번</label><input id="studentId" type="text" placeholder="학번 "></div>
+    <div><label for="studentName">이름</label><input id="studentName" type="text" placeholder="이름 "></div>
+  </div>
+  <div class="btns">
+    <button class="primary" onclick="gradeAndDownload()">채점하고 TXT 다운로드</button>
+    <button class="secondary" onclick="showAllSolutions()">상세 풀이 모두 보기</button>
+    <button class="danger" onclick="resetAnswers()">답안 초기화</button>
+  </div>
+  <div id="result" class="result-box hidden"></div>
+</section>
+
+<div class="footer">과학고 정보 · Ⅴ. 디지털 문화 · 503. 정보 보안과 디지털 윤리</div>
+</main>
+</div>
+</div>
+
+<script>
+const codeQuestions = [
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`cia = ["기밀성", "무결성", "가용성"]
+
+print(cia[0])
+print(cia[-1])`,
+ans:`기밀성
+가용성`,
+sol:"리스트 첫 원소는 기밀성, 마지막 원소는 가용성이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`dangerous = ["'", "=", ";", "-"]
+user_input = "admin"
+
+print("'" in user_input)
+print("a" in user_input)`,
+ans:`False
+True`,
+sol:"admin에는 작은따옴표는 없지만 문자 a는 포함되어 있다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`def is_safe(text):
+    dangerous = ["'", "=", ";"]
+    for ch in dangerous:
+        if ch in text:
+            return False
+    return True
+
+print(is_safe("student01"))
+print(is_safe("' OR '1'='1"))`,
+ans:`True
+False`,
+sol:"student01에는 위험 문자가 없고, 두 번째 문자열에는 작은따옴표와 등호가 포함되어 있어 False이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`password = "abc12345"
+
+has_digit = any(ch.isdigit() for ch in password)
+has_alpha = any(ch.isalpha() for ch in password)
+
+print(has_digit)
+print(has_alpha)`,
+ans:`True
+True`,
+sol:"abc12345에는 숫자와 알파벳이 모두 포함되어 있다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`name = "홍길동"
+masked = name[0] + "*" * (len(name)-2) + name[-1]
+
+print(masked)`,
+ans:`홍*동`,
+sol:"첫 글자와 마지막 글자만 남기고 중간 글자 수만큼 *를 만든다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`email = "newton@science.org"
+user, domain = email.split("@")
+
+print(user)
+print(domain)`,
+ans:`newton
+science.org`,
+sol:"@ 기준으로 아이디와 도메인이 분리된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`log = []
+score = {"math": 85}
+
+old = score["math"]
+score["math"] = 90
+log.append(f"math:{old}->90")
+
+print(score["math"])
+print(log[0])`,
+ans:`90
+math:85->90`,
+sol:"점수를 85에서 90으로 변경하고, 변경 기록을 로그에 남겼다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`malware = {"virus": "숙주 필요", "worm": "스스로 전파"}
+
+print(malware["virus"])
+print(malware["worm"])`,
+ans:`숙주 필요
+스스로 전파`,
+sol:"바이러스는 정상 파일에 기생하는 성격, 웜은 스스로 전파하는 성격으로 설명된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`text = "<script>alert(1)</script>"
+
+print("<script>" in text)
+safe = text.replace("<", "&lt;").replace(">", "&gt;")
+print(safe)`,
+ans:`True
+&lt;script&gt;alert(1)&lt;/script&gt;`,
+sol:"스크립트 태그가 포함되어 있고, <와 >를 치환하여 브라우저가 태그로 해석하지 않게 만든다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`import hashlib
+
+h1 = hashlib.sha256("abc".encode()).hexdigest()
+h2 = hashlib.sha256("abc".encode()).hexdigest()
+h3 = hashlib.sha256("abd".encode()).hexdigest()
+
+print(h1 == h2)
+print(h1 == h3)`,
+ans:`True
+False`,
+sol:"같은 입력은 같은 해시를 만들지만, 한 글자라도 다르면 해시 값이 달라진다."
+}
+];
+
+const oxQuestions = [
+["정보 보안의 3대 목표는 기밀성, 무결성, 가용성이다.","O","CIA Triad는 정보 보안의 핵심 목표이다."],
+["무결성은 허가된 사용자만 정보에 접근하도록 하는 것이다.","X","허가된 사용자만 접근하게 하는 것은 기밀성이고, 무결성은 위변조 방지이다."],
+["웜은 다른 파일에 기생하지 않고 네트워크를 통해 스스로 전파될 수 있다.","O","웜의 핵심 특징은 독립적 전파이다."],
+["SQL 인젝션은 입력값을 이용해 SQL 쿼리 구조를 조작하는 공격이다.","O","검증되지 않은 입력값을 쿼리에 직접 넣을 때 위험해진다."],
+["랜섬웨어는 사용자의 파일을 암호화하고 금전을 요구할 수 있다.","O","랜섬웨어의 대표적 특징이다."],
+["타인의 계정에 무단 로그인하는 것은 디지털 윤리에 어긋난다.","O","프라이버시 침해이자 불법 행위가 될 수 있다."],
+["비밀번호 해싱은 원본 비밀번호를 그대로 저장하기 위한 방법이다.","X","해싱은 원본을 복원하기 어렵게 변환하여 저장 위험을 줄이는 방법이다."],
+["화이트 해커는 합법적이고 윤리적인 방법으로 보안 취약점 개선에 기여한다.","O","화이트 해커는 보안 강화를 목적으로 활동한다."],
+["사용자 입력값 검증은 SQL 인젝션, XSS 예방의 중요한 첫걸음이다.","O","외부 입력은 항상 검증해야 한다."],
+["기술적 능력은 윤리적 책임과 무관하다.","X","강한 기술에는 그만큼 큰 책임이 따른다."
+]
+];
+
+const mcqQuestions = [
+{q:"DDoS 공격으로 은행 웹사이트가 마비되어 사용자가 송금을 못 했다. 침해된 보안 목표는?",choices:["기밀성","무결성","가용성","부인 방지","저작권"],ans:3,sol:"서비스를 사용할 수 없게 되었으므로 가용성이 침해되었다."},
+{q:"웹 게시판에 악성 스크립트를 삽입해 다른 사용자의 브라우저에서 실행되게 하는 공격은?",choices:["SQL 인젝션","XSS","랜섬웨어","웜","백업"],ans:2,sol:"XSS는 웹 페이지에 악성 스크립트를 삽입해 사용자 브라우저에서 실행되게 하는 공격이다."},
+{q:"디지털 시민 의식에 맞는 행동은?",choices:["불법 자료 공유","친구 계정 무단 접속","유해 정보 발견 시 신고","악성 댓글 작성","유료 소프트웨어 무단 복제"],ans:3,sol:"유해 정보를 신고하고 건전한 디지털 공간을 만드는 행동이 바람직하다."},
+{q:"나중에 특정 행위를 부인할 수 없게 하는 보안 목표는?",choices:["기밀성","무결성","가용성","부인 방지","압축"],ans:4,sol:"부인 방지는 행위자가 나중에 자신의 행위를 부인하지 못하게 하는 성질이다."},
+{q:"SQL 인젝션 방어의 기본으로 가장 적절한 것은?",choices:["입력값 검증과 준비된 구문 사용","비밀번호를 평문 저장","코드를 모두 대문자로 바꾸기","로그를 모두 삭제","방화벽 끄기"],ans:1,sol:"입력값이 쿼리 구조를 바꾸지 못하도록 검증하고 준비된 구문을 사용해야 한다."},
+{q:"비밀번호 저장 방식으로 가장 적절한 것은?",choices:["평문 저장","Base64만 적용","압축 저장","단방향 해시로 저장","게시판에 공개"],ans:4,sol:"비밀번호는 복원이 어려운 단방향 해시로 저장하는 것이 안전하다."},
+{q:"스스로 네트워크를 통해 복제·전파되는 악성코드는?",choices:["바이러스","웜","광고 배너","정상 백업","텍스트 파일"],ans:2,sol:"웜은 독립적으로 실행되며 네트워크를 통해 전파될 수 있다."},
+{q:"버퍼 오버플로우가 주로 발생하는 이유는?",choices:["할당된 메모리보다 큰 데이터를 경계 검사 없이 처리하기 때문","if문을 사용해서","출력을 해서","주석이 많아서","한글을 써서"],ans:1,sol:"메모리 경계를 넘는 입력 처리가 취약점의 원인이 된다."},
+{q:"유료 게임 설치 파일을 무단 복사해주는 행동은?",choices:["정당한 공유","저작권 침해","백업","공식 배포","정보 보안 강화"],ans:2,sol:"유료 소프트웨어 무단 복제와 배포는 저작권 침해이다."},
+{q:"보안 취약점을 발견했을 때 책임감 있는 공개 원칙에 맞는 행동은?",choices:["SNS에 즉시 공개","관리자나 보안팀에 비공개로 알리고 수정 시간을 준다","악용해 데이터 삭제","판매","무조건 숨긴다"],ans:2,sol:"취약점은 악용되기 전에 해당 기관에 먼저 알려 수정할 기회를 주어야 한다."}
+];
+
+function escapeHtml(s){return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");}
+function normalize(s){return s.trim().replace(/\r/g,"").split("\n").map(x=>x.trim()).filter(x=>x.length>0).join("\n");}
+function getRadio(name){const v=document.querySelector(`input[name="${name}"]:checked`);return v?v.value:"";}
+function nowStamp(){const d=new Date();const p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}-${p(d.getMinutes())}-${p(d.getSeconds())}`;}
+
+function renderCodeQuiz(){
+  document.getElementById("codeQuizList").innerHTML = codeQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">코드 서술형 ${i+1}. ${x.q}</div>
+      <pre><code>${escapeHtml(x.code)}</code></pre>
+      <textarea id="c${i}" placeholder="출력 결과를 줄바꿈까지 고려하여 입력하세요."></textarea>
+      <div class="answer hidden" id="csol${i}"><b>정답 출력</b><pre><code>${escapeHtml(x.ans)}</code></pre><b>상세 풀이</b><p>${x.sol}</p></div>
+    </div>
+  `).join("");
+}
+function renderOX(){
+  document.getElementById("oxList").innerHTML = oxQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">OX ${i+1}. ${x[0]}</div>
+      <label class="choice"><input type="radio" name="ox${i}" value="O"> O</label>
+      <label class="choice"><input type="radio" name="ox${i}" value="X"> X</label>
+      <div class="answer hidden" id="oxsol${i}"><b>정답 ${x[1]}</b> · ${x[2]}</div>
+    </div>
+  `).join("");
+}
+function renderMCQ(){
+  document.getElementById("mcqList").innerHTML = mcqQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">5지선다 ${i+1}. ${x.q}</div>
+      ${x.choices.map((c,j)=>`<label class="choice"><input type="radio" name="mcq${i}" value="${j+1}"> ${j+1}. ${c}</label>`).join("")}
+      <div class="answer hidden" id="mcqsol${i}"><b>정답 ${x.ans}</b> · ${x.sol}</div>
+    </div>
+  `).join("");
+}
+
+function gradeAndDownload(){
+  const sid=document.getElementById("studentId").value.trim()||"학번미입력";
+  const sname=document.getElementById("studentName").value.trim()||"이름미입력";
+  const stamp=nowStamp();
+  let score=0;
+  const lines=[];
+  lines.push(`학번: ${sid}`);
+  lines.push(`이름: ${sname}`);
+  lines.push(`평가명: Ⅴ. 디지털 문화 - 503. 정보 보안과 디지털 윤리: 보이지 않는 위협에 맞서는 기술과 양심`);
+  lines.push(`응시시각: ${stamp}`);
+  lines.push(`총점: 100점`);
+  lines.push("");
+
+  lines.push("[코드 출력결과 서술형] 각 3점, 총 30점");
+  codeQuestions.forEach((x,i)=>{
+    const raw=document.getElementById(`c${i}`).value;
+    const user=normalize(raw);
+    const correct=normalize(x.ans);
+    const ok=user===correct;
+    const got=ok?3:0;
+    score+=got;
+    lines.push(`코드 서술형 ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x.q}`);
+    lines.push(`제시 코드:\n${x.code}`);
+    lines.push(`학생 답안:\n${raw.trim()||"(미응답)"}`);
+    lines.push(`정답 출력:\n${x.ans}`);
+    lines.push(`상세 풀이: ${x.sol}`);
+    lines.push("");
+  });
+
+  lines.push("[OX 퀴즈] 각 3점, 총 30점");
+  oxQuestions.forEach((x,i)=>{
+    const ans=getRadio(`ox${i}`);
+    const ok=ans===x[1];
+    const got=ok?3:0;
+    score+=got;
+    lines.push(`OX ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x[0]}`);
+    lines.push(`학생 답: ${ans||"미응답"}`);
+    lines.push(`정답: ${x[1]}`);
+    lines.push(`상세 풀이: ${x[2]}`);
+    lines.push("");
+  });
+
+  lines.push("[5지선다형] 각 4점, 총 40점");
+  mcqQuestions.forEach((x,i)=>{
+    const ans=getRadio(`mcq${i}`);
+    const ok=Number(ans)===x.ans;
+    const got=ok?4:0;
+    score+=got;
+    lines.push(`5지선다 ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x.q}`);
+    lines.push(`학생 답: ${ans||"미응답"}`);
+    lines.push(`정답: ${x.ans}`);
+    lines.push(`상세 풀이: ${x.sol}`);
+    lines.push("");
+  });
+
+  lines.splice(5,0,`득점: ${score}점`);
+  const content=lines.join("\n");
+  const result=document.getElementById("result");
+  result.classList.remove("hidden");
+  result.textContent=content;
+
+  const filename=`${sid}_${sname}_503_${score}점_${stamp}.txt`;
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  URL.revokeObjectURL(a.href);
+  a.remove();
+}
+function showAllSolutions(){document.querySelectorAll(".answer").forEach(x=>x.classList.remove("hidden"));}
+function resetAnswers(){
+  document.querySelectorAll("textarea").forEach(x=>x.value="");
+  document.querySelectorAll("input[type=radio]").forEach(x=>x.checked=false);
+  document.querySelectorAll(".answer").forEach(x=>x.classList.add("hidden"));
+  document.getElementById("result").classList.add("hidden");
+}
+renderCodeQuiz();renderOX();renderMCQ();
+</script>
+</body>
+</html>
