@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>401 인공지능과 지능 에이전트 - 출력결과 서술형 평가</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{
+  --ink:#172033;--muted:#64748b;--blue:#2563eb;--purple:#7c3aed;--green:#059669;
+  --red:#dc2626;--orange:#ea580c;--line:#dbe3f0;--soft:#eef4ff;--code:#101828;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;
+  color:var(--ink);line-height:1.72;
+  background:linear-gradient(135deg,#eef4ff 0%,#f8fbff 52%,#fff7ed 100%);
+}
+header{
+  padding:44px 24px 34px;text-align:center;color:#fff;
+  background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+}
+header .tag{display:inline-block;padding:8px 15px;border-radius:999px;background:rgba(255,255,255,.18);font-weight:900;margin-bottom:14px}
+header h1{margin:0 auto 12px;max-width:1120px;font-size:clamp(28px,4vw,48px);line-height:1.18;letter-spacing:-.045em}
+header p{margin:0 auto;max-width:940px;font-size:18px;opacity:.95}
+.container{max-width:1240px;margin:0 auto;padding:28px 20px 72px}
+.grid{display:grid;grid-template-columns:2fr 8fr;gap:22px;align-items:start}
+nav{
+  position:sticky;top:18px;background:rgba(255,255,255,.95);border:1px solid var(--line);
+  border-radius:22px;padding:16px;box-shadow:0 18px 40px rgba(30,64,175,.09)
+}
+nav h2{font-size:18px;margin:0 0 10px}
+nav a{display:block;text-decoration:none;color:#223047;padding:9px 11px;border-radius:12px;font-weight:900;margin:3px 0}
+nav a:hover{background:var(--soft);color:var(--blue)}
+main{min-width:0}
+.card{
+  background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:26px;
+  padding:28px;margin-bottom:24px;box-shadow:0 18px 45px rgba(15,23,42,.08)
+}
+h2{margin:0 0 18px;font-size:30px;letter-spacing:-.035em}
+h3{font-size:23px;margin:24px 0 12px;color:#1e3a8a}
+.kicker{color:var(--muted);font-weight:900;letter-spacing:.02em}
+blockquote{margin:0;padding:20px 24px;background:#eff6ff;border-left:7px solid #2563eb;border-radius:18px;font-size:18px}
+.goalbox,.peas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.peas{grid-template-columns:repeat(2,1fr)}
+.goal,.item{border-radius:20px;padding:18px;background:#f8fbff;border:1px solid #dbeafe}
+.goal h3{margin-top:0;color:#1d4ed8}
+.item strong{font-size:19px;color:#1d4ed8}
+.flow{counter-reset:step}
+.flow .step{position:relative;padding:20px 20px 20px 72px;border-left:5px solid #93c5fd;background:#f8fbff;border-radius:20px;margin:16px 0}
+.flow .step:before{counter-increment:step;content:counter(step);position:absolute;left:20px;top:22px;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#2563eb;color:#fff;font-weight:900}
+pre{overflow:auto;background:var(--code);color:#f8fafc;padding:18px;border-radius:18px;font-size:15px;line-height:1.55;border:1px solid #344054}
+code{font-family:"Cascadia Code","Consolas","D2Coding",monospace}
+table{width:100%;border-collapse:collapse;margin:14px 0}
+th,td{border:1px solid var(--line);padding:12px 14px;vertical-align:top}
+th{background:#eef4ff;color:#1e3a8a}
+.student-box{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;background:#f8fbff;border:1px solid #dbeafe;border-radius:20px;padding:18px}
+label{font-weight:900}
+input[type="text"]{width:100%;padding:13px 14px;border:1px solid #cbd5e1;border-radius:14px;font-size:17px}
+.quiz{border:1px solid var(--line);background:#fff;border-radius:18px;padding:18px;margin:14px 0}
+.quiz-title{font-weight:900;font-size:18px;color:#172033}
+.choice{display:block;margin:7px 0;padding:9px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;cursor:pointer}
+.choice:hover{background:#eef4ff}
+textarea{width:100%;min-height:115px;padding:13px 14px;border:1px solid #cbd5e1;border-radius:14px;font-size:16px;line-height:1.55;font-family:"Cascadia Code","Consolas","D2Coding",monospace}
+.answer{margin-top:10px;padding:12px 14px;border-radius:14px;background:#f0fdf4;border:1px solid #bbf7d0}
+.hidden{display:none}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+button{border:0;border-radius:14px;padding:13px 18px;font-size:16px;font-weight:900;cursor:pointer}
+.primary{background:#2563eb;color:#fff}.secondary{background:#e0e7ff;color:#1e3a8a}.danger{background:#fee2e2;color:#991b1b}
+.result-box{margin-top:18px;border-radius:20px;border:1px solid #bfdbfe;background:#eff6ff;padding:18px;white-space:pre-wrap}
+.small{font-size:14px;color:#64748b}.footer{text-align:center;color:#64748b;margin-top:34px}
+@media(max-width:960px){.grid{grid-template-columns:1fr}nav{position:relative;top:0}.goalbox,.peas,.student-box{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">과학고 정보 · 목표지향적 개념기반 수업지도안 + 자동 TXT 수행평가</div>
+  <h1>Ⅳ. 인공지능 - 401. 인공지능과 지능 에이전트</h1>
+  <p>생각하는 기계의 탄생 · 코드 출력결과 서술형 + OX 10문항 + 5지선다형 10문항</p>
+</header>
+
+<div class="container">
+<div class="grid">
+<nav>
+  <h2>📌 사이드 메뉴</h2>
+  <a href="#intro">1. 수업 시작</a>
+  <a href="#goals">2. 학습 목표</a>
+  <a href="#concepts">3. 핵심 개념</a>
+  <a href="#flow">4. 수업 흐름</a>
+  <a href="#examples">5. 핵심 예제 코드</a>
+  <a href="#codequiz">6. 코드 출력 서술형</a>
+  <a href="#ox">7. OX 퀴즈</a>
+  <a href="#mcq">8. 5지선다형</a>
+  <a href="#submit">9. 제출/TXT 저장</a>
+</nav>
+
+<main>
+<section class="card" id="intro">
+  <p class="kicker">OPENING</p>
+  <h2>🚀 수업 시작 멘트</h2>
+  <blockquote>
+    앨런 튜링은 “기계가 생각할 수 있는가?”라는 질문을 던졌습니다.
+    정보 수업에서는 이 질문을 <b>환경을 읽고, 조건을 판단하고, 목표를 향해 행동하는 프로그램을 만들 수 있는가?</b>로 바꾸어 볼 수 있습니다.
+    오늘 수업의 핵심은 <b>지능 에이전트</b>입니다.
+  </blockquote>
+</section>
+
+<section class="card" id="goals">
+  <p class="kicker">OBJECTIVES</p>
+  <h2>🎯 목표지향적 학습 목표</h2>
+  <div class="goalbox">
+    <div class="goal"><h3>🧠 개념적 목표</h3><p>인공지능, 지능 에이전트, PEAS 프레임워크, 단순 반사·모델 기반·목표 기반·효용 기반 에이전트의 차이를 설명한다.</p></div>
+    <div class="goal"><h3>🛠 절차적 목표</h3><p>파이썬 클래스, 조건문, 반복문을 활용하여 간단한 지능 에이전트의 인지·판단·행동 구조를 구현한다.</p></div>
+    <div class="goal"><h3>🌱 태도적 목표</h3><p>AI를 신비한 결과가 아니라 입력, 상태, 규칙, 출력으로 구성된 공학적 시스템으로 이해한다.</p></div>
+  </div>
+</section>
+
+<section class="card" id="concepts">
+  <p class="kicker">CONCEPTS</p>
+  <h2>💡 핵심 개념 정리</h2>
+  <h3>1. 지능 에이전트</h3>
+  <p>지능 에이전트는 환경을 <b>인지</b>하고, 인지 결과를 바탕으로 <b>판단</b>하며, 목표를 달성하기 위해 <b>행동</b>하는 컴퓨팅 개체입니다.</p>
+  <h3>2. PEAS 프레임워크</h3>
+  <div class="peas">
+    <div class="item"><strong>P · Performance</strong><p>성능 척도: 얼마나 잘했는가?</p></div>
+    <div class="item"><strong>E · Environment</strong><p>환경: 어디에서 활동하는가?</p></div>
+    <div class="item"><strong>A · Actuators</strong><p>액추에이터: 무엇으로 행동하는가?</p></div>
+    <div class="item"><strong>S · Sensors</strong><p>센서: 무엇으로 인지하는가?</p></div>
+  </div>
+  <h3>3. 에이전트 종류</h3>
+  <table>
+    <tr><th>종류</th><th>판단 방식</th><th>예시</th></tr>
+    <tr><td>단순 반사 에이전트</td><td>현재 입력에만 반응</td><td>먼지 감지 → 흡입</td></tr>
+    <tr><td>모델 기반 에이전트</td><td>현재 입력 + 내부 상태 고려</td><td>청소한 구역 수 기억</td></tr>
+    <tr><td>목표 기반 에이전트</td><td>목표 달성 여부 고려</td><td>모든 먼지 제거</td></tr>
+    <tr><td>효용 기반 에이전트</td><td>효율·위험·만족도를 비교</td><td>청소와 충전 중 더 유리한 선택</td></tr>
+  </table>
+</section>
+
+<section class="card" id="flow">
+  <p class="kicker">LESSON FLOW</p>
+  <h2>🧭 수업 흐름</h2>
+  <div class="flow">
+    <div class="step"><h3>도입 5분</h3><p>로봇 청소기, 자율주행차, 챗봇을 예로 들어 “무엇을 인지하고, 어떻게 행동하는가?”를 질문한다.</p></div>
+    <div class="step"><h3>개념 전개 15분</h3><p>PEAS 프레임워크와 에이전트 종류를 비교한다.</p></div>
+    <div class="step"><h3>코드 실습 20분</h3><p>파이썬 클래스로 단순 반사 에이전트를 만들고 출력 결과를 예측한다.</p></div>
+    <div class="step"><h3>평가 및 정리 10분</h3><p>코드 출력 서술형, OX, 5지선다형을 풀고 TXT 결과를 제출한다.</p></div>
+  </div>
+</section>
+
+<section class="card" id="examples">
+  <p class="kicker">CORE EXAMPLE</p>
+  <h2>🐍 핵심 예제 코드</h2>
+<pre><code>class SimpleAgent:
+    def perceive(self, environment):
+        if environment["dirty"]:
+            return "dirty"
+        return "clean"
+
+    def act(self, percept):
+        if percept == "dirty":
+            return "suck"
+        return "move"
+
+agent = SimpleAgent()
+env = {"dirty": True}
+
+p = agent.perceive(env)
+a = agent.act(p)
+
+print("인지:", p)
+print("행동:", a)</code></pre>
+</section>
+
+<section class="card" id="codequiz">
+  <p class="kicker">CODE OUTPUT WRITING</p>
+  <h2>✍️ 코드 보여주고 출력결과 입력 받는 서술형 코드 10문항</h2>
+  <p class="small">출력 결과가 예시 정답과 정확히 일치하면 각 3점입니다. 공백은 줄 단위로 정리하여 비교합니다.</p>
+  <div id="codeQuizList"></div>
+</section>
+
+<section class="card" id="ox">
+  <p class="kicker">OX QUIZ</p>
+  <h2>✅ OX 퀴즈 10개</h2>
+  <div id="oxList"></div>
+</section>
+
+<section class="card" id="mcq">
+  <p class="kicker">MULTIPLE CHOICE</p>
+  <h2>📝 5지선다형 10개</h2>
+  <div id="mcqList"></div>
+</section>
+
+<section class="card" id="submit">
+  <p class="kicker">SUBMIT</p>
+  <h2>📥 제출 및 TXT 산출</h2>
+  <div class="student-box">
+    <div><label for="studentId">학번</label><input id="studentId" type="text" placeholder="학번 "></div>
+    <div><label for="studentName">이름</label><input id="studentName" type="text" placeholder="이름 "></div>
+  </div>
+  <div class="btns">
+    <button class="primary" onclick="gradeAndDownload()">채점하고 TXT 다운로드</button>
+    <button class="secondary" onclick="showAllSolutions()">상세 풀이 모두 보기</button>
+    <button class="danger" onclick="resetAnswers()">답안 초기화</button>
+  </div>
+  <div id="result" class="result-box hidden"></div>
+</section>
+
+<div class="footer">과학고 정보 · Ⅳ. 인공지능 · 401. 인공지능과 지능 에이전트</div>
+</main>
+</div>
+</div>
+
+<script>
+const codeQuestions = [
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`class Agent:
+    def act(self):
+        print("Hello, Agent!")
+
+a = Agent()
+a.act()`,
+ans:`Hello, Agent!`,
+sol:"Agent 객체 a를 만들고 act() 메서드를 호출하므로 print문이 한 줄 출력된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`class SensorAgent:
+    def perceive(self, env):
+        if env["light"] < 100:
+            return "dark"
+        return "bright"
+
+agent = SensorAgent()
+print(agent.perceive({"light": 70}))
+print(agent.perceive({"light": 150}))`,
+ans:`dark
+bright`,
+sol:"70은 100보다 작으므로 dark, 150은 100 이상이므로 bright가 반환된다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`class ReflexAgent:
+    def act(self, percept):
+        if percept == "dirty":
+            return "suck"
+        return "move"
+
+agent = ReflexAgent()
+print(agent.act("dirty"))
+print(agent.act("clean"))`,
+ans:`suck
+move`,
+sol:"percept가 dirty이면 suck, 그 외에는 move를 반환한다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`world = [0, 1, 0]
+position = 1
+
+if world[position] == 1:
+    print("dirty")
+else:
+    print("clean")`,
+ans:`dirty`,
+sol:"world[1]의 값은 1이므로 현재 위치는 먼지가 있는 상태이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`world = [0, 1, 0]
+position = 1
+
+if world[position] == 1:
+    world[position] = 0
+    print("suck")
+
+print(world)`,
+ans:`suck
+[0, 0, 0]`,
+sol:"position 1의 값이 1이므로 suck을 출력하고 해당 값을 0으로 바꾼다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`class ModelAgent:
+    def __init__(self):
+        self.cleaned = 0
+
+    def clean(self):
+        self.cleaned += 1
+        print(self.cleaned)
+
+agent = ModelAgent()
+agent.clean()
+agent.clean()`,
+ans:`1
+2`,
+sol:"clean()을 호출할 때마다 내부 상태 cleaned가 1씩 증가한다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`position = 0
+world_size = 3
+
+for i in range(4):
+    if position < world_size - 1:
+        position += 1
+    print(position)`,
+ans:`1
+2
+2
+2`,
+sol:"position은 0→1→2까지 증가하지만 world_size-1인 2를 넘을 수 없다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`world = [0, 0, 0]
+
+if sum(world) == 0:
+    print("goal")
+else:
+    print("not yet")`,
+ans:`goal`,
+sol:"world의 모든 값이 0이므로 합이 0이고 목표 달성 상태이다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`env = {"bumper": True, "dirty": True}
+
+if env["bumper"]:
+    print("turn")
+elif env["dirty"]:
+    print("suck")
+else:
+    print("move")`,
+ans:`turn`,
+sol:"if 조건인 bumper가 True이므로 turn을 출력하고 elif는 검사하지 않는다."
+},
+{
+q:"다음 코드의 출력 결과를 쓰시오.",
+code:`class GoalAgent:
+    def goal(self, world):
+        return sum(world) == 0
+
+agent = GoalAgent()
+print(agent.goal([0, 1, 0]))
+print(agent.goal([0, 0, 0]))`,
+ans:`False
+True`,
+sol:"[0,1,0]의 합은 1이므로 False, [0,0,0]의 합은 0이므로 True이다."
+}
+];
+
+const oxQuestions = [
+["지능 에이전트는 환경을 인지하고 행동하는 자율적 개체이다.","O","지능 에이전트는 센서로 환경을 인지하고 액추에이터로 행동한다."],
+["PEAS의 P는 Programming을 의미한다.","X","P는 Performance Measure, 즉 성능 척도이다."],
+["로봇 청소기의 먼지 감지 센서는 PEAS의 S에 해당한다.","O","먼지 감지 센서는 환경 정보를 입력받는 센서이다."],
+["로봇 청소기의 바퀴 모터는 센서에 해당한다.","X","바퀴 모터는 환경 속 위치를 바꾸는 액추에이터이다."],
+["단순 반사 에이전트는 현재 입력에 기반하여 조건-행동 규칙으로 움직인다.","O","현재 percept에 따라 즉시 행동을 선택한다."],
+["모델 기반 에이전트는 내부 상태나 기억을 사용할 수 있다.","O","과거 정보나 현재 상태를 내부 모델로 보관할 수 있다."],
+["목표 기반 에이전트는 목표 달성 여부를 고려하지 않는다.","X","목표 기반 에이전트는 목표 달성을 위해 행동을 선택한다."],
+["효용 기반 에이전트는 여러 행동의 만족도나 효율을 비교할 수 있다.","O","효용을 기준으로 더 나은 선택을 한다."],
+["파이썬 클래스는 에이전트의 상태와 행동을 함께 표현하기 어렵다.","X","클래스는 속성과 메서드를 묶어 에이전트를 표현하기 좋다."],
+["모든 인공지능 에이전트는 반드시 머신러닝을 사용해야 한다.","X","규칙 기반 에이전트도 지능 에이전트의 한 형태가 될 수 있다."]
+];
+
+const mcqQuestions = [
+{q:"PEAS에서 성능 척도에 해당하는 것은?",choices:["먼지 감지 센서","바퀴 모터","청소 완료율","방 구조","카메라"],ans:3,sol:"성능 척도는 에이전트의 성공 여부를 평가하는 기준이다."},
+{q:"로봇 청소기의 액추에이터에 해당하는 것은?",choices:["범퍼 센서","먼지 센서","바퀴 모터","방의 크기","청소 완료율"],ans:3,sol:"바퀴 모터는 실제 움직임을 만들어 환경을 변화시킨다."},
+{q:"단순 반사 에이전트의 특징으로 가장 적절한 것은?",choices:["미래 계획을 세운다","현재 입력에 즉시 반응한다","항상 학습한다","효용을 계산한다","모든 경로를 탐색한다"],ans:2,sol:"단순 반사 에이전트는 현재 입력에 대한 조건-행동 규칙을 사용한다."},
+{q:"모델 기반 에이전트가 단순 반사 에이전트와 다른 점은?",choices:["출력을 하지 않는다","센서가 없다","내부 상태를 활용할 수 있다","조건문을 사용할 수 없다","항상 랜덤으로 움직인다"],ans:3,sol:"모델 기반 에이전트는 내부 상태나 환경 모델을 활용한다."},
+{q:"목표 기반 에이전트의 예로 가장 적절한 것은?",choices:["벽이면 무조건 회전","먼지면 무조건 흡입","모든 방을 청소하기 위해 이동 계획 수립","항상 왼쪽 이동","입력 없이 출력"],ans:3,sol:"목표 기반 에이전트는 목표 상태를 달성하기 위한 행동을 선택한다."},
+{q:"효용 기반 에이전트의 판단 기준은?",choices:["무조건 첫 번째 행동","현재 입력만","효율·안전·만족도 등 종합 가치","출력 문장 길이","코드 줄 수"],ans:3,sol:"효용 기반 에이전트는 여러 선택의 가치를 비교한다."},
+{q:"파이썬 코드에서 perceive 메서드의 역할로 가장 적절한 것은?",choices:["환경 인지","파일 삭제","화면 색 변경","프로그램 종료","점수 계산만"],ans:1,sol:"perceive는 환경 정보를 받아 인지 결과로 바꾸는 역할이다."},
+{q:"파이썬 코드에서 act 메서드의 역할로 가장 적절한 것은?",choices:["행동 결정","문자열 정렬만","센서 제거","컴퓨터 종료","HTML 생성"],ans:1,sol:"act는 인지 결과를 바탕으로 행동을 결정한다."},
+{q:"다음 중 자율주행차의 센서에 해당하는 것은?",choices:["브레이크 제어 모터","핸들 조향 장치","카메라와 라이다","타이어 회전","가속 페달 작동기"],ans:3,sol:"카메라와 라이다는 외부 환경을 인지하는 센서이다."},
+{q:"지능 에이전트 수업에서 클래스를 사용하는 이유로 가장 적절한 것은?",choices:["상태와 행동을 하나의 단위로 묶기 위해","코드를 무조건 느리게 하기 위해","출력을 막기 위해","조건문을 없애기 위해","변수를 사용할 수 없게 하기 위해"],ans:1,sol:"클래스는 에이전트의 속성, 내부 상태, 행동 메서드를 함께 표현하기 좋다."}
+];
+
+function escapeHtml(s){return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");}
+function normalize(s){return s.trim().replace(/\r/g,"").split("\n").map(x=>x.trim()).filter(x=>x.length>0).join("\n");}
+function getRadio(name){const v=document.querySelector(`input[name="${name}"]:checked`);return v?v.value:"";}
+function nowStamp(){const d=new Date();const p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}-${p(d.getMinutes())}-${p(d.getSeconds())}`;}
+
+function renderCodeQuiz(){
+  document.getElementById("codeQuizList").innerHTML = codeQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">코드 서술형 ${i+1}. ${x.q}</div>
+      <pre><code>${escapeHtml(x.code)}</code></pre>
+      <textarea id="c${i}" placeholder="출력 결과를 줄바꿈까지 고려하여 입력하세요."></textarea>
+      <div class="answer hidden" id="csol${i}"><b>정답 출력</b><pre><code>${escapeHtml(x.ans)}</code></pre><b>상세 풀이</b><p>${x.sol}</p></div>
+    </div>
+  `).join("");
+}
+function renderOX(){
+  document.getElementById("oxList").innerHTML = oxQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">OX ${i+1}. ${x[0]}</div>
+      <label class="choice"><input type="radio" name="ox${i}" value="O"> O</label>
+      <label class="choice"><input type="radio" name="ox${i}" value="X"> X</label>
+      <div class="answer hidden" id="oxsol${i}"><b>정답 ${x[1]}</b> · ${x[2]}</div>
+    </div>
+  `).join("");
+}
+function renderMCQ(){
+  document.getElementById("mcqList").innerHTML = mcqQuestions.map((x,i)=>`
+    <div class="quiz">
+      <div class="quiz-title">5지선다 ${i+1}. ${x.q}</div>
+      ${x.choices.map((c,j)=>`<label class="choice"><input type="radio" name="mcq${i}" value="${j+1}"> ${j+1}. ${c}</label>`).join("")}
+      <div class="answer hidden" id="mcqsol${i}"><b>정답 ${x.ans}</b> · ${x.sol}</div>
+    </div>
+  `).join("");
+}
+
+function gradeAndDownload(){
+  const sid=document.getElementById("studentId").value.trim()||"학번미입력";
+  const sname=document.getElementById("studentName").value.trim()||"이름미입력";
+  const stamp=nowStamp();
+  let score=0;
+  const lines=[];
+  lines.push(`학번: ${sid}`);
+  lines.push(`이름: ${sname}`);
+  lines.push(`평가명: Ⅳ. 인공지능 - 401. 인공지능과 지능 에이전트: 생각하는 기계의 탄생`);
+  lines.push(`응시시각: ${stamp}`);
+  lines.push(`총점: 100점`);
+  lines.push("");
+
+  lines.push("[코드 출력결과 서술형] 각 3점, 총 30점");
+  codeQuestions.forEach((x,i)=>{
+    const raw=document.getElementById(`c${i}`).value;
+    const user=normalize(raw);
+    const correct=normalize(x.ans);
+    const ok=user===correct;
+    const got=ok?3:0;
+    score+=got;
+    lines.push(`코드 서술형 ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x.q}`);
+    lines.push(`제시 코드:\n${x.code}`);
+    lines.push(`학생 답안:\n${raw.trim()||"(미응답)"}`);
+    lines.push(`정답 출력:\n${x.ans}`);
+    lines.push(`상세 풀이: ${x.sol}`);
+    lines.push("");
+  });
+
+  lines.push("[OX 퀴즈] 각 3점, 총 30점");
+  oxQuestions.forEach((x,i)=>{
+    const ans=getRadio(`ox${i}`);
+    const ok=ans===x[1];
+    const got=ok?3:0;
+    score+=got;
+    lines.push(`OX ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x[0]}`);
+    lines.push(`학생 답: ${ans||"미응답"}`);
+    lines.push(`정답: ${x[1]}`);
+    lines.push(`상세 풀이: ${x[2]}`);
+    lines.push("");
+  });
+
+  lines.push("[5지선다형] 각 4점, 총 40점");
+  mcqQuestions.forEach((x,i)=>{
+    const ans=getRadio(`mcq${i}`);
+    const ok=Number(ans)===x.ans;
+    const got=ok?4:0;
+    score+=got;
+    lines.push(`5지선다 ${i+1}: ${ok?"정답":"오답"} / ${got}점`);
+    lines.push(`문항: ${x.q}`);
+    lines.push(`학생 답: ${ans||"미응답"}`);
+    lines.push(`정답: ${x.ans}`);
+    lines.push(`상세 풀이: ${x.sol}`);
+    lines.push("");
+  });
+
+  lines.splice(5,0,`득점: ${score}점`);
+  const content=lines.join("\n");
+  const result=document.getElementById("result");
+  result.classList.remove("hidden");
+  result.textContent=content;
+
+  const filename=`${sid}_${sname}_401_${score}점_${stamp}.txt`;
+  const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  URL.revokeObjectURL(a.href);
+  a.remove();
+}
+function showAllSolutions(){document.querySelectorAll(".answer").forEach(x=>x.classList.remove("hidden"));}
+function resetAnswers(){
+  document.querySelectorAll("textarea").forEach(x=>x.value="");
+  document.querySelectorAll("input[type=radio]").forEach(x=>x.checked=false);
+  document.querySelectorAll(".answer").forEach(x=>x.classList.add("hidden"));
+  document.getElementById("result").classList.add("hidden");
+}
+renderCodeQuiz();renderOX();renderMCQ();
+</script>
+</body>
+</html>
