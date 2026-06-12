@@ -1,0 +1,283 @@
+<!DOCTYPE html><html lang='ko'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>파이썬 딕셔너리 문제 정답 상세풀이 예시코드</title><style>
+body{margin:0;font-family:'Malgun Gothic',Arial,sans-serif;background:#f3f7ff;color:#172033;line-height:1.75}header{background:linear-gradient(135deg,#2563eb,#7c3aed);color:white;text-align:center;padding:38px 20px}.wrap{max-width:1150px;margin:auto;padding:24px}.top{position:sticky;top:0;background:white;border-bottom:1px solid #dbe3f0;padding:10px;text-align:center;z-index:9}select{padding:8px 12px;border-radius:10px}.card{background:white;border:1px solid #dbe3f0;border-radius:22px;padding:24px;margin:18px 0;box-shadow:0 8px 24px #0001}.q{color:#1d4ed8;font-weight:900;font-size:21px}.problem{font-size:18px;font-weight:900;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px}.answer{display:inline-block;background:#dcfce7;color:#166534;border-radius:999px;padding:6px 12px;font-weight:900}.explain{background:#eff6ff;border-left:6px solid #2563eb;border-radius:14px;padding:14px}pre{background:#101828;color:#f8fafc;padding:16px;border-radius:14px;overflow:auto;font-size:15px;line-height:1.55}.out{background:#052e16}button{border:0;border-radius:10px;padding:8px 12px;background:#2563eb;color:white;font-weight:900;cursor:pointer;margin:6px 0}h3{margin-bottom:8px;color:#1e3a8a}.footer{text-align:center;color:#64748b;padding:30px}
+</style></head><body>
+<header><h1>파이썬 딕셔너리 퀴즈<br>문제 · 정답 · 상세풀이 · 예시 코드</h1><p>OX 10문항 + 5지선다형 10문항</p></header>
+<div class='top'><label>문항 이동 </label><select onchange="if(this.value) location.hash=this.value"><option value=''>선택</option><option value='#q1'>OX 1</option><option value='#q2'>OX 2</option><option value='#q3'>OX 3</option><option value='#q4'>OX 4</option><option value='#q5'>OX 5</option><option value='#q6'>OX 6</option><option value='#q7'>OX 7</option><option value='#q8'>OX 8</option><option value='#q9'>OX 9</option><option value='#q10'>OX 10</option><option value='#q11'>5지선다 11</option><option value='#q12'>5지선다 12</option><option value='#q13'>5지선다 13</option><option value='#q14'>5지선다 14</option><option value='#q15'>5지선다 15</option><option value='#q16'>5지선다 16</option><option value='#q17'>5지선다 17</option><option value='#q18'>5지선다 18</option><option value='#q19'>5지선다 19</option><option value='#q20'>5지선다 20</option></select></div>
+<div class='wrap'>
+<section class='card' id='q1'>
+  <div class='q'>OX 1</div>
+  <h3>문제</h3><div class='problem'>파이썬 딕셔너리는 순서가 없는(unordered) 자료구조이다.</div>
+  <h3>정답</h3><p><span class='answer'>X</span></p>
+  <h3>상세 풀이</h3><div class='explain'>Python 3.7부터 딕셔너리는 입력된 순서를 유지합니다. 예전에는 순서를 보장하지 않았지만, 현재 수업 환경에서는 순서가 유지된다고 이해하는 것이 좋습니다.</div>
+  <h3>예시 코드</h3><pre><code>d = {&#x27;첫째&#x27;: 1, &#x27;둘째&#x27;: 2, &#x27;셋째&#x27;: 3}
+
+for key in d:
+    print(key, d[key])</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>첫째 1
+둘째 2
+셋째 3</code></pre>
+</section>
+
+<section class='card' id='q2'>
+  <div class='q'>OX 2</div>
+  <h3>문제</h3><div class='problem'>딕셔너리의 키(key)는 중복될 수 없다.</div>
+  <h3>정답</h3><p><span class='answer'>O</span></p>
+  <h3>상세 풀이</h3><div class='explain'>딕셔너리의 키는 고유해야 합니다. 같은 키에 값을 다시 넣으면 새 항목이 추가되는 것이 아니라 기존 값이 덮어써집니다.</div>
+  <h3>예시 코드</h3><pre><code>score = {&#x27;수학&#x27;: 90, &#x27;수학&#x27;: 100}
+
+print(score)
+print(len(score))</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>{&#x27;수학&#x27;: 100}
+1</code></pre>
+</section>
+
+<section class='card' id='q3'>
+  <div class='q'>OX 3</div>
+  <h3>문제</h3><div class='problem'>딕셔너리의 값(value)으로는 리스트나 다른 딕셔너리를 사용할 수 있다.</div>
+  <h3>정답</h3><p><span class='answer'>O</span></p>
+  <h3>상세 풀이</h3><div class='explain'>딕셔너리의 값에는 거의 모든 파이썬 객체가 올 수 있습니다. 리스트, 튜플, 또 다른 딕셔너리도 값으로 저장할 수 있습니다.</div>
+  <h3>예시 코드</h3><pre><code>student = {
+    &#x27;name&#x27;: &#x27;민수&#x27;,
+    &#x27;scores&#x27;: [90, 85, 100],
+    &#x27;info&#x27;: {&#x27;grade&#x27;: 1, &#x27;class&#x27;: 2}
+}
+
+print(student[&#x27;scores&#x27;])
+print(student[&#x27;info&#x27;][&#x27;grade&#x27;])</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>[90, 85, 100]
+1</code></pre>
+</section>
+
+<section class='card' id='q4'>
+  <div class='q'>OX 4</div>
+  <h3>문제</h3><div class='problem'>my_dict[&#x27;key&#x27;] 와 my_dict.get(&#x27;key&#x27;)는 존재하지 않는 키에 접근할 때 동일하게 KeyError를 발생시킨다.</div>
+  <h3>정답</h3><p><span class='answer'>X</span></p>
+  <h3>상세 풀이</h3><div class='explain'>대괄호 접근은 키가 없으면 KeyError가 발생하지만, get()은 키가 없을 때 None 또는 지정한 기본값을 반환합니다.</div>
+  <h3>예시 코드</h3><pre><code>d = {&#x27;a&#x27;: 10}
+
+print(d.get(&#x27;b&#x27;))
+print(d.get(&#x27;b&#x27;, 0))</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>None
+0</code></pre>
+</section>
+
+<section class='card' id='q5'>
+  <div class='q'>OX 5</div>
+  <h3>문제</h3><div class='problem'>del my_dict[&#x27;key&#x27;]는 딕셔너리에서 특정 키-값 쌍을 삭제하는 명령어이다.</div>
+  <h3>정답</h3><p><span class='answer'>O</span></p>
+  <h3>상세 풀이</h3><div class='explain'>del 키워드는 지정한 키와 그 키에 연결된 값을 함께 삭제합니다.</div>
+  <h3>예시 코드</h3><pre><code>d = {&#x27;a&#x27;: 1, &#x27;b&#x27;: 2}
+
+del d[&#x27;a&#x27;]
+print(d)</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>{&#x27;b&#x27;: 2}</code></pre>
+</section>
+
+<section class='card' id='q6'>
+  <div class='q'>OX 6</div>
+  <h3>문제</h3><div class='problem'>딕셔너리의 키(key)로는 가변(mutable) 객체인 리스트를 사용할 수 있다.</div>
+  <h3>정답</h3><p><span class='answer'>X</span></p>
+  <h3>상세 풀이</h3><div class='explain'>딕셔너리의 키는 해시 가능해야 합니다. 리스트는 값이 바뀔 수 있는 가변 객체라서 키로 사용할 수 없습니다.</div>
+  <h3>예시 코드</h3><pre><code>try:
+    d = {[1, 2]: &#x27;리스트 키&#x27;}
+except TypeError:
+    print(&#x27;리스트는 키로 사용할 수 없음&#x27;)</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>리스트는 키로 사용할 수 없음</code></pre>
+</section>
+
+<section class='card' id='q7'>
+  <div class='q'>OX 7</div>
+  <h3>문제</h3><div class='problem'>my_dict.keys() 메서드는 딕셔너리의 모든 키를 포함하는 튜플을 반환한다.</div>
+  <h3>정답</h3><p><span class='answer'>X</span></p>
+  <h3>상세 풀이</h3><div class='explain'>keys()는 튜플이 아니라 dict_keys라는 뷰 객체를 반환합니다. 튜플이나 리스트가 필요하면 tuple(), list()로 변환합니다.</div>
+  <h3>예시 코드</h3><pre><code>d = {&#x27;a&#x27;: 1, &#x27;b&#x27;: 2}
+
+print(d.keys())
+print(list(d.keys()))</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>dict_keys([&#x27;a&#x27;, &#x27;b&#x27;])
+[&#x27;a&#x27;, &#x27;b&#x27;]</code></pre>
+</section>
+
+<section class='card' id='q8'>
+  <div class='q'>OX 8</div>
+  <h3>문제</h3><div class='problem'>dict1.update(dict2)는 dict1에 dict2의 내용을 병합하며, 중복된 키가 있으면 dict2의 값으로 덮어쓴다.</div>
+  <h3>정답</h3><p><span class='answer'>O</span></p>
+  <h3>상세 풀이</h3><div class='explain'>update()는 원래 딕셔너리를 직접 수정합니다. 같은 키가 있으면 나중에 들어온 딕셔너리의 값으로 바뀝니다.</div>
+  <h3>예시 코드</h3><pre><code>d1 = {&#x27;a&#x27;: 1, &#x27;b&#x27;: 2}
+d2 = {&#x27;b&#x27;: 20, &#x27;c&#x27;: 3}
+
+d1.update(d2)
+print(d1)</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>{&#x27;a&#x27;: 1, &#x27;b&#x27;: 20, &#x27;c&#x27;: 3}</code></pre>
+</section>
+
+<section class='card' id='q9'>
+  <div class='q'>OX 9</div>
+  <h3>문제</h3><div class='problem'>딕셔너리 컴프리헨션은 리스트 컴프리헨션보다 항상 실행 속도가 빠르다.</div>
+  <h3>정답</h3><p><span class='answer'>X</span></p>
+  <h3>상세 풀이</h3><div class='explain'>항상 빠르다고 말할 수 없습니다. 자료구조의 목적이 다르며, 속도는 데이터 크기와 작업 내용에 따라 달라집니다.</div>
+  <h3>예시 코드</h3><pre><code>squares_list = [x*x for x in range(3)]
+squares_dict = {x: x*x for x in range(3)}
+
+print(squares_list)
+print(squares_dict)</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>[0, 1, 4]
+{0: 0, 1: 1, 2: 4}</code></pre>
+</section>
+
+<section class='card' id='q10'>
+  <div class='q'>OX 10</div>
+  <h3>문제</h3><div class='problem'>pop() 메서드를 사용하여 딕셔너리에서 아이템을 제거하면, 제거된 아이템의 값이 반환된다.</div>
+  <h3>정답</h3><p><span class='answer'>O</span></p>
+  <h3>상세 풀이</h3><div class='explain'>pop(key)는 해당 키-값 쌍을 삭제하고, 삭제된 키의 값을 반환합니다.</div>
+  <h3>예시 코드</h3><pre><code>d = {&#x27;apple&#x27;: 1000, &#x27;banana&#x27;: 1500}
+
+price = d.pop(&#x27;apple&#x27;)
+print(price)
+print(d)</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>1000
+{&#x27;banana&#x27;: 1500}</code></pre>
+</section>
+
+<section class='card' id='q11'>
+  <div class='q'>5지선다 11</div>
+  <h3>문제</h3><div class='problem'>다음 중 딕셔너리를 생성하는 방법으로 올바르지 않은 것은?</div>
+  <h3>정답</h3><p><span class='answer'>d = {&#x27;a&#x27;, 1, &#x27;b&#x27;, 2}</span></p>
+  <h3>상세 풀이</h3><div class='explain'>중괄호 안에 콜론 없이 값만 나열하면 딕셔너리가 아니라 세트가 됩니다. 딕셔너리는 key:value 형태여야 합니다.</div>
+  <h3>예시 코드</h3><pre><code>d1 = {&#x27;a&#x27;: 1}
+d2 = {&#x27;a&#x27;, 1, &#x27;b&#x27;, 2}
+
+print(type(d1))
+print(type(d2))</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>&lt;class &#x27;dict&#x27;&gt;
+&lt;class &#x27;set&#x27;&gt;</code></pre>
+</section>
+
+<section class='card' id='q12'>
+  <div class='q'>5지선다 12</div>
+  <h3>문제</h3><div class='problem'>d = {&#x27;a&#x27;: 100, &#x27;b&#x27;: 200}; print(d.get(&#x27;c&#x27;, 0))의 실행 결과는?</div>
+  <h3>정답</h3><p><span class='answer'>0</span></p>
+  <h3>상세 풀이</h3><div class='explain'>get()은 찾는 키가 없을 때 두 번째 인자로 지정한 기본값을 반환합니다. c 키가 없으므로 0이 출력됩니다.</div>
+  <h3>예시 코드</h3><pre><code>d = {&#x27;a&#x27;: 100, &#x27;b&#x27;: 200}
+
+print(d.get(&#x27;c&#x27;, 0))</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>0</code></pre>
+</section>
+
+<section class='card' id='q13'>
+  <div class='q'>5지선다 13</div>
+  <h3>문제</h3><div class='problem'>d = {&#x27;a&#x27;: 1}; d[&#x27;b&#x27;] = 2; d[&#x27;a&#x27;] = 3; print(len(d))의 실행 결과는?</div>
+  <h3>정답</h3><p><span class='answer'>2</span></p>
+  <h3>상세 풀이</h3><div class='explain'>b는 새 키라서 추가되고, a는 이미 있는 키라서 값만 3으로 수정됩니다. 따라서 키의 개수는 a, b 두 개입니다.</div>
+  <h3>예시 코드</h3><pre><code>d = {&#x27;a&#x27;: 1}
+d[&#x27;b&#x27;] = 2
+d[&#x27;a&#x27;] = 3
+
+print(d)
+print(len(d))</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>{&#x27;a&#x27;: 3, &#x27;b&#x27;: 2}
+2</code></pre>
+</section>
+
+<section class='card' id='q14'>
+  <div class='q'>5지선다 14</div>
+  <h3>문제</h3><div class='problem'>딕셔너리의 모든 값을 리스트로 얻기 위한 올바른 코드는?</div>
+  <h3>정답</h3><p><span class='answer'>list(d.values())</span></p>
+  <h3>상세 풀이</h3><div class='explain'>values()는 값들을 보여주는 뷰 객체를 반환합니다. 이것을 리스트로 만들려면 list(d.values())를 사용합니다.</div>
+  <h3>예시 코드</h3><pre><code>d = {&#x27;국어&#x27;: 90, &#x27;수학&#x27;: 100}
+
+print(d.values())
+print(list(d.values()))</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>dict_values([90, 100])
+[90, 100]</code></pre>
+</section>
+
+<section class='card' id='q15'>
+  <div class='q'>5지선다 15</div>
+  <h3>문제</h3><div class='problem'>다음 중 딕셔너리의 키(key)로 사용할 수 없는 자료형은?</div>
+  <h3>정답</h3><p><span class='answer'>list</span></p>
+  <h3>상세 풀이</h3><div class='explain'>리스트는 mutable 자료형이므로 해시할 수 없습니다. 그래서 딕셔너리의 키로 사용할 수 없습니다.</div>
+  <h3>예시 코드</h3><pre><code>good_key = (&#x27;학번&#x27;, 101)
+
+d = {good_key: &#x27;가능&#x27;}
+print(d[good_key])
+
+try:
+    bad = {[1, 2]: &#x27;불가능&#x27;}
+except TypeError:
+    print(&#x27;list는 키 불가&#x27;)</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>가능
+list는 키 불가</code></pre>
+</section>
+
+<section class='card' id='q16'>
+  <div class='q'>5지선다 16</div>
+  <h3>문제</h3><div class='problem'>d = {&#x27;a&#x27;: 1, &#x27;b&#x27;: 2}; d.pop(&#x27;a&#x27;); print(d)의 실행 결과는?</div>
+  <h3>정답</h3><p><span class='answer'>{&#x27;b&#x27;: 2}</span></p>
+  <h3>상세 풀이</h3><div class='explain'>pop(&#x27;a&#x27;)는 a 키와 그 값을 제거합니다. 남는 것은 b 키뿐입니다.</div>
+  <h3>예시 코드</h3><pre><code>d = {&#x27;a&#x27;: 1, &#x27;b&#x27;: 2}
+d.pop(&#x27;a&#x27;)
+
+print(d)</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>{&#x27;b&#x27;: 2}</code></pre>
+</section>
+
+<section class='card' id='q17'>
+  <div class='q'>5지선다 17</div>
+  <h3>문제</h3><div class='problem'>두 딕셔너리 d1={&#x27;a&#x27;:1}, d2={&#x27;b&#x27;:2}를 병합하는 방법으로 틀린 것은?</div>
+  <h3>정답</h3><p><span class='answer'>d1 + d2</span></p>
+  <h3>상세 풀이</h3><div class='explain'>딕셔너리는 + 연산자로 병합할 수 없습니다. update(), {**d1, **d2}, Python 3.9 이상의 | 연산자를 사용할 수 있습니다.</div>
+  <h3>예시 코드</h3><pre><code>d1 = {&#x27;a&#x27;: 1}
+d2 = {&#x27;b&#x27;: 2}
+
+print({**d1, **d2})
+
+try:
+    print(d1 + d2)
+except TypeError:
+    print(&#x27;딕셔너리는 + 병합 불가&#x27;)</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>{&#x27;a&#x27;: 1, &#x27;b&#x27;: 2}
+딕셔너리는 + 병합 불가</code></pre>
+</section>
+
+<section class='card' id='q18'>
+  <div class='q'>5지선다 18</div>
+  <h3>문제</h3><div class='problem'>d = {&#x27;x&#x27;: 10, &#x27;y&#x27;: 20}; print(&#x27;x&#x27; in d)의 실행 결과는?</div>
+  <h3>정답</h3><p><span class='answer'>True</span></p>
+  <h3>상세 풀이</h3><div class='explain'>딕셔너리에서 in 연산자는 값이 아니라 키의 존재 여부를 검사합니다. x 키가 있으므로 True입니다.</div>
+  <h3>예시 코드</h3><pre><code>d = {&#x27;x&#x27;: 10, &#x27;y&#x27;: 20}
+
+print(&#x27;x&#x27; in d)
+print(10 in d)</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>True
+False</code></pre>
+</section>
+
+<section class='card' id='q19'>
+  <div class='q'>5지선다 19</div>
+  <h3>문제</h3><div class='problem'>d = {x: x*x for x in range(3)}; print(d)의 실행 결과는?</div>
+  <h3>정답</h3><p><span class='answer'>{0: 0, 1: 1, 2: 4}</span></p>
+  <h3>상세 풀이</h3><div class='explain'>range(3)은 0, 1, 2를 만듭니다. 각 x를 키로, x*x를 값으로 저장하므로 제곱 딕셔너리가 됩니다.</div>
+  <h3>예시 코드</h3><pre><code>d = {x: x*x for x in range(3)}
+
+print(d)</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>{0: 0, 1: 1, 2: 4}</code></pre>
+</section>
+
+<section class='card' id='q20'>
+  <div class='q'>5지선다 20</div>
+  <h3>문제</h3><div class='problem'>d.setdefault(&#x27;a&#x27;, [])의 동작에 대한 설명으로 가장 정확한 것은?</div>
+  <h3>정답</h3><p><span class='answer'>&#x27;a&#x27; 키가 없으면 d[&#x27;a&#x27;] = [] 를 실행하고 현재 값을 반환</span></p>
+  <h3>상세 풀이</h3><div class='explain'>setdefault()는 키가 있으면 기존 값을 반환하고, 키가 없으면 기본값을 넣은 뒤 그 값을 반환합니다.</div>
+  <h3>예시 코드</h3><pre><code>d = {}
+
+value = d.setdefault(&#x27;a&#x27;, [])
+value.append(10)
+
+print(d)</code></pre>
+  <h3>출력 결과</h3><pre class='out'><code>{&#x27;a&#x27;: [10]}</code></pre>
+</section>
+</div>
+<div class='footer'>파이썬 딕셔너리 학습 자료</div>
+<script>document.querySelectorAll('pre').forEach(p=>{let b=document.createElement('button');b.textContent='코드 복사';b.onclick=()=>navigator.clipboard.writeText(p.innerText);p.before(b);});</script>
+</body></html>

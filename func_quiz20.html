@@ -1,0 +1,266 @@
+<!DOCTYPE html><html lang='ko'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>파이썬 함수 퀴즈 - 문제 정답 상세풀이 예시 코드</title><style>
+body{margin:0;font-family:'Malgun Gothic',Arial,sans-serif;background:#f3f7ff;color:#172033;line-height:1.75}header{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;text-align:center;padding:38px 20px}.wrap{max-width:1120px;margin:auto;padding:24px}.top{position:sticky;top:0;background:#fff;border-bottom:1px solid #dbe3f0;padding:10px;text-align:center;z-index:10}select{padding:9px;border-radius:10px}.card{background:#fff;border:1px solid #dbe3f0;border-radius:22px;padding:24px;margin:18px 0;box-shadow:0 8px 24px #0001}.q{color:#1d4ed8;font-weight:900;font-size:21px}.problem{font-size:18px;font-weight:900;background:#eef4ff;border-radius:14px;padding:14px}.ans{display:inline-block;background:#dcfce7;color:#166534;padding:5px 12px;border-radius:999px;font-weight:900}pre{background:#101828;color:#f8fafc;padding:16px;border-radius:14px;overflow:auto;font-size:15px;line-height:1.55}.out{background:#052e16}button{border:0;border-radius:10px;padding:8px 12px;background:#2563eb;color:white;font-weight:900;cursor:pointer;margin:6px 0}h3{margin-top:18px;color:#1e3a8a}.footer{text-align:center;color:#64748b;padding:30px}.note{background:#fff7ed;border:1px solid #fed7aa;border-radius:16px;padding:14px;margin:16px 0}
+</style></head><body>
+<header><h1>파이썬 함수 퀴즈<br>각각의 문제 + 정답 + 상세풀이 + 예시 코드</h1><p>OX 10문항 + 5지선다형 10문항 학습용 HTML</p></header>
+<div class='top'><label>문항 이동 </label><select onchange="if(this.value) location.hash=this.value"><option value=''>선택</option><option value='#q1'>OX 1</option><option value='#q2'>OX 2</option><option value='#q3'>OX 3</option><option value='#q4'>OX 4</option><option value='#q5'>OX 5</option><option value='#q6'>OX 6</option><option value='#q7'>OX 7</option><option value='#q8'>OX 8</option><option value='#q9'>OX 9</option><option value='#q10'>OX 10</option><option value='#q11'>5지선다 11</option><option value='#q12'>5지선다 12</option><option value='#q13'>5지선다 13</option><option value='#q14'>5지선다 14</option><option value='#q15'>5지선다 15</option><option value='#q16'>5지선다 16</option><option value='#q17'>5지선다 17</option><option value='#q18'>5지선다 18</option><option value='#q19'>5지선다 19</option><option value='#q20'>5지선다 20</option></select></div>
+<div class='wrap'><section class='card' id='q1'>
+<div class='q'>OX 1</div>
+<h3>문제</h3><div class='problem'>파이썬에서 함수를 정의할 때 function 키워드를 사용한다.</div>
+<h3>정답</h3><p><span class='ans'>X</span></p>
+<h3>상세 풀이</h3><p>파이썬은 함수를 만들 때 function이 아니라 def 키워드를 사용한다. def는 define의 줄임말로, 함수 이름과 매개변수 뒤에 콜론(:)을 붙이고 들여쓰기한 코드 블록을 작성한다.</p>
+<div class='note'><b>핵심 정리</b><br>function 키워드는 파이썬 문법이 아니므로 오류가 납니다. 올바른 함수 정의 키워드는 def입니다.</div>
+<h3>예시 코드</h3><pre><code>def hello():
+    print(&#x27;안녕하세요&#x27;)
+
+hello()</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>안녕하세요</code></pre>
+</section><section class='card' id='q2'>
+<div class='q'>OX 2</div>
+<h3>문제</h3><div class='problem'>함수에 return 문이 없으면 아무 값도 반환하지 않는다. 즉 None을 반환한다.</div>
+<h3>정답</h3><p><span class='ans'>O</span></p>
+<h3>상세 풀이</h3><p>함수에서 return을 쓰지 않으면 파이썬은 자동으로 None을 반환한다. print()로 화면에 출력하는 것과 값을 반환하는 것은 다르다.</p>
+<div class='note'><b>핵심 정리</b><br>함수가 계산 결과를 돌려주려면 return이 필요합니다. return이 없으면 변수에 저장되는 값은 None입니다.</div>
+<h3>예시 코드</h3><pre><code>def greet():
+    print(&#x27;반갑습니다&#x27;)
+
+result = greet()
+print(result)</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>반갑습니다
+None</code></pre>
+</section><section class='card' id='q3'>
+<div class='q'>OX 3</div>
+<h3>문제</h3><div class='problem'>*args는 정해지지 않은 수의 키워드 인자를 딕셔너리 형태로 받는다.</div>
+<h3>정답</h3><p><span class='ans'>X</span></p>
+<h3>상세 풀이</h3><p>*args는 여러 개의 위치 인자를 튜플 형태로 받는다. 키워드 인자를 딕셔너리 형태로 받는 것은 **kwargs이다.</p>
+<div class='note'><b>핵심 정리</b><br>값만 여러 개 넘기면 *args가 튜플로 받습니다. 이름=값 형태로 넘기면 **kwargs가 딕셔너리로 받습니다.</div>
+<h3>예시 코드</h3><pre><code>def show(*args):
+    print(args)
+
+show(10, 20, 30)</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>(10, 20, 30)</code></pre>
+</section><section class='card' id='q4'>
+<div class='q'>OX 4</div>
+<h3>문제</h3><div class='problem'>람다(lambda) 표현식은 여러 줄의 코드를 포함할 수 있는 익명 함수이다.</div>
+<h3>정답</h3><p><span class='ans'>X</span></p>
+<h3>상세 풀이</h3><p>lambda는 이름 없이 간단한 함수를 만들 때 사용하지만, 한 줄짜리 표현식만 쓸 수 있다. 여러 문장이나 복잡한 흐름은 def 함수로 작성해야 한다.</p>
+<div class='note'><b>핵심 정리</b><br>간단한 계산은 lambda가 편하지만, 조건문 여러 줄이나 반복문 본문은 일반 함수가 더 적절합니다.</div>
+<h3>예시 코드</h3><pre><code>double = lambda x: x * 2
+
+print(double(5))</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>10</code></pre>
+</section><section class='card' id='q5'>
+<div class='q'>OX 5</div>
+<h3>문제</h3><div class='problem'>함수 내에서 선언된 변수인 지역 변수는 함수 밖에서도 접근할 수 있다.</div>
+<h3>정답</h3><p><span class='ans'>X</span></p>
+<h3>상세 풀이</h3><p>지역 변수는 함수가 실행되는 동안 함수 내부에서만 사용할 수 있다. 함수 밖에서 같은 이름을 사용하려면 별도의 전역 변수이거나 return으로 값을 받아야 한다.</p>
+<div class='note'><b>핵심 정리</b><br>함수 안에서 만든 임시 계산 값은 함수 밖으로 자동으로 나오지 않습니다. 필요하면 return으로 돌려받아야 합니다.</div>
+<h3>예시 코드</h3><pre><code>def make_score():
+    score = 100
+    return score
+
+result = make_score()
+print(result)</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>100</code></pre>
+</section><section class='card' id='q6'>
+<div class='q'>OX 6</div>
+<h3>문제</h3><div class='problem'>def my_func(a, b=10): 와 같이 함수 정의 시 b는 기본 매개변수이다.</div>
+<h3>정답</h3><p><span class='ans'>O</span></p>
+<h3>상세 풀이</h3><p>매개변수에 미리 값을 지정하면 기본 매개변수가 된다. 호출할 때 해당 인자를 생략하면 기본값이 사용되고, 값을 전달하면 전달한 값이 사용된다.</p>
+<div class='note'><b>핵심 정리</b><br>인사말, 할인율, 기본 점수처럼 자주 쓰는 기본값을 정해 둘 때 유용합니다.</div>
+<h3>예시 코드</h3><pre><code>def add(a, b=10):
+    return a + b
+
+print(add(5))
+print(add(5, 3))</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>15
+8</code></pre>
+</section><section class='card' id='q7'>
+<div class='q'>OX 7</div>
+<h3>문제</h3><div class='problem'>**kwargs는 정해지지 않은 수의 위치 인자를 튜플 형태로 받는다.</div>
+<h3>정답</h3><p><span class='ans'>X</span></p>
+<h3>상세 풀이</h3><p>**kwargs는 키워드 인자를 딕셔너리 형태로 받는다. 위치 인자를 튜플로 받는 것은 *args이다.</p>
+<div class='note'><b>핵심 정리</b><br>학생 정보처럼 이름=값 형태의 데이터를 여러 개 받을 때 **kwargs를 사용할 수 있습니다.</div>
+<h3>예시 코드</h3><pre><code>def profile(**kwargs):
+    print(kwargs)
+
+profile(name=&#x27;민수&#x27;, grade=1)</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>{&#x27;name&#x27;: &#x27;민수&#x27;, &#x27;grade&#x27;: 1}</code></pre>
+</section><section class='card' id='q8'>
+<div class='q'>OX 8</div>
+<h3>문제</h3><div class='problem'>재귀 함수는 자기 자신을 다시 호출하는 함수이다.</div>
+<h3>정답</h3><p><span class='ans'>O</span></p>
+<h3>상세 풀이</h3><p>재귀 함수는 함수 내부에서 자기 자신을 호출한다. 반드시 멈추는 조건이 있어야 무한 호출을 피할 수 있다.</p>
+<div class='note'><b>핵심 정리</b><br>팩토리얼, 피보나치, 폴더 탐색처럼 같은 구조가 반복되는 문제에 사용할 수 있습니다.</div>
+<h3>예시 코드</h3><pre><code>def count_down(n):
+    if n == 0:
+        print(&#x27;끝&#x27;)
+    else:
+        print(n)
+        count_down(n - 1)
+
+count_down(3)</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>3
+2
+1
+끝</code></pre>
+</section><section class='card' id='q9'>
+<div class='q'>OX 9</div>
+<h3>문제</h3><div class='problem'>파이썬에서 함수는 다른 함수의 인자로 전달될 수 있다.</div>
+<h3>정답</h3><p><span class='ans'>O</span></p>
+<h3>상세 풀이</h3><p>파이썬에서 함수는 일급 객체이다. 따라서 변수에 저장하거나, 다른 함수의 인자로 넘기거나, 함수의 반환값으로 사용할 수 있다.</p>
+<div class='note'><b>핵심 정리</b><br>계산 방법을 함수로 전달하면 같은 처리 틀에서 다양한 동작을 선택할 수 있습니다.</div>
+<h3>예시 코드</h3><pre><code>def apply(func, x):
+    return func(x)
+
+def square(n):
+    return n * n
+
+print(apply(square, 4))</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>16</code></pre>
+</section><section class='card' id='q10'>
+<div class='q'>OX 10</div>
+<h3>문제</h3><div class='problem'>yield 키워드를 사용하는 함수는 제너레이터가 된다.</div>
+<h3>정답</h3><p><span class='ans'>O</span></p>
+<h3>상세 풀이</h3><p>yield를 사용하면 함수는 한 번에 모든 값을 반환하지 않고, 필요할 때마다 값을 하나씩 만들어 내는 제너레이터가 된다.</p>
+<div class='note'><b>핵심 정리</b><br>큰 데이터나 순차적으로 값을 만들어야 하는 상황에서 메모리를 절약할 수 있습니다.</div>
+<h3>예시 코드</h3><pre><code>def nums():
+    yield 1
+    yield 2
+
+g = nums()
+print(next(g))
+print(next(g))</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>1
+2</code></pre>
+</section><section class='card' id='q11'>
+<div class='q'>5지선다 11</div>
+<h3>문제</h3><div class='problem'>다음 중 함수를 정의하는 올바른 키워드는 무엇인가?</div>
+<h3>정답</h3><p><span class='ans'>def</span></p>
+<h3>상세 풀이</h3><p>파이썬에서 함수 정의는 def 함수이름(매개변수): 형식으로 작성한다. func, define, function, fun은 파이썬 함수 정의 키워드가 아니다.</p>
+<div class='note'><b>핵심 정리</b><br>정답은 def입니다.</div>
+<h3>예시 코드</h3><pre><code>def add(a, b):
+    return a + b
+
+print(add(2, 3))</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>5</code></pre>
+</section><section class='card' id='q12'>
+<div class='q'>5지선다 12</div>
+<h3>문제</h3><div class='problem'>def greet(name=&quot;Guest&quot;): print(name) 함수를 greet()으로 호출했을 때 출력되는 것은?</div>
+<h3>정답</h3><p><span class='ans'>Guest</span></p>
+<h3>상세 풀이</h3><p>name 매개변수의 기본값이 Guest로 지정되어 있으므로, 인자를 주지 않고 greet()을 호출하면 Guest가 출력된다.</p>
+<div class='note'><b>핵심 정리</b><br>기본 인자는 생략 가능한 값입니다.</div>
+<h3>예시 코드</h3><pre><code>def greet(name=&#x27;Guest&#x27;):
+    print(name)
+
+greet()
+greet(&#x27;철수&#x27;)</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>Guest
+철수</code></pre>
+</section><section class='card' id='q13'>
+<div class='q'>5지선다 13</div>
+<h3>문제</h3><div class='problem'>가변 인자 리스트를 받아 모든 인자를 튜플로 묶는 매개변수는?</div>
+<h3>정답</h3><p><span class='ans'>*args</span></p>
+<h3>상세 풀이</h3><p>*args는 개수가 정해지지 않은 위치 인자들을 하나의 튜플로 묶는다. 여러 숫자를 받아 합계를 구하는 함수 등에 사용할 수 있다.</p>
+<div class='note'><b>핵심 정리</b><br>정답은 *args입니다.</div>
+<h3>예시 코드</h3><pre><code>def total(*args):
+    print(args)
+    print(sum(args))
+
+total(1, 2, 3, 4)</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>(1, 2, 3, 4)
+10</code></pre>
+</section><section class='card' id='q14'>
+<div class='q'>5지선다 14</div>
+<h3>문제</h3><div class='problem'>result = list(map(lambda x: x * 2, [1, 2, 3])) 의 실행 결과는?</div>
+<h3>정답</h3><p><span class='ans'>[2, 4, 6]</span></p>
+<h3>상세 풀이</h3><p>lambda x: x * 2는 입력값을 2배로 만든다. map은 리스트의 각 원소 1, 2, 3에 이 함수를 적용하므로 결과는 2, 4, 6이다.</p>
+<div class='note'><b>핵심 정리</b><br>map은 모든 요소에 같은 함수를 적용합니다.</div>
+<h3>예시 코드</h3><pre><code>result = list(map(lambda x: x * 2, [1, 2, 3]))
+print(result)</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>[2, 4, 6]</code></pre>
+</section><section class='card' id='q15'>
+<div class='q'>5지선다 15</div>
+<h3>문제</h3><div class='problem'>함수 외부의 변수를 함수 내부에서 수정하려고 할 때 사용하는 키워드는?</div>
+<h3>정답</h3><p><span class='ans'>global</span></p>
+<h3>상세 풀이</h3><p>함수 내부에서 전역 변수의 값을 직접 바꾸려면 global 키워드를 사용한다. 단, 전역 변수 수정은 코드 이해를 어렵게 할 수 있어 꼭 필요할 때만 사용한다.</p>
+<div class='note'><b>핵심 정리</b><br>전역 카운터 값을 증가시키는 경우에 사용할 수 있습니다.</div>
+<h3>예시 코드</h3><pre><code>count = 0
+
+def up():
+    global count
+    count += 1
+
+up()
+print(count)</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>1</code></pre>
+</section><section class='card' id='q16'>
+<div class='q'>5지선다 16</div>
+<h3>문제</h3><div class='problem'>def func(a, b): return a+b 함수를 func(b=5, a=3)처럼 호출하는 방식은?</div>
+<h3>정답</h3><p><span class='ans'>키워드 인수</span></p>
+<h3>상세 풀이</h3><p>매개변수 이름을 직접 지정하여 값을 전달하는 방식을 키워드 인수라고 한다. 순서가 바뀌어도 이름을 기준으로 값이 전달된다.</p>
+<div class='note'><b>핵심 정리</b><br>인자가 많을 때 의미를 분명하게 표현할 수 있습니다.</div>
+<h3>예시 코드</h3><pre><code>def func(a, b):
+    return a + b
+
+print(func(b=5, a=3))</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>8</code></pre>
+</section><section class='card' id='q17'>
+<div class='q'>5지선다 17</div>
+<h3>문제</h3><div class='problem'>filter(function, iterable)에 대한 설명으로 올바른 것은?</div>
+<h3>정답</h3><p><span class='ans'>function의 반환 값이 True인 것만 모아서 반환</span></p>
+<h3>상세 풀이</h3><p>filter는 조건 함수가 True를 반환하는 요소만 남긴다. 결과는 filter 객체이므로 보통 list()로 변환해 확인한다.</p>
+<div class='note'><b>핵심 정리</b><br>짝수만 고르기, 합격자만 고르기 같은 필터링에 사용합니다.</div>
+<h3>예시 코드</h3><pre><code>nums = [1, 2, 3, 4, 5]
+evens = list(filter(lambda x: x % 2 == 0, nums))
+print(evens)</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>[2, 4]</code></pre>
+</section><section class='card' id='q18'>
+<div class='q'>5지선다 18</div>
+<h3>문제</h3><div class='problem'>함수의 설명 Docstring을 작성하는 올바른 방법은?</div>
+<h3>정답</h3><p><span class='ans'>&quot;&quot;&quot;설명&quot;&quot;&quot;</span></p>
+<h3>상세 풀이</h3><p>Docstring은 함수 바로 아래에 큰따옴표 세 개 또는 작은따옴표 세 개로 작성하는 공식 설명 문자열이다. help()나 __doc__으로 확인할 수 있다.</p>
+<div class='note'><b>핵심 정리</b><br>주석보다 공식 문서 설명에 가깝습니다.</div>
+<h3>예시 코드</h3><pre><code>def add(a, b):
+    &#x27;&#x27;&#x27;두 수를 더해 반환합니다.&#x27;&#x27;&#x27;
+    return a + b
+
+print(add.__doc__)</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>두 수를 더해 반환합니다.</code></pre>
+</section><section class='card' id='q19'>
+<div class='q'>5지선다 19</div>
+<h3>문제</h3><div class='problem'>기존 함수의 코드를 수정하지 않고 기능을 추가할 때 사용하는 디자인 패턴은?</div>
+<h3>정답</h3><p><span class='ans'>데코레이터</span></p>
+<h3>상세 풀이</h3><p>데코레이터는 함수를 감싸서 실행 전후에 새로운 기능을 추가한다. 기존 함수 코드를 직접 수정하지 않고 로깅, 권한 확인, 실행 시간 측정 등을 붙일 수 있다.</p>
+<div class='note'><b>핵심 정리</b><br>함수 실행 전후에 안내 문구를 출력하는 데코레이터를 만들 수 있습니다.</div>
+<h3>예시 코드</h3><pre><code>def deco(func):
+    def wrapper():
+        print(&#x27;시작&#x27;)
+        func()
+        print(&#x27;끝&#x27;)
+    return wrapper
+
+@deco
+def hello():
+    print(&#x27;안녕&#x27;)
+
+hello()</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>시작
+안녕
+끝</code></pre>
+</section><section class='card' id='q20'>
+<div class='q'>5지선다 20</div>
+<h3>문제</h3><div class='problem'>def my_gen(): yield 1; yield 2; g = my_gen(); print(next(g)) 의 실행 결과는?</div>
+<h3>정답</h3><p><span class='ans'>1</span></p>
+<h3>상세 풀이</h3><p>my_gen은 제너레이터 함수이다. g = my_gen()으로 제너레이터 객체를 만들고 next(g)를 처음 호출하면 첫 번째 yield 값인 1이 반환된다.</p>
+<div class='note'><b>핵심 정리</b><br>next를 다시 호출하면 두 번째 yield 값 2가 나옵니다.</div>
+<h3>예시 코드</h3><pre><code>def my_gen():
+    yield 1
+    yield 2
+
+g = my_gen()
+print(next(g))</code></pre>
+<h3>출력 결과</h3><pre class='out'><code>1</code></pre>
+</section></div>
+<div class='footer'>파이썬 함수 퀴즈 학습 자료</div>
+<script>document.querySelectorAll('pre').forEach(p=>{let b=document.createElement('button');b.textContent='코드 복사';b.onclick=()=>navigator.clipboard.writeText(p.innerText);p.before(b);});</script>
+</body></html>
