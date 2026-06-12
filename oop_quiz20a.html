@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>파이썬 객체지향 문제·정답·상세풀이·예시 코드</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:"Malgun Gothic",Arial,sans-serif;background:#f3f7ff;color:#172033;line-height:1.75}
+header{background:linear-gradient(135deg,#2563eb,#7c3aed);color:white;text-align:center;padding:42px 20px}
+header h1{margin:0;font-size:34px} header p{font-size:18px;opacity:.95}
+.top{position:sticky;top:0;background:white;border-bottom:1px solid #dbe3f0;padding:12px;text-align:center;z-index:10}
+select{padding:9px 12px;border-radius:10px;border:1px solid #cbd5e1;font-weight:700}
+.wrap{max-width:1120px;margin:auto;padding:24px}
+.card{background:white;border:1px solid #dbe3f0;border-radius:24px;padding:24px;margin:20px 0;box-shadow:0 10px 26px #0001}
+.badge{display:inline-block;background:#e0e7ff;color:#1e3a8a;border-radius:999px;padding:6px 12px;font-weight:900}
+h2{color:#1d4ed8;margin-bottom:8px} h3{color:#065f46;margin-top:22px}
+.question{font-size:20px;font-weight:900;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px}
+.answer{font-size:20px;font-weight:900;color:#166534;background:#dcfce7;border:1px solid #86efac;border-radius:14px;padding:12px}
+pre{background:#101828;color:#f8fafc;padding:17px;border-radius:16px;overflow:auto;font-size:15px;line-height:1.55}
+.output{background:#052e16}
+button{border:0;border-radius:10px;padding:8px 13px;background:#2563eb;color:white;font-weight:900;cursor:pointer;margin-bottom:8px}
+.footer{text-align:center;color:#64748b;padding:30px}
+</style>
+</head>
+<body>
+<header>
+<h1>파이썬 객체지향 퀴즈 20문항</h1>
+<p>각각의 문제 + 정답 + 상세풀이 + 예시 코드 + 출력 결과</p>
+</header>
+<div class="top">
+<label>문항 이동 </label>
+<select onchange="if(this.value) location.hash=this.value">
+<option value="">선택</option>
+<option value='#q1'>1. OX 1</option><option value='#q2'>2. OX 2</option><option value='#q3'>3. OX 3</option><option value='#q4'>4. OX 4</option><option value='#q5'>5. OX 5</option><option value='#q6'>6. OX 6</option><option value='#q7'>7. OX 7</option><option value='#q8'>8. OX 8</option><option value='#q9'>9. OX 9</option><option value='#q10'>10. OX 10</option><option value='#q11'>11. 5지선다 11</option><option value='#q12'>12. 5지선다 12</option><option value='#q13'>13. 5지선다 13</option><option value='#q14'>14. 5지선다 14</option><option value='#q15'>15. 5지선다 15</option><option value='#q16'>16. 5지선다 16</option><option value='#q17'>17. 5지선다 17</option><option value='#q18'>18. 5지선다 18</option><option value='#q19'>19. 5지선다 19</option><option value='#q20'>20. 5지선다 20</option>
+</select>
+</div>
+<div class="wrap">
+
+<section class="card" id="q1">
+  <div class="badge">OX 1</div>
+  <h2>1. 문제</h2>
+  <p class="question">클래스(Class)는 객체(Object)를 만들기 위한 &#x27;설계도&#x27;이다.</p>
+  <h3>정답</h3>
+  <div class="answer">O</div>
+  <h3>상세 풀이</h3>
+  <p>클래스는 속성과 메서드를 미리 정의한 설계도이다. 이 설계도를 이용해 실제로 만들어진 것이 객체 또는 인스턴스이다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code1')">코드 복사</button>
+  <pre><code id="code1">class Student:
+    def say_hello(self):
+        print(&#x27;안녕하세요&#x27;)
+
+s1 = Student()
+s1.say_hello()</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>안녕하세요</code></pre>
+</section>
+<section class="card" id="q2">
+  <div class="badge">OX 2</div>
+  <h2>2. 문제</h2>
+  <p class="question">하나의 클래스로부터 생성된 모든 객체는 동일한 속성 값을 가진다.</p>
+  <h3>정답</h3>
+  <div class="answer">X</div>
+  <h3>상세 풀이</h3>
+  <p>같은 클래스로 만든 객체라도 인스턴스 속성은 객체마다 다를 수 있다. 예를 들어 같은 Car 클래스로 만든 자동차라도 브랜드 값은 다를 수 있다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code2')">코드 복사</button>
+  <pre><code id="code2">class Car:
+    def __init__(self, brand):
+        self.brand = brand
+
+c1 = Car(&#x27;현대&#x27;)
+c2 = Car(&#x27;기아&#x27;)
+
+print(c1.brand)
+print(c2.brand)</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>현대
+기아</code></pre>
+</section>
+<section class="card" id="q3">
+  <div class="badge">OX 3</div>
+  <h2>3. 문제</h2>
+  <p class="question">상속(Inheritance)은 &#x27;has-a&#x27; 관계를 표현하기 위해 사용된다.</p>
+  <h3>정답</h3>
+  <div class="answer">X</div>
+  <h3>상세 풀이</h3>
+  <p>상속은 주로 is-a 관계를 표현한다. 예를 들어 Dog는 Animal이다. has-a 관계는 자동차가 엔진을 가진다처럼 포함 관계에 가깝다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code3')">코드 복사</button>
+  <pre><code id="code3">class Animal:
+    pass
+
+class Dog(Animal):
+    pass
+
+print(isinstance(Dog(), Animal))</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>True</code></pre>
+</section>
+<section class="card" id="q4">
+  <div class="badge">OX 4</div>
+  <h2>4. 문제</h2>
+  <p class="question">메서드를 정의할 때 첫 번째 매개변수인 self는 생략할 수 있다.</p>
+  <h3>정답</h3>
+  <div class="answer">X</div>
+  <h3>상세 풀이</h3>
+  <p>인스턴스 메서드에서 self는 객체 자신을 가리키는 필수 매개변수이다. self를 통해 객체의 속성에 접근한다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code4')">코드 복사</button>
+  <pre><code id="code4">class Person:
+    def set_name(self, name):
+        self.name = name
+
+p = Person()
+p.set_name(&#x27;인수&#x27;)
+print(p.name)</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>인수</code></pre>
+</section>
+<section class="card" id="q5">
+  <div class="badge">OX 5</div>
+  <h2>5. 문제</h2>
+  <p class="question">자식 클래스에서 부모 클래스와 동일한 이름의 메서드를 정의하는 것을 &#x27;메서드 오버로딩&#x27;이라고 한다.</p>
+  <h3>정답</h3>
+  <div class="answer">X</div>
+  <h3>상세 풀이</h3>
+  <p>부모 클래스의 메서드를 자식 클래스에서 다시 정의하는 것은 오버라이딩이다. 오버로딩은 같은 이름의 함수를 매개변수 형태에 따라 다르게 쓰는 개념이다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code5')">코드 복사</button>
+  <pre><code id="code5">class Animal:
+    def sound(self):
+        print(&#x27;소리&#x27;)
+
+class Cat(Animal):
+    def sound(self):
+        print(&#x27;야옹&#x27;)
+
+Cat().sound()</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>야옹</code></pre>
+</section>
+<section class="card" id="q6">
+  <div class="badge">OX 6</div>
+  <h2>6. 문제</h2>
+  <p class="question">__init__ 메서드는 객체가 소멸될 때 자동으로 호출된다.</p>
+  <h3>정답</h3>
+  <div class="answer">X</div>
+  <h3>상세 풀이</h3>
+  <p>__init__은 객체가 생성될 때 호출되는 생성자 메서드이다. 객체가 소멸될 때 관련되는 메서드는 __del__이다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code6')">코드 복사</button>
+  <pre><code id="code6">class Book:
+    def __init__(self, title):
+        self.title = title
+        print(&#x27;객체 생성&#x27;)
+
+b = Book(&#x27;파이썬&#x27;)
+print(b.title)</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>객체 생성
+파이썬</code></pre>
+</section>
+<section class="card" id="q7">
+  <div class="badge">OX 7</div>
+  <h2>7. 문제</h2>
+  <p class="question">클래스 변수는 해당 클래스의 모든 인스턴스가 공유하는 변수이다.</p>
+  <h3>정답</h3>
+  <div class="answer">O</div>
+  <h3>상세 풀이</h3>
+  <p>클래스 변수는 클래스 영역에 선언되어 여러 인스턴스가 공통으로 참조할 수 있다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code7')">코드 복사</button>
+  <pre><code id="code7">class School:
+    name = &#x27;전북과학고&#x27;
+
+s1 = School()
+s2 = School()
+
+print(s1.name)
+print(s2.name)</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>전북과학고
+전북과학고</code></pre>
+</section>
+<section class="card" id="q8">
+  <div class="badge">OX 8</div>
+  <h2>8. 문제</h2>
+  <p class="question">@staticmethod로 정의된 정적 메서드는 self 매개변수를 받지 않는다.</p>
+  <h3>정답</h3>
+  <div class="answer">O</div>
+  <h3>상세 풀이</h3>
+  <p>정적 메서드는 인스턴스 상태나 클래스 상태를 직접 사용하지 않는 유틸리티 함수처럼 동작하므로 self나 cls를 받지 않는다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code8')">코드 복사</button>
+  <pre><code id="code8">class MathTool:
+    @staticmethod
+    def add(a, b):
+        return a + b
+
+print(MathTool.add(3, 5))</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>8</code></pre>
+</section>
+<section class="card" id="q9">
+  <div class="badge">OX 9</div>
+  <h2>9. 문제</h2>
+  <p class="question">추상 클래스(Abstract Class)는 인스턴스를 직접 생성할 수 있다.</p>
+  <h3>정답</h3>
+  <div class="answer">X</div>
+  <h3>상세 풀이</h3>
+  <p>추상 클래스는 자식 클래스가 반드시 구현해야 할 메서드 규약을 제공한다. 추상 메서드가 남아 있으면 직접 객체를 만들 수 없다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code9')">코드 복사</button>
+  <pre><code id="code9">from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+print(&#x27;추상 클래스는 설계 규약 역할&#x27;)</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>추상 클래스는 설계 규약 역할</code></pre>
+</section>
+<section class="card" id="q10">
+  <div class="badge">OX 10</div>
+  <h2>10. 문제</h2>
+  <p class="question">다형성(Polymorphism)이란 같은 이름의 메서드 호출에 대해 객체마다 다르게 반응하는 특성을 말한다.</p>
+  <h3>정답</h3>
+  <div class="answer">O</div>
+  <h3>상세 풀이</h3>
+  <p>다형성은 같은 메서드 이름을 호출해도 실제 객체의 종류에 따라 서로 다르게 동작하는 성질이다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code10')">코드 복사</button>
+  <pre><code id="code10">class Dog:
+    def speak(self):
+        return &#x27;멍멍&#x27;
+
+class Cat:
+    def speak(self):
+        return &#x27;야옹&#x27;
+
+for animal in [Dog(), Cat()]:
+    print(animal.speak())</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>멍멍
+야옹</code></pre>
+</section>
+<section class="card" id="q11">
+  <div class="badge">5지선다 11</div>
+  <h2>11. 문제</h2>
+  <p class="question">객체가 생성될 때 속성을 초기화하기 위해 사용하는 특별한 메서드의 이름은?</p>
+  <h3>정답</h3>
+  <div class="answer">③ __init__</div>
+  <h3>상세 풀이</h3>
+  <p>__init__은 객체가 생성될 때 자동으로 호출되어 인스턴스 속성을 초기화하는 생성자 역할을 한다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code11')">코드 복사</button>
+  <pre><code id="code11">class Student:
+    def __init__(self, name):
+        self.name = name
+
+s = Student(&#x27;민수&#x27;)
+print(s.name)</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>민수</code></pre>
+</section>
+<section class="card" id="q12">
+  <div class="badge">5지선다 12</div>
+  <h2>12. 문제</h2>
+  <p class="question">부모 클래스 Animal을 Dog 클래스가 상속받는 올바른 문법은?</p>
+  <h3>정답</h3>
+  <div class="answer">③ class Dog(Animal):</div>
+  <h3>상세 풀이</h3>
+  <p>파이썬에서 상속은 class 자식클래스(부모클래스): 형식으로 작성한다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code12')">코드 복사</button>
+  <pre><code id="code12">class Animal:
+    def move(self):
+        print(&#x27;움직인다&#x27;)
+
+class Dog(Animal):
+    pass
+
+Dog().move()</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>움직인다</code></pre>
+</section>
+<section class="card" id="q13">
+  <div class="badge">5지선다 13</div>
+  <h2>13. 문제</h2>
+  <p class="question">클래스 내에서 인스턴스 자신을 가리키는 데 사용되는 관례적인 매개변수 이름은?</p>
+  <h3>정답</h3>
+  <div class="answer">⑤ self</div>
+  <h3>상세 풀이</h3>
+  <p>self는 메서드를 호출한 인스턴스 자신을 가리키며, 인스턴스 속성에 접근할 때 사용한다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code13')">코드 복사</button>
+  <pre><code id="code13">class Counter:
+    def __init__(self):
+        self.count = 0
+    def up(self):
+        self.count += 1
+
+c = Counter()
+c.up()
+print(c.count)</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>1</code></pre>
+</section>
+<section class="card" id="q14">
+  <div class="badge">5지선다 14</div>
+  <h2>14. 문제</h2>
+  <p class="question">다음 중 정보 은닉(Information Hiding)의 주된 목적은?</p>
+  <h3>정답</h3>
+  <div class="answer">② 객체의 내부 상태 보호 및 무결성 유지</div>
+  <h3>상세 풀이</h3>
+  <p>정보 은닉은 객체 내부 데이터를 외부에서 함부로 바꾸지 못하게 하여 안정성과 무결성을 높이는 데 목적이 있다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code14')">코드 복사</button>
+  <pre><code id="code14">class Account:
+    def __init__(self):
+        self.__money = 1000
+    def get_money(self):
+        return self.__money
+
+acc = Account()
+print(acc.get_money())</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>1000</code></pre>
+</section>
+<section class="card" id="q15">
+  <div class="badge">5지선다 15</div>
+  <h2>15. 문제</h2>
+  <p class="question">@property 데코레이터를 사용하는 가장 큰 이유는?</p>
+  <h3>정답</h3>
+  <div class="answer">③ 메서드를 속성(attribute)처럼 접근하게 하기 위해</div>
+  <h3>상세 풀이</h3>
+  <p>@property를 사용하면 메서드 결과를 괄호 없이 속성처럼 읽을 수 있어 코드가 더 직관적이다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code15')">코드 복사</button>
+  <pre><code id="code15">class Circle:
+    def __init__(self, r):
+        self.r = r
+    @property
+    def diameter(self):
+        return self.r * 2
+
+c = Circle(5)
+print(c.diameter)</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>10</code></pre>
+</section>
+<section class="card" id="q16">
+  <div class="badge">5지선다 16</div>
+  <h2>16. 문제</h2>
+  <p class="question">다음 코드의 출력 결과는? class A: x=10 / class B(A): pass / class C(A): x=20 / print(A().x, B().x, C().x)</p>
+  <h3>정답</h3>
+  <div class="answer">② 10 10 20</div>
+  <h3>상세 풀이</h3>
+  <p>A의 x는 10이다. B는 A를 상속받아 x=10을 그대로 사용하고, C는 x를 20으로 재정의했기 때문에 10 10 20이 출력된다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code16')">코드 복사</button>
+  <pre><code id="code16">class A:
+    x = 10
+class B(A):
+    pass
+class C(A):
+    x = 20
+
+print(A().x, B().x, C().x)</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>10 10 20</code></pre>
+</section>
+<section class="card" id="q17">
+  <div class="badge">5지선다 17</div>
+  <h2>17. 문제</h2>
+  <p class="question">@classmethod로 정의된 메서드가 첫 번째 인자로 받는 것은?</p>
+  <h3>정답</h3>
+  <div class="answer">② cls (클래스 객체)</div>
+  <h3>상세 풀이</h3>
+  <p>클래스 메서드는 인스턴스가 아니라 클래스 자체를 첫 번째 인자로 받으며 관례적으로 cls라고 쓴다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code17')">코드 복사</button>
+  <pre><code id="code17">class Person:
+    count = 0
+    @classmethod
+    def show_count(cls):
+        print(cls.count)
+
+Person.show_count()</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>0</code></pre>
+</section>
+<section class="card" id="q18">
+  <div class="badge">5지선다 18</div>
+  <h2>18. 문제</h2>
+  <p class="question">다음 중 다형성(Polymorphism)을 가장 잘 설명한 것은?</p>
+  <h3>정답</h3>
+  <div class="answer">③ 동일한 호출에 대해 객체 타입에 따라 다르게 동작하는 것</div>
+  <h3>상세 풀이</h3>
+  <p>다형성은 같은 이름의 메서드 호출이 객체 타입에 따라 다르게 실행되는 성질이다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code18')">코드 복사</button>
+  <pre><code id="code18">class Circle:
+    def draw(self):
+        print(&#x27;원을 그린다&#x27;)
+
+class Square:
+    def draw(self):
+        print(&#x27;사각형을 그린다&#x27;)
+
+for shape in [Circle(), Square()]:
+    shape.draw()</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>원을 그린다
+사각형을 그린다</code></pre>
+</section>
+<section class="card" id="q19">
+  <div class="badge">5지선다 19</div>
+  <h2>19. 문제</h2>
+  <p class="question">print(obj)를 실행할 때, 문자열을 반환하기 위해 구현해야 하는 매직 메서드는?</p>
+  <h3>정답</h3>
+  <div class="answer">③ __str__</div>
+  <h3>상세 풀이</h3>
+  <p>__str__은 객체를 사용자가 보기 쉬운 문자열로 표현할 때 사용된다. print(obj)를 실행하면 이 메서드의 반환값이 출력된다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code19')">코드 복사</button>
+  <pre><code id="code19">class Student:
+    def __str__(self):
+        return &#x27;학생 객체입니다&#x27;
+
+obj = Student()
+print(obj)</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>학생 객체입니다</code></pre>
+</section>
+<section class="card" id="q20">
+  <div class="badge">5지선다 20</div>
+  <h2>20. 문제</h2>
+  <p class="question">s.find(&#x27;x&#x27;)와 s.index(&#x27;x&#x27;)의 가장 큰 차이점은?</p>
+  <h3>정답</h3>
+  <div class="answer">④ 찾는 값이 없을 때의 처리 방식</div>
+  <h3>상세 풀이</h3>
+  <p>find는 찾는 문자가 없으면 -1을 반환하지만 index는 ValueError 예외를 발생시킨다.</p>
+  <h3>예시 코드</h3>
+  <button onclick="copyCode('code20')">코드 복사</button>
+  <pre><code id="code20">s = &#x27;python&#x27;
+
+print(s.find(&#x27;x&#x27;))
+try:
+    print(s.index(&#x27;x&#x27;))
+except ValueError:
+    print(&#x27;ValueError 발생&#x27;)</code></pre>
+  <h3>출력 결과</h3>
+  <pre class="output"><code>-1
+ValueError 발생</code></pre>
+</section>
+</div>
+<div class="footer">파이썬 객체지향 학습 자료</div>
+<script>
+function copyCode(id){
+  navigator.clipboard.writeText(document.getElementById(id).innerText);
+  alert('코드가 복사되었습니다.');
+}
+</script>
+</body></html>
