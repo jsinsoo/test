@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang='ko'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>파이썬 객체지향 각 문항 예시 코드</title><style>body{margin:0;font-family:Malgun Gothic,Arial,sans-serif;background:#f3f7ff;color:#172033;line-height:1.7}header{background:linear-gradient(135deg,#2563eb,#7c3aed);color:white;text-align:center;padding:38px 20px}.wrap{max-width:1100px;margin:auto;padding:24px}.card{background:white;border:1px solid #dbe3f0;border-radius:22px;padding:22px;margin:18px 0;box-shadow:0 8px 24px #0001}.q{color:#1d4ed8;font-weight:900;font-size:20px}.desc{font-weight:700}pre{background:#101828;color:#f8fafc;padding:16px;border-radius:14px;overflow:auto;font-size:15px}.out{background:#052e16}button{border:0;border-radius:10px;padding:8px 12px;background:#2563eb;color:white;font-weight:900;cursor:pointer}.top{position:sticky;top:0;background:white;border-bottom:1px solid #dbe3f0;padding:10px;text-align:center}select{padding:8px;border-radius:10px}</style></head><body>
+<header><h1>파이썬 객체지향 퀴즈<br>각 문항 예시 코드 HTML</h1><p>OX 10문항 + 5지선다형 10문항의 예시 코드와 출력 결과</p></header>
+<div class='top'><label>문항 이동 </label><select onchange="location.hash=this.value"><option value=''>선택</option><option value='#q1'>OX 1</option><option value='#q2'>OX 2</option><option value='#q3'>OX 3</option><option value='#q4'>OX 4</option><option value='#q5'>OX 5</option><option value='#q6'>OX 6</option><option value='#q7'>OX 7</option><option value='#q8'>OX 8</option><option value='#q9'>OX 9</option><option value='#q10'>OX 10</option><option value='#q11'>5지선다 11</option><option value='#q12'>5지선다 12</option><option value='#q13'>5지선다 13</option><option value='#q14'>5지선다 14</option><option value='#q15'>5지선다 15</option><option value='#q16'>5지선다 16</option><option value='#q17'>5지선다 17</option><option value='#q18'>5지선다 18</option><option value='#q19'>5지선다 19</option><option value='#q20'>5지선다 20</option></select></div><div class='wrap'>
+<section class='card' id='q1'><div class='q'>OX 1</div><p class='desc'>클래스는 객체를 만들기 위한 설계도이다.</p><h3>예시 코드</h3><pre><code>class Student:
+    def say_hello(self):
+        print(&#x27;안녕하세요&#x27;)
+
+s1 = Student()
+s1.say_hello()</code></pre><h3>출력 결과</h3><pre class='out'><code>안녕하세요</code></pre></section>
+<section class='card' id='q2'><div class='q'>OX 2</div><p class='desc'>같은 클래스로 만든 객체도 서로 다른 속성 값을 가질 수 있다.</p><h3>예시 코드</h3><pre><code>class Car:
+    def __init__(self, brand):
+        self.brand = brand
+
+c1 = Car(&#x27;현대&#x27;)
+c2 = Car(&#x27;기아&#x27;)
+
+print(c1.brand)
+print(c2.brand)</code></pre><h3>출력 결과</h3><pre class='out'><code>현대
+기아</code></pre></section>
+<section class='card' id='q3'><div class='q'>OX 3</div><p class='desc'>상속은 is-a 관계, 포함은 has-a 관계에 가깝다.</p><h3>예시 코드</h3><pre><code>class Animal:
+    pass
+
+class Dog(Animal):
+    pass
+
+print(isinstance(Dog(), Animal))</code></pre><h3>출력 결과</h3><pre class='out'><code>True</code></pre></section>
+<section class='card' id='q4'><div class='q'>OX 4</div><p class='desc'>인스턴스 메서드의 첫 번째 매개변수 self는 객체 자신을 가리킨다.</p><h3>예시 코드</h3><pre><code>class Person:
+    def set_name(self, name):
+        self.name = name
+
+p = Person()
+p.set_name(&#x27;인수&#x27;)
+print(p.name)</code></pre><h3>출력 결과</h3><pre class='out'><code>인수</code></pre></section>
+<section class='card' id='q5'><div class='q'>OX 5</div><p class='desc'>부모 메서드를 자식 클래스에서 다시 정의하는 것은 오버라이딩이다.</p><h3>예시 코드</h3><pre><code>class Animal:
+    def sound(self):
+        print(&#x27;소리&#x27;)
+
+class Cat(Animal):
+    def sound(self):
+        print(&#x27;야옹&#x27;)
+
+Cat().sound()</code></pre><h3>출력 결과</h3><pre class='out'><code>야옹</code></pre></section>
+<section class='card' id='q6'><div class='q'>OX 6</div><p class='desc'>__init__은 객체가 생성될 때 호출되는 생성자 메서드이다.</p><h3>예시 코드</h3><pre><code>class Book:
+    def __init__(self, title):
+        self.title = title
+        print(&#x27;객체 생성&#x27;)
+
+b = Book(&#x27;파이썬&#x27;)
+print(b.title)</code></pre><h3>출력 결과</h3><pre class='out'><code>객체 생성
+파이썬</code></pre></section>
+<section class='card' id='q7'><div class='q'>OX 7</div><p class='desc'>클래스 변수는 모든 인스턴스가 공유할 수 있다.</p><h3>예시 코드</h3><pre><code>class School:
+    name = &#x27;전북과학고&#x27;
+
+s1 = School()
+s2 = School()
+
+print(s1.name)
+print(s2.name)</code></pre><h3>출력 결과</h3><pre class='out'><code>전북과학고
+전북과학고</code></pre></section>
+<section class='card' id='q8'><div class='q'>OX 8</div><p class='desc'>정적 메서드는 self나 cls 없이 호출할 수 있다.</p><h3>예시 코드</h3><pre><code>class MathTool:
+    @staticmethod
+    def add(a, b):
+        return a + b
+
+print(MathTool.add(3, 5))</code></pre><h3>출력 결과</h3><pre class='out'><code>8</code></pre></section>
+<section class='card' id='q9'><div class='q'>OX 9</div><p class='desc'>추상 클래스는 직접 객체 생성이 불가능하다.</p><h3>예시 코드</h3><pre><code>from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+print(&#x27;추상 클래스는 설계 규약 역할&#x27;)</code></pre><h3>출력 결과</h3><pre class='out'><code>추상 클래스는 설계 규약 역할</code></pre></section>
+<section class='card' id='q10'><div class='q'>OX 10</div><p class='desc'>다형성은 같은 메서드 이름이 객체마다 다르게 동작하는 것이다.</p><h3>예시 코드</h3><pre><code>class Dog:
+    def speak(self):
+        return &#x27;멍멍&#x27;
+
+class Cat:
+    def speak(self):
+        return &#x27;야옹&#x27;
+
+for animal in [Dog(), Cat()]:
+    print(animal.speak())</code></pre><h3>출력 결과</h3><pre class='out'><code>멍멍
+야옹</code></pre></section>
+<section class='card' id='q11'><div class='q'>5지선다 11</div><p class='desc'>__init__은 객체 생성 시 속성을 초기화한다.</p><h3>예시 코드</h3><pre><code>class Student:
+    def __init__(self, name):
+        self.name = name
+
+s = Student(&#x27;민수&#x27;)
+print(s.name)</code></pre><h3>출력 결과</h3><pre class='out'><code>민수</code></pre></section>
+<section class='card' id='q12'><div class='q'>5지선다 12</div><p class='desc'>파이썬 상속 문법은 class 자식(부모): 형식이다.</p><h3>예시 코드</h3><pre><code>class Animal:
+    def move(self):
+        print(&#x27;움직인다&#x27;)
+
+class Dog(Animal):
+    pass
+
+Dog().move()</code></pre><h3>출력 결과</h3><pre class='out'><code>움직인다</code></pre></section>
+<section class='card' id='q13'><div class='q'>5지선다 13</div><p class='desc'>self는 인스턴스 자신을 가리키는 관례적 이름이다.</p><h3>예시 코드</h3><pre><code>class Counter:
+    def __init__(self):
+        self.count = 0
+    def up(self):
+        self.count += 1
+
+c = Counter()
+c.up()
+print(c.count)</code></pre><h3>출력 결과</h3><pre class='out'><code>1</code></pre></section>
+<section class='card' id='q14'><div class='q'>5지선다 14</div><p class='desc'>정보 은닉은 객체 내부 상태를 안전하게 보호한다.</p><h3>예시 코드</h3><pre><code>class Account:
+    def __init__(self):
+        self.__money = 1000
+    def get_money(self):
+        return self.__money
+
+acc = Account()
+print(acc.get_money())</code></pre><h3>출력 결과</h3><pre class='out'><code>1000</code></pre></section>
+<section class='card' id='q15'><div class='q'>5지선다 15</div><p class='desc'>@property는 메서드를 속성처럼 접근하게 한다.</p><h3>예시 코드</h3><pre><code>class Circle:
+    def __init__(self, r):
+        self.r = r
+    @property
+    def diameter(self):
+        return self.r * 2
+
+c = Circle(5)
+print(c.diameter)</code></pre><h3>출력 결과</h3><pre class='out'><code>10</code></pre></section>
+<section class='card' id='q16'><div class='q'>5지선다 16</div><p class='desc'>클래스 변수 상속과 재정의의 출력 결과를 확인한다.</p><h3>예시 코드</h3><pre><code>class A:
+    x = 10
+class B(A):
+    pass
+class C(A):
+    x = 20
+
+print(A().x, B().x, C().x)</code></pre><h3>출력 결과</h3><pre class='out'><code>10 10 20</code></pre></section>
+<section class='card' id='q17'><div class='q'>5지선다 17</div><p class='desc'>@classmethod는 첫 번째 인자로 cls를 받는다.</p><h3>예시 코드</h3><pre><code>class Person:
+    count = 0
+    @classmethod
+    def show_count(cls):
+        print(cls.count)
+
+Person.show_count()</code></pre><h3>출력 결과</h3><pre class='out'><code>0</code></pre></section>
+<section class='card' id='q18'><div class='q'>5지선다 18</div><p class='desc'>다형성은 동일한 호출이 객체 타입에 따라 다르게 동작하는 것이다.</p><h3>예시 코드</h3><pre><code>class Circle:
+    def draw(self):
+        print(&#x27;원을 그린다&#x27;)
+
+class Square:
+    def draw(self):
+        print(&#x27;사각형을 그린다&#x27;)
+
+for shape in [Circle(), Square()]:
+    shape.draw()</code></pre><h3>출력 결과</h3><pre class='out'><code>원을 그린다
+사각형을 그린다</code></pre></section>
+<section class='card' id='q19'><div class='q'>5지선다 19</div><p class='desc'>__str__은 print(obj)에서 보여줄 문자열을 정한다.</p><h3>예시 코드</h3><pre><code>class Student:
+    def __str__(self):
+        return &#x27;학생 객체입니다&#x27;
+
+obj = Student()
+print(obj)</code></pre><h3>출력 결과</h3><pre class='out'><code>학생 객체입니다</code></pre></section>
+<section class='card' id='q20'><div class='q'>5지선다 20</div><p class='desc'>find는 없으면 -1을 반환하고 index는 오류가 난다.</p><h3>예시 코드</h3><pre><code>s = &#x27;python&#x27;
+
+print(s.find(&#x27;x&#x27;))
+try:
+    print(s.index(&#x27;x&#x27;))
+except ValueError:
+    print(&#x27;ValueError 발생&#x27;)</code></pre><h3>출력 결과</h3><pre class='out'><code>-1
+ValueError 발생</code></pre></section>
+</div><script>document.querySelectorAll('pre').forEach(p=>{let b=document.createElement('button');b.textContent='코드 복사';b.onclick=()=>navigator.clipboard.writeText(p.innerText);p.before(b);});</script></body></html>
