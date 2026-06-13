@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<title>통합 코드 파일</title>
+<style>
+body{font-family:Malgun Gothic,sans-serif;max-width:1200px;margin:auto;padding:20px;background:#f4f7fb}
+.card{background:white;padding:15px;margin:12px 0;border-radius:10px}
+pre{background:#111827;color:#eee;padding:12px;overflow:auto}
+
+.code-wrap{position:relative;}
+.copy-btn{
+position:absolute;
+top:8px;
+right:8px;
+background:#2563eb;
+color:white;
+border:none;
+padding:6px 12px;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+}
+</style>
+</head>
+<body>
+<h1>통합 코드 파일</h1>
+<p>두 노트북의 코드 셀을 1개의 HTML로 통합했습니다. 총 78개 코드 셀.</p>
+<h2>필수학습코드(2).ipynb</h2>
+<div class="card">
+<h3>코드 셀 1</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#01
+
+phone = "010-5678-1234"
+
+parts = phone.split("-")
+parts[2] = "****"
+masked_phone = "-".join(parts)
+
+print( masked_phone)</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 2</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#02
+
+def sum_all(*a):
+    total = 0
+    for num in a:
+        total += num
+    return total
+
+star = {
+    '1배움',
+    '12지식',
+    '123이해',
+    '1234지혜',
+    '12345통찰'}
+s = {name: len(name) for name in star}
+
+print(sum_all(*s.values()))</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 3</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#03
+
+with open('test.txt', 'w',
+          encoding='utf-8') as f:
+    f.write("0123456789abcdef")
+
+with open('test.txt', 'r+',
+          encoding='utf-8') as f:
+
+    f.seek(5)
+    data = f.read(11)
+
+    print(f.tell())</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 4</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#04
+
+print(list(map(lambda x: x[-1:]+x[:2],
+    ["열정★Dream", "행동★Star", "노력★Sky"])))</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 5</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#05
+
+def star(file, old, new):
+    try:
+        with open(file, 'r',
+                  encoding='utf-8') as f:
+            text = f.read()
+
+        text = text.replace(old, new)
+
+        with open(file, 'w',
+                  encoding='utf-8') as f:
+            f.write(text)
+
+        print(text)
+
+    except FileNotFoundError:
+        print("파일이 없습니다.")
+
+with open('hello.txt', 'w',
+          encoding='utf-8') as f:
+    f.write("안녕하세요 호랑이 입니다.")
+
+star('hello.txt', '호랑이', '구운몽')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 6</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#06
+
+d = {'수학':90, '영어':80,
+     '정보': 95, '국어':87, '과학':93}
+print(sorted(d.items(), key=lambda x:x[1])[-2][0])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 7</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#07
+
+def print_info(**k):
+    return k
+
+tiger = print_info(
+    도전="무엇을 예측할지 정한다",
+    경험="데이터 구조와 품질 확인",
+    자신감="결측치 스케일 문제 해결",
+    발전="패턴 학습",
+    성취="테스트 성능 측정",
+    미래="성능 개선 실험"
+)
+
+star = {'12345','Star','678','Be','9'}
+st = {name: len(name) for name in star}
+ss = sorted(st.items(),
+            key=lambda item: item[1])
+keys_list = list(tiger.keys())
+
+print(tiger[keys_list[ss[2][1]]])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 8</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#08
+
+tiger = {
+    1: ('단계', 'a'),
+    2: ('데이터 준비', 'b'),
+    3: ('데이터 분리', 'c'),
+    4: ('모델 생성', 'd'),
+    5: ('학습', 'e'),
+    6: ('예측', 'f'),
+    7: ('평가', 'g')
+}
+
+star = {'1','We','234','H56789ope','Smile'}
+st = {name: len(name) for name in star}
+ss = sorted(st.items(),
+            key=lambda item: item[1])
+
+print(tiger[int(ss[3][1])][0])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 9</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#09
+
+tiger = {
+    1: ('꿈', '판단방식'),
+    2: ('목표', '현재 입력에만 반응'),
+    3: ('노력', '현재 입력, 내부 상태 고려'),
+    4: ('실력', '목표 달성 여부 고려'),
+    5: ('성공', '효율·위험·만족도 비교')
+}
+star = {'ab','c','defg','hij','opqrs'}
+st = {name: len(name) for name in star}
+ss = sorted(st.items(), key=lambda item: item[1])
+
+print(tiger[int(ss[2][1])][0])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 10</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#10
+
+print([], list())
+print([]==list())
+print([] is list())
+print({}, dict())
+print({} == dict())
+print({} is dict())
+print(set(), set(()))
+print(set() == set(()))
+print(set() is set(()))</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 11</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#11
+
+star = {'x','1','y','12','xy','123'}
+st = {name: len(name) for name in star}
+ss = sorted(st.items(), key=lambda item: item[1])
+tiger = sum(item[1] for item in ss) + ss[4][1]
+
+print(tiger)</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 12</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#12
+
+scores = {"수학": 95, "영어": 80,
+          "국어": 100, "과학": 85, "정보": 93}
+ss = sorted(scores.items(),
+            key=lambda item: item[1])
+
+print(ss[-2][1])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 13</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#13
+
+from mpmath import mp #높은 정밀도를 위한 수학라이브러리
+mp.dps = 200
+pi = str(mp.pi)
+decimal_part = pi.split(".")[1]
+
+deci = decimal_part[189]
+
+print(f'소수점 아래 190번째 숫자: {deci}')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 14</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#14
+
+class FruitSales:
+    def __init__(self):
+        self.data = {
+            "사과": 55,
+            "수박": 43,
+            "포도": 35,
+            "딸기": 27
+        }
+    def print_chart(self):
+        print("1. 과일 판매량")
+        print("-" * 70)
+
+        max_fruit = max(
+            self.data,
+            key=self.data.get
+
+         )
+        for fruit, sales in self.data.items():
+            bar = "█" * sales
+
+            print(
+                f"{fruit:4} | "
+                f"{bar} "
+                f"({sales})"
+            )
+        print("-" * 70)
+        print(
+            f"최고 판매 → "
+            f"{max_fruit} "
+            f"({self.data[max_fruit]})"
+          )
+    def run(self):
+        self.print_chart()
+
+app = FruitSales()
+app.run()</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 15</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#15
+
+class StudentScore:
+    def __init__(self):
+        self.students = [
+            {"이름": "호준","수학": 91,"정보": 84},
+            {"이름": "랑연","수학": 85,"정보": 96},
+            {"이름": "이후","수학": 80,"정보": 78},
+            {"이름": "수은","수학": 90,"정보": 93},
+            {"이름": "박윤","수학": 88,"정보": 86}
+        ]
+    def total_score(self):
+        for s in self.students:
+            s["총점"] = (
+                s["수학"] +
+                s["정보"]
+            )
+    def sort_score(self):
+        self.students = sorted(
+            self.students,
+            key=lambda x: x["총점"],
+            reverse=True
+        )
+    def print_result(self):
+        print("이름   수학  정보  총점")
+        print("-" * 25)
+        for s in self.students:
+            print(
+                f"{s['이름']:4}"
+                f"{s['수학']:6}"
+                f"{s['정보']:6}"
+                f"{s['총점']:6}"
+            )
+    def run(self):
+        self.total_score()
+        self.sort_score()
+        self.print_result()
+
+app = StudentScore()
+app.run()
+</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 16</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#16
+
+class NumberChecker:
+    def __init__(self, n):
+        self.n = n
+
+    def is_prime(self):
+        if self.n &lt; 2:
+            return False
+
+        for i in range(
+            2,
+            int(self.n ** 0.5) + 1
+        ):
+            if self.n % i == 0:
+                return False
+        return True
+
+    def factorize(self):
+        n = self.n
+        factors = []
+        d = 2
+
+        while d * d &lt;= n:
+            while n % d == 0:
+                factors.append(d)
+                n //= d
+            d += 1
+        if n &gt; 1:
+            factors.append(n)
+        return factors
+
+    def print_result(self):
+        if self.is_prime():
+            print(
+                f"{self.n}은(는) 소수입니다."
+            )
+        else:
+            print(
+                f"{self.n}은(는) 합성수입니다."
+            )
+
+            factors = self.factorize()
+
+            print(
+                f"소인수분해: "
+                f"{' × '.join(map(str, factors))}"
+            )
+
+n = int(
+    input("정수 n 입력: ")
+)
+
+obj = NumberChecker(n)
+
+obj.print_result()</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 17</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#17
+
+class P:
+ def __init__(s,n):
+  s.n=n;s.m=15 if n&lt;6 else n*20
+ def g(s):
+  a=[1]*(s.m+1);a[0]=a[1]=0
+  for i in range(2,int(s.m**.5)+1):
+   if a[i]:
+    for j in range(i*i,s.m+1,i):a[j]=0
+  c=0
+  for i in range(2,s.m+1):
+   if a[i]:
+    c+=1
+    if c==s.n:return i
+
+n=int(input())
+print(f'{n} 번째 소수는 {P(n).g()}')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 18</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#18
+
+t = '''
+가/ Aa:
+나/ Bb:
+다/ Cc:
+라/ Dd:
+마/ Ee:
+바/ Ff:
+'''
+
+u = '''
+abc,
+def,
+ghi,
+jkl,
+mno,
+pqr
+'''
+
+for a, b in zip(t.splitlines()[1:], u.split(',')[::-1]):
+    k, e = a[:-1].split('/')
+    print(f'{k} → {b.strip()} ← {e}')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 19</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#19
+
+algo5 = '''
+가다자: 호랑이
+늑대.
+나라: 여우
+사자.
+다마사: 코끼리
+낙타.
+나바아: 올빼미
+까치.
+아자: 수박
+바나나.
+'''
+
+algo = '가나다라마바사아자'
+
+lines = [i.strip() for i in algo5.strip().split('\n')]
+
+m, t = [], ''
+
+for i in lines:
+    if ':' in i:
+        if t:
+            m.append(t)
+        t = i
+    else:
+        t += ' ' + i
+
+if t: m.append(t)
+
+d = {}
+
+for i in m:
+    k, v = i.split(':', 1)
+    d[k.strip()] = v.strip()
+
+keys = (
+    algo[0]+algo[2]+algo[8],
+    algo[1]+algo[3],
+    algo[2]+algo[4]+algo[6],
+    algo[1]+algo[5]+algo[7],
+    algo[7]+algo[8]
+)
+
+for k in keys:
+    print(f'{k}: {d[k]}')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 20</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#20
+
+t = '''
+a/b: cde
+f/g: hij
+k/l: mno
+p/q: rst
+u/v: wxy
+'''
+
+abc = ['a', 'f', 'k', 'p', 'u']
+
+d = {}
+for line in t.strip().splitlines():
+    star, tiger = line.split(':')
+    aa, bb = star.split('/')
+    d[aa] = f'{aa}→{tiger}←{bb}'
+
+for t in abc:
+    print(d[t])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 21</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#21
+
+def B(f):
+    def w(): return f() + " → B"
+    return w
+
+def C(f):
+    def w(): return f() + " → C"
+    return w
+
+def D(f):
+    def w(): return f() + " → D"
+    return w
+
+def E(f):
+    def w(): return f() + " → E"
+    return w
+
+@E
+@D
+@C
+@B
+def A(): return "A"
+
+print(A())</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 22</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#22
+
+abc = [ 'A', 'B', 'C', 'D', 'E']
+
+def star(f):
+    def a():
+        for i, t in enumerate(f()):
+            if i == 0: print(t)
+            else: print("→", t)
+    return a
+
+@star
+def tiger(): return abc
+
+tiger()</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 23</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#23
+
+abc = [ 'A', 'B', 'C', 'D', 'E']
+
+def star(f):
+    def w():
+        for i, t in enumerate(f()): print(t)
+    return w
+
+@star
+def tiger():
+    return abc
+
+tiger()</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 24</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#24
+
+import matplotlib.pyplot as plt
+
+m=['Jan','Feb','Mar','Apr','May']
+s=[120,150,180,170,200]
+t=[2,5,12,18,24]
+
+a=plt.subplot()
+a.bar(m,s)
+
+b=a.twinx()
+b.plot(m,t,'o-')
+
+plt.title('Sales vs Temp')
+plt.show()</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 25</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#25
+
+CCL = {
+    "CH": {
+        "eng": "Challenge",
+        "kor": "도전",
+    },
+
+    "EX": {
+        "eng": "Experience",
+        "kor": "경험",
+    },
+
+    "CO": {
+        "eng": "Confidence",
+        "kor": "자신감",
+    },
+
+    "DE": {
+        "eng": "Development",
+        "kor": "발전",
+    },
+
+    "ACH": {
+        "eng": "Achievement",
+        "kor": "성취",
+    }
+}
+
+for key, value in CCL.items():
+    print(f"[{key}] {value["eng"]} {value["kor"]}")</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 26</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre># 26
+
+ai1 = [
+    '도전',
+    '경험',
+    '자신감',
+    '발전',
+    '성취'
+]
+
+ai2 = [
+    'Challenge',
+    'Experience',
+    'Confidence',
+    'Development',
+    'Achievement'
+]
+
+ai3 = [
+    'ACH',
+    'EX',
+    'DE',
+    'CH',
+    'CO'
+]
+
+e = [0, 1, 2, 3, 4]
+
+d = [3, 1, 4, 3, 0]
+
+
+
+for i in range(5):
+
+    print(f'{ai1[i]}({ai2[e[i]]}) {ai3[d[i]]}')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 27</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#27
+
+algo5 = ['a', 'b', 'c', 'd', 'e']
+ex1 = [
+    '가',
+    '나',
+    '다',
+    '라',
+    '마'
+]
+ex2 = [
+    'p',
+    'q',
+    'r',
+    's',
+    't'
+]
+data = {
+    'a':   (3, 1),
+    'b':   (0, 4),
+    'c': (1, 3),
+    'd': (2, 2),
+    'e': (4, 0)
+}
+for k in ['a', 'b', 'c', 'd', 'e']:
+    a, b = data[k]
+    print(f'{k} ▷ {ex1[a]} {ex2[b]}')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 28</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre># 28
+
+
+security = {
+    'a':
+    '가나다',
+
+    'b':
+    '나라마',
+
+    'c':
+    '나다가',
+
+    'd':
+    '다라마',
+
+    'e':
+    '바마사'
+}
+
+keys = list(security.keys())
+check = lambda x: '마' in security[x]
+i = 0
+while i &lt; len(keys):
+    if not check(keys[i]):
+        i += 1
+        pass
+    else:
+        print(security[keys[i]])
+        break
+</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 29</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#29
+
+eng1 = ['a','b','c']
+kor1 = ['가','나','다']
+mean = [
+    'one',
+    'two',
+    'three'
+]
+result = dict(zip(eng1, zip(kor1, mean)))
+print(result['a'][1])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 30</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#30
+
+eng1 = ['a','b','c']
+kor1 = ['가','나','다']
+mean = [
+    'p',
+    'q',
+    'r'
+]
+result = dict(zip(eng1, zip(kor1, mean)))
+print(result['a'][1])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 31</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#31
+
+d = {'ab':90, 'cd':80,
+     'ef':95, 'gh':87}
+
+print("★".join(
+    map(
+        lambda x: f"{x[0]}{x[1]}",
+        sorted(d.items(), key=lambda x: x[1])
+    )
+))</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 32</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre># 32
+
+class N:
+    def __init__(s, n):
+        s.n = n
+
+    def p(s):
+        for i in range(2, int(s.n**0.5) + 1):
+            if s.n % i == 0:
+                return 0
+        return s.n &gt; 1
+
+    def f(s):
+        n, r, d = s.n, [], 2
+        while d * d &lt;= n:
+            while n % d == 0:
+                r += [d]
+                n //= d
+            d += 1
+        return r + [n] if n &gt; 1 else r
+
+    def r(s):
+        t = "소수" if s.p() else "합성수"
+        print(f'{s.n}은(는) {t}입니다.')
+        if not s.p():
+            print(f'{s.n} =','×'.join(map(str,s.f())))
+
+N(int(input("정수 n 입력: "))).r()</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 33</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#33
+
+print(list(map(lambda x: x[-2:],
+    ["123456", "12345", "1234"])))</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 34</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#32 주석달아 설명하기
+
+class N:  # N이라는 이름의 클래스를 정의한다.
+    def __init__(s, n):  # 객체가 만들어질 때 실행되는 생성자 메서드
+        s.n = n  # 입력받은 정수 n을 객체의 변수 s.n에 저장한다.
+
+    def p(s):  # s.n이 소수인지 판별하는 메서드
+        for i in range(2, int(s.n**0.5) + 1):  # 2부터 √n까지 나누어 본다.
+            if s.n % i == 0:  # n이 i로 나누어떨어지면
+                return 0  # 소수가 아니므로 0을 반환한다.
+        return s.n &gt; 1  # n이 1보다 크면 True, 아니면 False를 반환한다.
+
+    def f(s):  # s.n을 소인수분해하는 메서드
+        n, r, d = s.n, [], 2  # n은 분해할 수, r은 결과 리스트, d는 나눌 수
+        while d * d &lt;= n:  # d가 √n 이하인 동안 반복한다.
+            while n % d == 0:  # n이 d로 나누어떨어지는 동안 반복한다.
+                r += [d]  # d를 소인수 리스트 r에 추가한다.
+                n //= d  # n을 d로 나눈 몫으로 바꾼다.
+            d += 1  # 다음 수로 나누어 보기 위해 d를 1 증가시킨다.
+        return r + [n] if n &gt; 1 else r  # 남은 n이 1보다 크면 마지막 소인수로 추가한다.
+
+    def r(s):  # 결과를 출력하는 메서드
+        t = "소수" if s.p() else "합성수"  # 소수이면 "소수", 아니면 "합성수" 저장
+        print(f'{s.n}은(는) {t}입니다.')  # 소수 또는 합성수 판별 결과 출력
+        if not s.p():  # 소수가 아니라면
+            print(f'{s.n} =', '×'.join(map(str, s.f())))  # 소인수분해 결과 출력
+
+N(int(input("정수 n 입력: "))).r()  # 정수를 입력받아 N 객체를 만들고 r() 메서드를 실행한다.</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 35</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#33
+import hashlib
+
+password = "safe1234"
+hashed = hashlib.sha256(password.encode()).hexdigest()
+
+print("원본 비밀번호:", password)
+print("해시 길이:", len(hashed))
+print("동일 여부:", hashed == hashlib.sha256("safe1234".encode()).hexdigest())</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 36</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#34
+
+# CIA를 5개의 리스트로 저장
+
+abbr = [
+    "C",
+    "I",
+    "A"
+]
+
+eng = [
+    "Confidentiality",
+    "Integrity",
+    "Availability"
+]
+
+kor = [
+    "기밀성",
+    "무결성",
+    "가용성"
+]
+
+desc = [
+    "허가된 사용자만 정보에 접근할 수 있도록 보호",
+    "정보가 변경·삭제·위조되지 않도록 보장",
+    "필요한 사용자가 필요한 시점에 서비스를 이용 가능"
+]
+
+example = [
+    "암호화, 비밀번호, 접근권한",
+    "해시, 전자서명, 체크섬",
+    "백업, 서버 이중화, DDoS 방어"
+]
+
+for a, e, k, d, ex in zip(abbr, eng, kor, desc, example):
+    print(f'[{a}] {e} ({k})')
+    print(f'설명: {d}')
+    print(f'예시: {ex}')
+    print()</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 37</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#35
+
+CIA = {
+    "C": {
+        "english": "Confidentiality",
+        "korean": "기밀성",
+        "description": "허가된 사용자만 정보에 접근할 수 있도록 보호",
+        "example": "암호화, 비밀번호, 접근권한"
+    },
+
+    "I": {
+        "english": "Integrity",
+        "korean": "무결성",
+        "description": "정보가 변경·삭제·위조되지 않도록 보장",
+        "example": "해시, 전자서명, 체크섬"
+    },
+
+    "A": {
+        "english": "Availability",
+        "korean": "가용성",
+        "description": "필요한 사용자가 필요한 시점에 서비스를 이용 가능",
+        "example": "백업, 서버 이중화, DDoS 방어"
+    }
+}
+
+for key, value in CIA.items():
+    print(f'[{key}] {value["english"]} ({value["korean"]})')
+    print(f'설명: {value["description"]}')
+    print(f'예시: {value["example"]}')
+    print()</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 38</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#36
+
+CIA = {
+    "C": {
+        "e": "Confidentiality",
+        "k": "기밀성",
+        "d": "허가된 사용자만 정보에 접근할 수 있도록 보호",
+        "ex": "암호화, 비밀번호, 접근권한"
+    },
+
+    "I": {
+        "e": "Integrity",
+        "k": "무결성",
+        "d": "정보가 변경·삭제·위조되지 않도록 보장",
+        "ex": "해시, 전자서명, 체크섬"
+    },
+
+    "A": {
+        "e": "Availability",
+        "k": "가용성",
+        "d": "필요한 사용자가 필요한 시점에 서비스를 이용 가능",
+        "ex": "백업, 서버 이중화, DDoS 방어"
+    }
+}
+
+for a, v in CIA.items():
+    print(f'[{a}] {v["e"]} ({v["k"]})')
+    print(f'설명: {v["d"]}')
+    print(f'예시: {v["ex"]}')
+    print()</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 39</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#37
+log = []
+score = {"math": 85}
+
+old = score["math"]
+score["math"] = 90
+log.append(f"math:{old}-&gt;90")
+
+print(score["math"])
+print(log[0])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 40</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#38  XSS(Cross-Site Scripting) 방어
+
+text = "&lt;script&gt;alert(1)&lt;\/script&gt;"
+
+print("&lt;script&gt;" in text)
+safe = text.replace("&lt;", "&amp;lt;").replace("&gt;", "&amp;gt;")
+print(safe)</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 41</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#38a  XSS(Cross-Site Scripting) 방어
+
+text = "&lt;script&gt;alert(1)&lt;/script&gt;"
+
+print("&lt;script&gt;" in text)
+safe = text.replace("&lt;", "&amp;lt;").replace("&gt;", "&amp;gt;")
+print(safe)</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 42</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#39      &lt; 을 &amp;lt;   &gt; 을 &amp;gt;    ' 을 &amp;#x27;    &amp; 를 &amp;amp;   " 를 &amp;quot;
+
+import html
+
+text = "&lt;script&gt;alert('XSS')&lt;/script&gt;"
+
+safe = html.escape(text)
+
+print(safe)</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 43</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#40  html.escape   XSS(Cross-Site Scripting) 방어
+# &lt; 을 &amp;lt;   &gt; 을 &amp;gt;    ' 을 &amp;#x27;    &amp; 를 &amp;amp;
+
+import html
+
+text = "&lt;'XSS'&gt;&amp;"
+
+print(text)
+
+safe = html.escape(text)
+
+print(safe)</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 44</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#41  데이터의 무결성 확인
+# hashlib는 해시(Hash)를 계산하는 파이썬 내장 모듈
+# 해시의 눈사태 효과(Avalanche Effect)
+
+import hashlib
+
+h1 = hashlib.sha256("1".encode()).hexdigest()
+h2 = hashlib.sha256("1".encode()).hexdigest()
+h3 = hashlib.sha256("2".encode()).hexdigest()
+
+print(h1)
+print(h2)
+print(h3)
+
+print(h1 == h2)
+print(h1 == h3)
+print(h1 is h2)
+print(h1 is h3)
+print(h1 is h1)
+print(h3 is h3)
+
+</pre></div>
+</div>
+<h2>Diet_필수학습코드01(1).ipynb</h2>
+<div class="card">
+<h3>코드 셀 45</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#01
+def print_info(**kwargs):
+    """사용자 정보를 출력하는 함수"""
+    for key, value in kwargs.items():
+        print(f"{key}: {value}")
+
+print_info(이름="호랑이", 역할="선생님", 전공="파이썬")</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 46</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#02
+
+
+tt='''
+버블 정렬/Bubble Sort:
+선택 정렬/Selection Sort:
+삽입 정렬/Insertion Sort:
+병합 정렬/Merge Sort:
+힙 정렬/Heap Sort:
+퀵 정렬/Quick Sort:
+'''
+
+uu='''
+피벗을 기준으로 좌우로 값을 나누어 정렬,
+힙 자료구조에서 최소(최대)값을 꺼내 정렬,
+배열을 반으로 나누고 정렬하여 다시 병합,
+정렬된 영역의 알맞은 위치에 삽입,
+작은 값을 찾아 앞쪽 위치와 교환,
+인접한 두 원소 비교
+'''
+
+for aa,bb in zip(tt.splitlines()[1:],uu.split(',')[::-1]):
+    kk,ee=aa[:-1].split('/')
+    print(f'{kk} → {bb.strip()} ← {ee}')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 47</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#03
+
+class C:
+    def a(s,x,y):
+        return x-y
+
+    def p(s,x,y):
+        r=s.a(x,y)
+        print(f"결과값은 {r}입니다.")
+
+c=C()
+c.p(15,30)</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 48</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#04
+
+a=['유효성','입력','유한성','명확성','출력']
+
+b=[
+'알고리즘은 문제를 해결한 뒤 최소 1개',
+'알고리즘의 각 단계는 모호하지 않고',
+'알고리즘은 반드시 한정된 단계 안에서',
+'알고리즘은 문제 해결에 필요한 값을',
+'알고리즘의 각 단계는 실제로 수행할'
+]
+
+c=[
+'수 있는 실행 가능한 연산이어야 한다.',
+'0개 이상 입력받을 수 있어야 한다.',
+'종료 되어야 한다.',
+'분명하게 정의되어야 한다.',
+'이상의 결과를 출력해야 한다.'
+]
+
+d={
+'입력':(3,1),
+'출력':(0,4),
+'명확성':(1,3),
+'유한성':(2,2),
+'유효성':(4,0)
+}
+
+for k in['입력','유효성','명확성','유한성','출력']:
+    x,y=d[k]
+    print(f'{k} ▷ {b[x]} {c[y]}')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 49</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#05
+
+class B:
+    def __init__(s, b):
+        s.__b = b
+        print(f"처음 금액: {s.__b}원",end="→")
+
+    def d(s, a):
+        s.__b += a
+        print(f"{a}원 입금",end="→")
+
+    def g(s):
+        return s.__b
+
+a = B(2000)
+a.d(1000)
+print(f"현재 잔액: {a.g()}원")</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 50</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#06
+
+a=[
+'지도학습',
+'비지도학습',
+'강화학습',
+'자기지도학습',
+'준지도학습',
+]
+
+b=[
+'Semi-Supervised Learning',
+'Self-Supervised Learning',
+'Reinforcement Learning',
+'Unsupervised Learning',
+'Supervised Learning',
+]
+
+c=[
+'정답 없이 데이터 패턴을 찾는 방법',
+'정답이 있는 데이터를 학습하는 방법',
+'보상과 벌을 통해 최적 행동을 학습하는 방법',
+'일부만 정답이 있는 데이터를 학습하는 방법',
+'데이터 스스로 정답을 만들어 학습하는 방법',
+]
+
+e=[4,3,2,1,0]
+d=[1,0,2,4,3]
+
+for i in range(5):
+    print(f'{a[i]}({b[e[i]]}) {c[d[i]]}')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 51</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#07
+
+class D:
+    def s(s):return"멍멍!"
+
+class C:
+    def s(s):return"야옹~"
+
+class S:
+    def s(s):return"매에~"
+
+def m(a):
+    print(a.s())
+
+l=[D(),C(),S()]
+for a in l:m(a)
+</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 52</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#08
+
+c={
+"BY":{"eng":"Attribution","kor":"저작자 표시"},
+"SA":{"eng":"ShareAlike","kor":"동일조건 변경허락"},
+"ND":{"eng":"NoDerivatives","kor":"변경 금지"},
+"NC":{"eng":"NonCommercial","kor":"비영리"},
+"CC0":{"eng":"No Rights Reserved","kor":"저작권 포기"}
+}
+
+for k,v in c.items():
+    print(f'[{k}] {v["eng"]} {v["kor"]}')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 53</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#09
+
+class F:
+    def __init__(s):
+        s.d={
+            "사과":22,
+            "수박":18,
+            "포도":12,
+            "딸기":19
+        }
+
+    def p(s):
+        print("1. 과일 판매량")
+        print("-"*40)
+
+        m=max(s.d,key=s.d.get)
+
+        for f,n in s.d.items():
+            b="█"*n
+            print(f"{f:4} | {b} ({n})")
+
+        print("-"*40)
+        print(f"최고 판매 → {m} ({s.d[m]})")
+
+    def r(s):
+        s.p()
+
+a=F()
+a.r()
+</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 54</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>def add_c_suffix(func):
+    def wrapper():
+        return func() + " → C"
+    return wrapper
+
+def add_b_suffix(func):
+    def wrapper():
+        return func() + " → B"
+    return wrapper
+
+def add_e_suffix(func):
+    def wrapper():
+        return func() + " → E"
+    return wrapper
+
+def add_d_suffix(func):
+    def wrapper():
+        return func() + " → D"
+    return wrapper
+
+@add_e_suffix
+@add_b_suffix
+@add_c_suffix
+@add_d_suffix
+def base_message():
+    return "A"
+
+print(base_message())</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 55</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#10
+def C(f):return lambda:f()+" → C"
+def B(f):return lambda:f()+" → B"
+def E(f):return lambda:f()+" → E"
+def D(f):return lambda:f()+" → D"
+
+@E
+@B
+@C
+@D
+def A():return"A"
+
+print(A())
+</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 56</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#11
+
+from mpmath import mp
+mp.dps=200
+p=str(mp.pi)
+d=p.split(".")[1]
+
+c=d[149]
+
+print(f'소수점 아래 150번째 숫자: {c}')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 57</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#12
+import matplotlib.pyplot as p
+
+m=['Jan','Feb','Mar','Apr','May']
+s=[160,150,190,140,200]
+t=[2,5,12,18,24]
+
+a=p.subplot()
+a.bar(m,s)
+
+b=a.twinx()
+b.plot(m,t,'o-')
+
+p.title('Sales vs Temp')
+p.show()
+</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 58</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#13
+
+s={
+'악성코드':'시스템에 해를 끼치거나 정보를 유출',
+'랜섬웨어':'파일 암호화 후 금전 요구',
+'SQL 인젝션':'입력값으로 SQL 구조 조작',
+'XSS':'웹 페이지 악성 스크립트 삽입',
+'해싱':'원본 복원이 어려운 고정 길이 값으로 변환'
+}
+
+k=list(s)
+c=lambda x:'구조'in s[x]
+i=0
+while i&lt;len(k):
+    if not c(k[i]):
+        i+=1
+        pass
+    else:
+        print(s[k[i]])
+        break
+</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 59</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#14
+
+class N:
+    def __init__(s, n):
+        s.n = n
+
+    def p(s):
+        for i in range(2, int(s.n**0.5) + 1):
+            if s.n % i == 0:
+                return 0
+        return s.n &gt; 1
+
+    def f(s):
+        n, r, d = s.n, [], 2
+        while d * d &lt;= n:
+            while n % d == 0:
+                r += [d]
+                n //= d
+            d += 1
+        return r + [n] if n &gt; 1 else r
+
+    def r(s):
+        t='소수'if s.p()else'합성수'
+
+        print(f'{s.n}은(는) {t}입니다.')
+
+        if not s.p():
+            print(f'{s.n} =','×'.join(map(str,s.f())))
+
+N(int(input("정수 n 입력: "))).r()</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 60</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#14
+
+class PrimeNumber:
+    def __init__(self, number):
+        self.number = number
+
+    def is_prime(self):
+        for divisor in range(
+            2,
+            int(self.number ** 0.5) + 1
+        ):
+            if self.number % divisor == 0:
+                return False
+
+        return self.number &gt; 1
+
+    def factorize(self):
+        number = self.number
+        factors = []
+        divisor = 2
+
+        while divisor * divisor &lt;= number:
+
+            while number % divisor == 0:
+                factors.append(divisor)
+                number //= divisor
+
+            divisor += 1
+
+        return factors + [number] if number &gt; 1 else factors
+
+    def print_result(self):
+
+        number_type = (
+            "소수"
+            if self.is_prime()
+            else "합성수"
+        )
+
+        print(
+            f"{self.number}은(는) "
+            f"{number_type}입니다."
+        )
+
+        if not self.is_prime():
+
+            print(
+                f"{self.number} =",
+                "×".join(
+                    map(
+                        str,
+                        self.factorize()
+                    )
+                )
+            )
+
+PrimeNumber(
+    int(input("정수 n 입력: "))
+).print_result()</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 61</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#15
+
+eng1 = ['Confidentiality','Integrity','Availability']
+kor1 = ['기밀성(機密性)','무결성(無缺性)','가용성(可用性)']
+mean = [
+    '허가된 사람만 정보에 접근하도록 보호',
+    '정보 임의 변경 · 훼손 금지 정확하게 유지',
+    '필요한 사람이 언제든 정보 사용 보장'
+]
+result = dict(zip(eng1, zip(kor1, mean)))
+print(result['Availability'][0])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 62</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>e=['Confidentiality','Integrity','Availability']
+k=['기밀성(機密性)','무결성(無缺性)','가용성(可用性)']
+m=[
+    '허가된 사람만 정보에 접근하도록 보호',
+    '정보 임의 변경 · 훼손 금지 정확하게 유지',
+    '필요한 사람이 언제든 정보 사용 보장'
+]
+
+r=dict(zip(e,zip(k,m)))
+print(r['Availability'][0])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 63</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#16
+
+data={'수학':90,'영어':85,'정보':95,'국어':89, '과학':88}
+print("♥".join(map(lambda i:f"{i[0]}{i[1]}",sorted(data.items(),key=lambda i:i[1]))))</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 64</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#17
+
+b=[
+'버블 정렬',
+'앞에서부터 인접한 두 값을 비교한다.',
+'왼쪽 값이 더 크면 두 값을 교환한다.',
+'한 회전이 끝나면 가장 큰 값이 오른쪽 끝에 놓임.',
+'정렬된 끝부분을 제외하고 반복한다.'
+]
+
+def a(f):
+    def w():
+        for i,t in enumerate(f()):
+            if i==0:print(t)
+            else:print("→",t)
+    return w
+
+@a
+def s():
+    return b
+
+s()</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 65</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#18
+
+print(list(map(lambda dd:dd[-3:],["Dream","Confidentiality", "Star","Sky", "Availability"])))</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 66</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#19
+
+def r(f,o,n):
+    try:
+        with open(f,'r',encoding='utf-8') as x:
+            t=x.read()
+
+        t=t.replace(o,n)
+
+        with open(f,'w',encoding='utf-8') as x:
+            x.write(t)
+
+        print(t)
+
+    except FileNotFoundError:
+        print("파일이 없습니다.")
+
+with open('hello.txt','w',encoding='utf-8') as f:
+    f.write("안녕하세요 홍길동입니다.")
+
+r('hello.txt','홍길동','구운몽')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 67</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#20
+
+with open('seek_test.txt','w',encoding='utf-8') as f:
+    f.write("0123456789abcdefghijklmn")
+
+with open('seek_test.txt','r+',encoding='utf-8') as f:
+    f.seek(12)
+    d=f.read(6)
+    print(d)
+    print(f.tell())</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 68</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#21
+
+p="010-8765-4321"
+
+a=p.split("-")
+a[1]="****"
+m="-".join(a)
+
+print("마스킹 후:",m)
+</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 69</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#22
+
+def f(*a):
+    t=0
+    for i in a:t+=i
+    return t
+
+s={
+'1. 진로 설계',
+'2. 자기 분석',
+'3. 직업 데이터 구조화',
+'4. 관련성 탐색',
+'5. 시각화'}
+d={i:len(i)for i in s}
+
+print(f(*d.values()))
+</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 70</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#23
+
+def f(**k):
+    return k
+
+t=f(
+    문제정의="무엇을 예측할지 정한다",
+    데이터준비="데이터 구조와 품질 확인",
+    전처리="결측치 스케일 문제 해결",
+    모델학습="패턴 학습",
+    평가="테스트 성능 측정",
+    튜닝="성능 개선 실험"
+)
+
+s={'1','proof','abcd','23','987', ''}
+d={i:len(i)for i in s}
+l=sorted(d.items(),key=lambda x:x[1])
+k=list(t.keys())
+
+print(t[k[l[1][1]]])
+</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 71</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#24
+
+t={
+1:('단계','의미'),
+2:('데이터 준비','문제지와 정답지 분리'),
+3:('데이터 분리','학습용과 테스트용 분리'),
+4:('모델 생성','학습할 모델 객체 생성'),
+5:('학습','데이터 패턴 학습'),
+6:('예측','새 데이터 결과 예측'),
+7:('평가','예측과 정답 비교')
+}
+s={'1','proof','abcd','23','987', ''}
+d={i:len(i)for i in s}
+l=sorted(d.items(),key=lambda x:x[0])
+print(t[int(l[5][1])][1])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 72</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#25
+
+tiger = {
+    1: ('종류', '판단방식'),
+    2: ('단순 반사', '현재 입력에만 반응'),
+    3: ('모델 기반', '현재 입력, 내부 상태 고려'),
+    4: ('목표 기반', '목표 달성 여부 고려'),
+    5: ('효용 기반', '효율·위험·만족도 비교')
+}
+
+for key, (kind, method) in tiger.items():
+
+    if key == 2:
+        print(kind)
+        break</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 73</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#26
+
+s={'','1','2','12','123','1234'}
+d={i:len(i)for i in s}
+l=sorted(d.items(),key=lambda x:x[1])
+t=sum(i[1]for i in l)+l[3][1]
+print(t)</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 74</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#27
+
+s={"수학":100,"영어":80,"국어":95,"과학":85,"정보":93}
+a=sorted(s.items(),key=lambda i:i[1])
+print(a[-2][1])</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 75</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#28
+
+from abc import ABC,abstractmethod
+
+class S(ABC):
+    @abstractmethod
+    def a(s):
+        pass
+
+class C(S):
+    def __init__(s,r):
+        s.r=r
+
+    def a(s):
+        return 3.14*(s.r**2)
+
+class Q(S):
+    def __init__(s,x):
+        s.x=x
+
+    def a(s):
+        return s.x*s.x
+
+l=[C(5),Q(4)]
+for s in l:
+    print(f"도형의 넓이: {s.a()}")</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 76</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#29
+
+with open('seek_test.txt','w',encoding='utf-8') as f:
+    f.write("0123456789abcdef")
+
+with open('seek_test.txt','r+',encoding='utf-8') as f:
+    f.seek(10)
+    d=f.read(4)
+    print(f"10번 위치에서 읽은 데이터: {d}")
+
+    print(f"현재 커서 위치: {f.tell()}")
+
+    f.seek(0)
+    f.write("Hello")</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 77</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>#30
+
+def r(f,o,n):
+    try:
+        with open(f,'r',encoding='utf-8') as x:
+            t=x.read()
+
+        t=t.replace(o,n)
+
+        with open(f,'w',encoding='utf-8') as x:
+            x.write(t)
+
+        print(f"'{o}'가 '{n}'로 변경되었습니다.")
+
+    except FileNotFoundError:
+        print("파일이 없습니다.")
+
+r('hello.txt','홍길동','인수샘')</pre></div>
+</div>
+<div class="card">
+<h3>코드 셀 78</h3>
+<div class="code-wrap"><button class="copy-btn">📋 복사하기</button><pre>ai1 = [
+    '지도학습',
+    '비지도학습',
+    '강화학습',
+    '준지도학습',
+    '자기지도학습'
+]
+
+ai2 = [
+    'Self-Supervised Learning',
+    'Semi-Supervised Learning',
+    'Reinforcement Learning',
+    'Unsupervised Learning',
+    'Supervised Learning'
+]
+
+ai3 = [
+    '정답 없이 데이터 패턴을 찾는 방법',
+    '정답이 있는 데이터를 학습하는 방법',
+    '보상과 벌을 통해 최적 행동을 학습하는 방법',
+    '데이터 스스로 정답을 만들어 학습하는 방법',
+    '일부만 정답이 있는 데이터를 학습하는 방법'
+]
+
+e = [4, 3, 2, 1, 0]
+d = [1, 0, 2, 4, 3]
+
+for i in range(5):
+    print(f'{ai1[i]}({ai2[e[i]]}) {ai3[d[i]]}')
+</pre></div>
+</div>
+<script>
+document.addEventListener('click',function(e){
+  if(e.target.classList.contains('copy-btn')){
+    const code=e.target.parentElement.querySelector('pre').innerText;
+    navigator.clipboard.writeText(code);
+    const old=e.target.innerText;
+    e.target.innerText='✅ 복사됨';
+    setTimeout(()=>e.target.innerText=old,1500);
+  }
+});
+</script></body>
+</html>
