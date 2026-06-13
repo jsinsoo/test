@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>단답형 60문항 학습용 HTML</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+  background: #f4f7fb;
+  color: #1f2937;
+  line-height: 1.7;
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(135deg, #172554, #334155);
+  color: white;
+  padding: 18px 28px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.18);
+}
+header h1 {
+  margin: 0;
+  font-size: 25px;
+}
+header p {
+  margin: 6px 0 0;
+  opacity: .9;
+}
+.wrap {
+  max-width: 1150px;
+  margin: 22px auto 60px;
+  padding: 0 18px;
+}
+.panel {
+  background: white;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+}
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tabs button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: #e2e8f0;
+  color: #111827;
+  font-weight: 900;
+  cursor: pointer;
+}
+.tabs button.active {
+  background: #2563eb;
+  color: white;
+}
+.search {
+  margin-top: 12px;
+}
+.search input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 16px;
+}
+.count {
+  margin-top: 10px;
+  color: #475569;
+  font-weight: 900;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: 14px;
+}
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  border: 1px solid #e5e7eb;
+  border-left: 7px solid #64748b;
+}
+.topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.badge {
+  display: inline-block;
+  background: #334155;
+  color: white;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 900;
+}
+.number {
+  font-size: 22px;
+  font-weight: 900;
+  color: #1d4ed8;
+}
+.block {
+  margin-top: 10px;
+  padding: 13px;
+  border-radius: 14px;
+}
+.q {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+.a {
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  font-weight: 850;
+}
+.e {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+}
+.label {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 900;
+  margin-bottom: 5px;
+}
+.top {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  background: #111827;
+  color: white;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 11px 16px;
+  font-weight: 900;
+}
+@media print {
+  header, .panel, .top { display: none; }
+  body { background: white; }
+  .grid { display: block; }
+  .card {
+    page-break-inside: avoid;
+    box-shadow: none;
+    margin-bottom: 12px;
+  }
+}
+</style>
+</head>
+<body id="top">
+<header>
+  <h1>단답형 60문항 학습용 HTML</h1>
+  <p>처음부터 각 문항의 문제, 모범 답안, 상세 설명이 모두 표시됩니다.</p>
+</header>
+
+<div class="wrap">
+  <section class="panel">
+    <div class="tabs">
+      <button class="active" onclick="filterType('ALL', this)">전체</button>
+      <button onclick="filterType('A', this)">A 영역</button>
+      <button onclick="filterType('B', this)">B 영역</button>
+      <button onclick="filterType('C', this)">C 영역</button>
+      <button onclick="filterType('D', this)">D 영역</button>
+      <button onclick="filterType('E', this)">E 영역</button>
+      <button onclick="filterType('F', this)">F 영역</button>
+    </div>
+    <div class="search">
+      <input id="searchInput" oninput="applyFilter()" placeholder="검색어 입력: 예) 과적합, pandas, XSS, 가용성">
+    </div>
+    <div class="count" id="countText">전체 60문항 표시</div>
+  </section>
+
+  <section class="grid" id="cards">
+    
+    <article class="card" data-type="A" id="q1">
+      <div class="topline">
+        <span class="badge">A 영역</span>
+        <span class="number">1번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>특성 공학의 예시를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>날짜에서 요일 열을 만든다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>특성 공학은 기존 데이터에서 모델 학습에 도움이 되는 새로운 특성을 만드는 과정입니다. 날짜 데이터에서 요일을 추출하면 평일과 주말의 차이처럼 숨은 패턴을 모델이 학습할 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="A" id="q2">
+      <div class="topline">
+        <span class="badge">A 영역</span>
+        <span class="number">2번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>StandardScaler의 역할을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>평균 0, 표준편차 1에 가깝게 변환한다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>StandardScaler는 각 특성의 평균을 빼고 표준편차로 나누어 값의 분포를 표준화합니다. 특성마다 단위와 범위가 다를 때 학습을 안정적으로 만드는 데 도움이 됩니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="A" id="q3">
+      <div class="topline">
+        <span class="badge">A 영역</span>
+        <span class="number">3번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>DecisionTreeClassifier(max_depth=3)에서 max_depth가 무엇인지 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>하이퍼파라미터</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>max_depth는 결정트리의 최대 깊이를 제한하는 값입니다. 모델이 학습으로 자동 찾는 파라미터가 아니라, 학습 전에 사람이 정하거나 조정하는 하이퍼파라미터입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="A" id="q4">
+      <div class="topline">
+        <span class="badge">A 영역</span>
+        <span class="number">4번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>기계학습 워크플로우의 일반적인 순서를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>문제정의 → 데이터준비 → 전처리 → 학습 → 평가</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>기계학습 프로젝트는 먼저 해결할 문제를 정하고 데이터를 준비합니다. 이후 전처리, 모델 학습, 평가를 거쳐 모델이 실제 문제를 잘 해결하는지 확인합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="A" id="q5">
+      <div class="topline">
+        <span class="badge">A 영역</span>
+        <span class="number">5번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>모델 평가 단계의 주된 목적을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>새로운 데이터에서 성능을 객관적으로 측정한다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>모델 평가는 학습 데이터에만 잘 맞는지, 새로운 데이터에도 잘 작동하는지를 확인하는 과정입니다. 이를 통해 일반화 성능을 판단할 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="A" id="q6">
+      <div class="topline">
+        <span class="badge">A 영역</span>
+        <span class="number">6번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>하이퍼파라미터 튜닝을 하는 이유를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>모델의 일반화 성능을 개선하기 위해</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>하이퍼파라미터 값에 따라 모델 성능이 달라질 수 있습니다. 적절한 값을 찾으면 과적합을 줄이고 새로운 데이터에 대한 성능을 높일 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="A" id="q7">
+      <div class="topline">
+        <span class="badge">A 영역</span>
+        <span class="number">7번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>테스트 데이터에 StandardScaler를 적용할 때 올바른 방식을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>학습 데이터로 fit한 scaler로 transform만 한다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>테스트 데이터에 새로 fit하면 테스트 데이터의 정보가 학습 과정에 섞이는 문제가 생길 수 있습니다. 따라서 학습 데이터로 기준을 정한 뒤 테스트 데이터에는 transform만 적용합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="A" id="q8">
+      <div class="topline">
+        <span class="badge">A 영역</span>
+        <span class="number">8번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>df.fillna(0)의 의미를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>결측치를 0으로 채운다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>fillna는 결측값을 다른 값으로 채우는 pandas 메서드입니다. df.fillna(0)은 데이터프레임 안의 결측치를 0으로 대체합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="A" id="q9">
+      <div class="topline">
+        <span class="badge">A 영역</span>
+        <span class="number">9번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>과적합에 대한 올바른 설명을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>학습 성능은 높지만 테스트 성능이 낮을 수 있다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>과적합은 모델이 학습 데이터의 세부 특징이나 잡음까지 외워버린 상태입니다. 그래서 학습 데이터에서는 잘 맞지만 새로운 데이터에서는 성능이 떨어질 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="A" id="q10">
+      <div class="topline">
+        <span class="badge">A 영역</span>
+        <span class="number">10번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>머신러닝 프로젝트의 최종 목표를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>정의한 문제를 잘 해결하는 일반화 성능 좋은 모델 만들기</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>머신러닝의 목적은 복잡한 모델을 만드는 것 자체가 아니라, 실제 문제를 잘 해결하는 모델을 만드는 것입니다. 특히 새로운 데이터에서도 잘 작동하는 일반화 성능이 중요합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="B" id="q11">
+      <div class="topline">
+        <span class="badge">B 영역</span>
+        <span class="number">11번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>기계학습의 핵심 설명을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>데이터에서 패턴을 학습해 예측한다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>기계학습은 사람이 모든 규칙을 직접 작성하지 않고, 데이터에서 규칙과 패턴을 찾아 예측이나 판단을 수행하는 방법입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="B" id="q12">
+      <div class="topline">
+        <span class="badge">B 영역</span>
+        <span class="number">12번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>지도 학습에서 X가 보통 무엇을 의미하는지 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>특성 데이터</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>X는 모델에 입력되는 특성 데이터입니다. 예를 들어 공부 시간, 출석률, 과제 점수처럼 예측에 사용되는 값들이 X가 됩니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="B" id="q13">
+      <div class="topline">
+        <span class="badge">B 영역</span>
+        <span class="number">13번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>지도 학습에서 y가 보통 무엇을 의미하는지 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>정답 레이블 또는 타겟</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>y는 모델이 맞혀야 하는 정답입니다. 분류에서는 범주 레이블, 회귀에서는 예측해야 할 수치값이 y가 됩니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="B" id="q14">
+      <div class="topline">
+        <span class="badge">B 영역</span>
+        <span class="number">14번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>분류 문제의 예시를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>사진 속 동물이 개인지 고양이인지 구분</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>분류는 미리 정해진 범주 중 하나를 예측하는 문제입니다. 개와 고양이처럼 결과가 범주로 나뉘면 분류 문제입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="B" id="q15">
+      <div class="topline">
+        <span class="badge">B 영역</span>
+        <span class="number">15번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>회귀 문제의 예시를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>내일 기온 예측</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>회귀는 연속적인 수치 값을 예측하는 문제입니다. 기온, 집값, 매출액처럼 숫자를 예측하는 경우가 회귀입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="B" id="q16">
+      <div class="topline">
+        <span class="badge">B 영역</span>
+        <span class="number">16번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>train_test_split의 주된 목적을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>데이터를 학습용과 테스트용으로 나누기 위해</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>데이터를 나누는 이유는 모델이 처음 보는 데이터에서도 잘 작동하는지 확인하기 위해서입니다. 학습용 데이터로 훈련하고 테스트용 데이터로 성능을 평가합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="B" id="q17">
+      <div class="topline">
+        <span class="badge">B 영역</span>
+        <span class="number">17번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>scikit-learn에서 모델 학습에 사용하는 대표 메서드를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>fit</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>fit()은 주어진 데이터로 모델을 학습시키는 메서드입니다. scikit-learn의 많은 모델은 fit()이라는 공통된 방식으로 학습합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="B" id="q18">
+      <div class="topline">
+        <span class="badge">B 영역</span>
+        <span class="number">18번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>scikit-learn에서 학습된 모델로 예측할 때 사용하는 대표 메서드를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>predict</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>predict()는 학습이 끝난 모델을 이용해 새로운 데이터의 결과를 예측하는 메서드입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="B" id="q19">
+      <div class="topline">
+        <span class="badge">B 영역</span>
+        <span class="number">19번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>과적합에 대한 설명을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>학습 데이터에 지나치게 맞아 새 데이터에 약해진다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>과적합 모델은 학습 데이터에는 매우 잘 맞지만, 실제 새로운 데이터에는 약할 수 있습니다. 이는 모델이 일반적인 패턴보다 학습 데이터의 세부 사항을 지나치게 외웠기 때문입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="B" id="q20">
+      <div class="topline">
+        <span class="badge">B 영역</span>
+        <span class="number">20번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>scikit-learn의 일관된 API 장점을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>fit, predict 같은 비슷한 방식으로 다양한 모델을 사용할 수 있다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>scikit-learn은 모델 종류가 달라도 fit(), predict() 같은 비슷한 사용 방식을 제공합니다. 덕분에 여러 모델을 쉽게 비교하고 실험할 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="C" id="q21">
+      <div class="topline">
+        <span class="badge">C 영역</span>
+        <span class="number">21번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>PEAS에서 성능 척도에 해당하는 것을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>청소 완료율</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>PEAS에서 P는 Performance measure, 즉 성능 척도를 뜻합니다. 로봇 청소기에서는 청소 완료율, 시간, 전력 사용량 등이 성능 척도가 될 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="C" id="q22">
+      <div class="topline">
+        <span class="badge">C 영역</span>
+        <span class="number">22번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>로봇 청소기의 액추에이터에 해당하는 것을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>바퀴 모터</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>액추에이터는 에이전트가 실제 행동을 수행하게 하는 장치입니다. 로봇 청소기의 바퀴 모터는 이동이라는 행동을 수행하게 하므로 액추에이터입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="C" id="q23">
+      <div class="topline">
+        <span class="badge">C 영역</span>
+        <span class="number">23번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>단순 반사 에이전트의 특징을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>현재 입력에 즉시 반응한다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>단순 반사 에이전트는 현재 들어온 입력만 보고 조건-행동 규칙에 따라 바로 행동합니다. 과거 기억이나 장기 계획은 사용하지 않습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="C" id="q24">
+      <div class="topline">
+        <span class="badge">C 영역</span>
+        <span class="number">24번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>모델 기반 에이전트가 단순 반사 에이전트와 다른 점을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>내부 상태를 활용할 수 있다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>모델 기반 에이전트는 현재 보이지 않는 상황까지 추정하기 위해 내부 상태나 기억을 사용합니다. 그래서 단순 반사 에이전트보다 더 복잡한 환경에 대응할 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="C" id="q25">
+      <div class="topline">
+        <span class="badge">C 영역</span>
+        <span class="number">25번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>목표 기반 에이전트의 예를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>모든 방을 청소하기 위해 이동 계획 수립</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>목표 기반 에이전트는 특정 목표를 달성하기 위해 행동을 선택합니다. 모든 방을 청소한다는 목표가 있으면 이동 경로를 계획할 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="C" id="q26">
+      <div class="topline">
+        <span class="badge">C 영역</span>
+        <span class="number">26번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>효용 기반 에이전트의 판단 기준을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>효율·안전·만족도 등 종합 가치</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>효용 기반 에이전트는 목표 달성 여부뿐 아니라 어떤 선택이 더 좋은지 비교합니다. 효율, 안전, 만족도 같은 가치를 종합해 행동을 결정합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="C" id="q27">
+      <div class="topline">
+        <span class="badge">C 영역</span>
+        <span class="number">27번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>파이썬 코드에서 perceive 메서드의 역할을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>환경 인지</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>perceive는 보통 에이전트가 주변 환경 정보를 받아들이는 기능을 표현할 때 사용합니다. 센서 입력을 코드로 나타내는 역할입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="C" id="q28">
+      <div class="topline">
+        <span class="badge">C 영역</span>
+        <span class="number">28번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>파이썬 코드에서 act 메서드의 역할을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>행동 결정</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>act는 에이전트가 인지한 정보를 바탕으로 어떤 행동을 할지 결정하거나 실행하는 메서드입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="C" id="q29">
+      <div class="topline">
+        <span class="badge">C 영역</span>
+        <span class="number">29번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>자율주행차의 센서에 해당하는 것을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>카메라와 라이다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>센서는 환경을 인식하는 장치입니다. 자율주행차의 카메라와 라이다는 도로, 차선, 장애물, 보행자 등을 인식하는 데 사용됩니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="C" id="q30">
+      <div class="topline">
+        <span class="badge">C 영역</span>
+        <span class="number">30번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>지능 에이전트 수업에서 클래스를 사용하는 이유를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>상태와 행동을 하나의 단위로 묶기 위해</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>클래스는 속성으로 상태를, 메서드로 행동을 표현할 수 있습니다. 따라서 에이전트를 하나의 객체로 표현하기에 적합합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="D" id="q31">
+      <div class="topline">
+        <span class="badge">D 영역</span>
+        <span class="number">31번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>디지털 전환 DX의 사례를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>스마트팜에서 IoT 센서 데이터를 분석해 물과 비료를 자동 공급하기</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>디지털 전환은 단순히 종이를 컴퓨터로 옮기는 수준을 넘어, 데이터를 활용해 업무나 산업 방식을 바꾸는 것입니다. 스마트팜은 센서와 데이터 분석으로 농업 방식을 바꾸는 예입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="D" id="q32">
+      <div class="topline">
+        <span class="badge">D 영역</span>
+        <span class="number">32번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>생물정보학이 어떤 분야의 융합인지 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>생명과학 + 정보과학</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>생물정보학은 유전체, 단백질, 생명 데이터를 정보과학 기술로 분석하는 분야입니다. 생명과학과 컴퓨터·데이터 과학이 결합된 융합 분야입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="D" id="q33">
+      <div class="topline">
+        <span class="badge">D 영역</span>
+        <span class="number">33번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>T자형 인재의 의미를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>깊은 전공 전문성과 넓은 융합 역량을 가진 사람</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>T자형 인재는 한 분야의 깊은 전문성을 세로축으로, 여러 분야를 이해하는 넓은 역량을 가로축으로 가진 사람을 뜻합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="D" id="q34">
+      <div class="topline">
+        <span class="badge">D 영역</span>
+        <span class="number">34번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>pandas의 주요 역할을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>표 형태 데이터 분석</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>pandas는 DataFrame을 사용해 표 형태 데이터를 다루는 라이브러리입니다. 데이터 불러오기, 정리, 필터링, 집계 등에 자주 사용됩니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="D" id="q35">
+      <div class="topline">
+        <span class="badge">D 영역</span>
+        <span class="number">35번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>matplotlib의 주요 역할을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>데이터 시각화</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>matplotlib은 데이터를 그래프나 차트로 표현하는 파이썬 시각화 라이브러리입니다. 막대그래프, 꺾은선그래프, 산점도 등을 그릴 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="D" id="q36">
+      <div class="topline">
+        <span class="badge">D 영역</span>
+        <span class="number">36번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>df[&#x27;major&#x27;].str.contains(&#x27;컴공&#x27;)의 의미를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>major 열 값이 컴공을 포함하는지 True/False로 검사한다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>이 코드는 major 열의 문자열에 &#x27;컴공&#x27;이 포함되어 있는지를 검사합니다. 결과는 각 행마다 True 또는 False로 나타납니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="D" id="q37">
+      <div class="topline">
+        <span class="badge">D 영역</span>
+        <span class="number">37번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>과학고 학생이 IT 기술을 대하는 바람직한 태도를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>전공 문제 해결 도구로 활용한다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>IT 기술은 전공을 대체하는 것이 아니라 전공 문제를 더 잘 해결하게 해 주는 도구가 될 수 있습니다. 과학, 수학, 공학 문제에 데이터 분석과 프로그래밍을 접목할 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="D" id="q38">
+      <div class="topline">
+        <span class="badge">D 영역</span>
+        <span class="number">38번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>평생 학습이 중요한 이유를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>기술 환경이 빠르게 변하기 때문</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>디지털 기술과 사회 환경은 빠르게 변화합니다. 따라서 학교 졸업 이후에도 계속 배우고 적응하는 평생 학습이 중요합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="D" id="q39">
+      <div class="topline">
+        <span class="badge">D 영역</span>
+        <span class="number">39번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>진로 데이터 분석 프로젝트의 첫 단계를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>분석할 진로 질문과 필요한 데이터 정하기</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>데이터 분석 프로젝트는 먼저 어떤 질문에 답할지 정해야 합니다. 그다음 질문을 해결하는 데 필요한 데이터를 찾고 수집합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="D" id="q40">
+      <div class="topline">
+        <span class="badge">D 영역</span>
+        <span class="number">40번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>프로그래밍 기술 사용에서 가장 중요한 윤리 원칙을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>남에게 피해를 주지 않고 책임 있게 사용한다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>프로그래밍 능력은 강력한 도구이므로 책임 있게 사용해야 합니다. 개인정보 침해, 악성코드 제작, 무단 접근처럼 타인에게 피해를 주는 행동은 피해야 합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="E" id="q41">
+      <div class="topline">
+        <span class="badge">E 영역</span>
+        <span class="number">41번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>오픈소스에 대한 설명을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>소스 코드를 공개하고 사용·수정·배포를 허용할 수 있다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>오픈소스는 소스 코드가 공개되어 있고, 라이선스 조건에 따라 누구나 사용, 수정, 배포할 수 있는 소프트웨어 모델입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="E" id="q42">
+      <div class="topline">
+        <span class="badge">E 영역</span>
+        <span class="number">42번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>CCL의 의미를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>조건부 이용 허락 라이선스</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>CCL은 저작자가 자신의 창작물을 일정 조건 아래 사용할 수 있도록 허락하는 라이선스입니다. 저작권이 사라지는 것이 아니라 조건을 지켜야 합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="E" id="q43">
+      <div class="topline">
+        <span class="badge">E 영역</span>
+        <span class="number">43번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>010-1234-5678의 가운데 번호를 마스킹하는 일반적인 방식을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>parts=phone.split(&#x27;-&#x27;); parts[1]=&#x27;****&#x27;; &#x27;-&#x27;.join(parts)</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>전화번호를 &#x27;-&#x27; 기준으로 나누면 가운데 번호만 선택해 별표로 바꿀 수 있습니다. 이는 개인정보 일부를 가리는 마스킹의 예입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="E" id="q44">
+      <div class="topline">
+        <span class="badge">E 영역</span>
+        <span class="number">44번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>데이터 비식별화의 목적을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>개인을 특정하기 어렵게 하면서 데이터를 안전하게 활용하기</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>비식별화는 개인정보를 직접 알아볼 수 없게 처리하는 과정입니다. 데이터를 모두 삭제하는 것이 아니라 안전하게 분석할 수 있도록 위험을 줄입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="E" id="q45">
+      <div class="topline">
+        <span class="badge">E 영역</span>
+        <span class="number">45번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>개인정보에 해당하는 것을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>이름과 전화번호</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>이름과 전화번호는 개인을 직접 식별하거나 다른 정보와 결합해 개인을 알아볼 수 있게 하므로 개인정보에 해당합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="E" id="q46">
+      <div class="topline">
+        <span class="badge">E 영역</span>
+        <span class="number">46번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>BY-NC 조건의 CCL 의미를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>저작자 표시와 비영리 조건</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>BY는 저작자 표시를 뜻하고 NC는 비영리 이용을 뜻합니다. 따라서 BY-NC는 출처를 밝히고 비영리 목적으로만 사용해야 한다는 의미입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="E" id="q47">
+      <div class="topline">
+        <span class="badge">E 영역</span>
+        <span class="number">47번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>.gitignore의 주된 역할을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>민감 파일이 Git에 추적되지 않도록 제외하기</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>.gitignore는 Git이 특정 파일이나 폴더를 추적하지 않도록 지정하는 파일입니다. 비밀번호, API 키, 임시 파일 등을 제외할 때 사용합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="E" id="q48">
+      <div class="topline">
+        <span class="badge">E 영역</span>
+        <span class="number">48번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>파이썬 문자열 처리가 편리한 이유를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>split, join, slicing 같은 고수준 기능이 풍부하기 때문</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>파이썬은 문자열을 나누고 합치고 일부만 가져오는 기능이 간단합니다. split, join, slicing 같은 기능으로 텍스트 처리를 쉽게 할 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="E" id="q49">
+      <div class="topline">
+        <span class="badge">E 영역</span>
+        <span class="number">49번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>오픈 데이터의 가치에 해당하는 사례를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>공공 버스 위치 API를 공개해 다양한 앱 개발에 활용</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>오픈 데이터는 공공이나 기관의 데이터를 공개해 새로운 서비스와 연구에 활용하게 하는 것입니다. 버스 위치 API는 교통 앱 개발에 활용될 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="E" id="q50">
+      <div class="topline">
+        <span class="badge">E 영역</span>
+        <span class="number">50번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>비밀번호 저장 방식으로 가장 안전한 표준에 가까운 것을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>단방향 해시 값으로 저장</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>비밀번호는 원문으로 저장하면 유출 시 매우 위험합니다. 단방향 해시를 사용하면 원래 비밀번호를 바로 알기 어렵게 만들 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="F" id="q51">
+      <div class="topline">
+        <span class="badge">F 영역</span>
+        <span class="number">51번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>DDoS 공격으로 은행 웹사이트가 마비되어 사용자가 송금을 못 했을 때 침해된 보안 목표를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>가용성</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>가용성은 필요한 사용자가 필요한 시점에 서비스를 사용할 수 있는 성질입니다. DDoS로 서비스가 마비되면 사용자가 이용하지 못하므로 가용성이 침해됩니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="F" id="q52">
+      <div class="topline">
+        <span class="badge">F 영역</span>
+        <span class="number">52번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>웹 게시판에 악성 스크립트를 삽입해 다른 사용자의 브라우저에서 실행되게 하는 공격을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>XSS</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>XSS는 Cross-Site Scripting의 약자로, 웹페이지에 악성 스크립트를 삽입해 다른 사용자의 브라우저에서 실행되게 하는 공격입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="F" id="q53">
+      <div class="topline">
+        <span class="badge">F 영역</span>
+        <span class="number">53번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>디지털 시민 의식에 맞는 행동을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>유해 정보 발견 시 신고</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>디지털 시민은 온라인 공간에서 책임 있게 행동해야 합니다. 유해 정보나 위험한 행동을 발견하면 신고하는 것이 바람직합니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="F" id="q54">
+      <div class="topline">
+        <span class="badge">F 영역</span>
+        <span class="number">54번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>나중에 특정 행위를 부인할 수 없게 하는 보안 목표를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>부인 방지</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>부인 방지는 어떤 행위가 실제로 이루어졌음을 나중에 부정하지 못하게 하는 보안 개념입니다. 전자서명이나 로그 기록이 예가 될 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="F" id="q55">
+      <div class="topline">
+        <span class="badge">F 영역</span>
+        <span class="number">55번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>SQL 인젝션 방어의 기본을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>입력값 검증과 준비된 구문 사용</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>SQL 인젝션은 입력값으로 SQL 쿼리 구조를 조작하는 공격입니다. 입력값 검증과 준비된 구문을 사용하면 공격 가능성을 줄일 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="F" id="q56">
+      <div class="topline">
+        <span class="badge">F 영역</span>
+        <span class="number">56번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>비밀번호 저장 방식으로 가장 적절한 것을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>단방향 해시로 저장</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>비밀번호는 원문이 아니라 단방향 해시로 저장해야 합니다. 실제 서비스에서는 솔트와 느린 해시 알고리즘을 함께 사용하는 것이 좋습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="F" id="q57">
+      <div class="topline">
+        <span class="badge">F 영역</span>
+        <span class="number">57번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>스스로 네트워크를 통해 복제·전파되는 악성코드를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>웜</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>웜은 다른 파일에 기생하지 않고 네트워크를 통해 스스로 복제·전파되는 악성코드입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="F" id="q58">
+      <div class="topline">
+        <span class="badge">F 영역</span>
+        <span class="number">58번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>버퍼 오버플로우가 주로 발생하는 이유를 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>할당된 메모리보다 큰 데이터를 경계 검사 없이 처리하기 때문</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>버퍼 오버플로우는 정해진 메모리 공간보다 큰 데이터를 넣을 때 발생할 수 있습니다. 입력 크기를 검사하지 않으면 메모리 손상이나 공격으로 이어질 수 있습니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="F" id="q59">
+      <div class="topline">
+        <span class="badge">F 영역</span>
+        <span class="number">59번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>유료 게임 설치 파일을 무단 복사해주는 행동이 무엇인지 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>저작권 침해</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>유료 소프트웨어나 게임 파일을 허락 없이 복사하거나 배포하는 것은 저작권자의 권리를 침해하는 행동입니다.</div>
+      </div>
+    </article>
+    
+    <article class="card" data-type="F" id="q60">
+      <div class="topline">
+        <span class="badge">F 영역</span>
+        <span class="number">60번</span>
+      </div>
+      <div class="block q">
+        <div class="label">문제</div>
+        <div>보안 취약점을 발견했을 때 책임감 있는 공개 원칙에 맞는 행동을 쓰시오.</div>
+      </div>
+      <div class="block a">
+        <div class="label">모범 답안</div>
+        <div>관리자나 보안팀에 비공개로 알리고 수정 시간을 준다</div>
+      </div>
+      <div class="block e">
+        <div class="label">상세 설명</div>
+        <div>취약점을 발견하면 공개적으로 악용 방법을 퍼뜨리기보다 담당자에게 먼저 알리고 수정할 시간을 주는 것이 책임감 있는 공개 방식입니다.</div>
+      </div>
+    </article>
+    
+  </section>
+</div>
+
+<a class="top" href="#top">▲ 위로</a>
+
+<script>
+let currentType = "ALL";
+
+function filterType(type, btn) {
+  currentType = type;
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  applyFilter();
+}
+
+function applyFilter() {
+  const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+  let visible = 0;
+  document.querySelectorAll(".card").forEach(card => {
+    const typeOk = currentType === "ALL" || card.dataset.type === currentType;
+    const textOk = !keyword || card.textContent.toLowerCase().includes(keyword);
+    const show = typeOk && textOk;
+    card.style.display = show ? "block" : "none";
+    if (show) visible++;
+  });
+  document.getElementById("countText").textContent =
+    (currentType === "ALL" ? "전체" : currentType + " 영역") + " " + visible + "문항 표시";
+}
+</script>
+</body>
+</html>

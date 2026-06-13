@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>학습용 OX 퀴즈 60문항</title>
+<style>
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+    line-height: 1.7;
+}
+header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(135deg, #172554, #334155);
+    color: white;
+    padding: 18px 28px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.18);
+}
+header h1 {
+    margin: 0;
+    font-size: 25px;
+}
+header p {
+    margin: 6px 0 0;
+    opacity: .9;
+}
+.wrap {
+    max-width: 1150px;
+    margin: 22px auto 60px;
+    padding: 0 18px;
+}
+.panel {
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.08);
+}
+.tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.tabs button {
+    border: none;
+    border-radius: 999px;
+    padding: 10px 18px;
+    background: #e2e8f0;
+    color: #111827;
+    font-weight: 900;
+    cursor: pointer;
+}
+.tabs button.active {
+    background: #2563eb;
+    color: white;
+}
+.search {
+    margin-top: 12px;
+}
+.search input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    font-size: 16px;
+}
+.count {
+    margin-top: 10px;
+    color: #475569;
+    font-weight: 900;
+}
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 14px;
+}
+.card {
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.08);
+    border: 1px solid #e5e7eb;
+    border-left: 7px solid #64748b;
+}
+.topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.num {
+    font-size: 22px;
+    font-weight: 900;
+    color: #1d4ed8;
+}
+.answer {
+    border-radius: 999px;
+    padding: 7px 15px;
+    color: white;
+    font-weight: 900;
+}
+.answer-o {
+    background: #15803d;
+}
+.answer-x {
+    background: #b91c1c;
+}
+.question, .explain {
+    margin-top: 10px;
+    padding: 13px;
+    border-radius: 14px;
+}
+.question {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    font-weight: 850;
+}
+.explain {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+}
+.label {
+    font-size: 13px;
+    color: #475569;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+.top {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    background: #111827;
+    color: white;
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 11px 16px;
+    font-weight: 900;
+}
+@media print {
+    header, .panel, .top {
+        display: none;
+    }
+    body {
+        background: white;
+    }
+    .grid {
+        display: block;
+    }
+    .card {
+        page-break-inside: avoid;
+        box-shadow: none;
+        margin-bottom: 12px;
+    }
+}
+</style>
+</head>
+<body id="top">
+<header>
+    <h1>학습용 OX 퀴즈 60문항</h1>
+    <p>처음부터 각 문항의 정답과 상세 설명이 모두 표시됩니다.</p>
+</header>
+
+<div class="wrap">
+    <section class="panel">
+        <div class="tabs">
+            <button class="active" onclick="filterAnswer('ALL', this)">전체</button>
+            <button onclick="filterAnswer('O', this)">정답 O</button>
+            <button onclick="filterAnswer('X', this)">정답 X</button>
+        </div>
+        <div class="search">
+            <input id="searchInput" oninput="applyFilter()" placeholder="검색어 입력: 예) 과적합, PEAS, SQL, 개인정보">
+        </div>
+        <div class="count" id="countText">전체 60문항 표시</div>
+    </section>
+
+    <section class="grid" id="cards">
+        
+    <article class="card" data-answer="O" id="q1">
+        <div class="topline">
+            <span class="num">1번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            기계학습 워크플로우에서 데이터 전처리는 모델 학습 전에 수행하는 것이 일반적이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            데이터 전처리는 결측치 처리, 이상치 처리, 인코딩, 스케일링 등을 통해 모델이 학습하기 좋은 형태로 데이터를 정리하는 과정이다. 일반적으로 모델 학습 전에 수행한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q2">
+        <div class="topline">
+            <span class="num">2번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            특성 스케일링은 특성 간 값의 범위 차이를 줄이는 데 사용된다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            특성 스케일링은 키, 몸무게, 소득처럼 단위와 범위가 다른 값을 비슷한 범위로 맞추는 과정이다. 거리 기반 모델이나 경사하강법 기반 모델에서 특히 중요하다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q3">
+        <div class="topline">
+            <span class="num">3번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            하이퍼파라미터는 모델이 학습 과정에서 자동으로 찾아내는 값이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            모델이 학습으로 찾아내는 값은 파라미터이다. 하이퍼파라미터는 학습 전에 사람이 정하거나 탐색으로 조정하는 값이다. 예: k-NN의 k, 결정트리의 최대 깊이.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q4">
+        <div class="topline">
+            <span class="num">4번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            StandardScaler는 데이터를 평균 0, 표준편차 1에 가깝게 변환한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            StandardScaler는 각 특성에서 평균을 빼고 표준편차로 나누어 평균 0, 표준편차 1에 가까운 분포로 변환한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q5">
+        <div class="topline">
+            <span class="num">5번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            MinMaxScaler와 StandardScaler는 완전히 같은 변환을 수행한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            MinMaxScaler는 보통 값을 0~1 범위로 압축하고, StandardScaler는 평균 0과 표준편차 1 기준으로 변환한다. 목적은 비슷하지만 방식은 다르다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q6">
+        <div class="topline">
+            <span class="num">6번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            특성 공학은 기존 데이터에서 새로운 특성을 만들어내는 과정이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            특성 공학은 기존 데이터를 조합하거나 변환하여 모델 성능에 도움이 되는 새로운 입력 변수를 만드는 과정이다. 예: 생년월일에서 나이 만들기.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q7">
+        <div class="topline">
+            <span class="num">7번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            모델 평가는 학습 데이터만으로 하는 것이 가장 객관적이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            학습 데이터로만 평가하면 모델이 외운 결과를 좋게 보일 수 있다. 객관적인 일반화 성능을 보려면 테스트 데이터나 검증 데이터를 사용해야 한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q8">
+        <div class="topline">
+            <span class="num">8번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            분류와 회귀는 모두 지도 학습에 속할 수 있다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            분류는 범주형 정답을 예측하고, 회귀는 연속적인 수치 값을 예측한다. 둘 다 입력 X와 정답 y를 사용하므로 지도 학습에 속할 수 있다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q9">
+        <div class="topline">
+            <span class="num">9번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            fit은 학습, predict는 예측을 수행한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            scikit-learn에서 fit()은 데이터를 이용해 모델을 학습시키고, predict()는 학습된 모델로 새로운 데이터의 결과를 예측한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q10">
+        <div class="topline">
+            <span class="num">10번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            좋은 기계학습 모델은 평가와 튜닝을 반복하며 개선될 수 있다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            모델 성능을 평가하고, 하이퍼파라미터 조정이나 전처리 개선을 반복하면 모델을 더 좋게 만들 수 있다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q11">
+        <div class="topline">
+            <span class="num">11번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            기계학습은 개발자가 모든 세부 규칙을 직접 프로그래밍하는 방식이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            기계학습은 사람이 모든 규칙을 직접 작성하기보다, 데이터에서 패턴을 학습해 예측이나 판단을 수행하는 방식이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q12">
+        <div class="topline">
+            <span class="num">12번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            지도 학습에는 특성 X와 레이블 y가 함께 필요하다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            지도 학습은 입력 데이터 X와 정답 레이블 y를 함께 사용해 모델을 학습시킨다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q13">
+        <div class="topline">
+            <span class="num">13번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            회귀는 개/고양이처럼 범주를 예측하는 문제이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            개/고양이처럼 범주를 예측하는 것은 분류이다. 회귀는 집값, 온도, 점수처럼 연속적인 수치를 예측하는 문제이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q14">
+        <div class="topline">
+            <span class="num">14번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            분류는 정해진 범주 중 하나를 예측하는 문제이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            분류는 스팸/정상, 합격/불합격, 개/고양이처럼 미리 정해진 범주 중 하나를 예측한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q15">
+        <div class="topline">
+            <span class="num">15번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            학습 데이터와 테스트 데이터를 나누는 이유는 일반화 성능을 평가하기 위해서이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            모델이 처음 보는 데이터에도 잘 작동하는지 확인하기 위해 학습용과 테스트용 데이터를 분리한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q16">
+        <div class="topline">
+            <span class="num">16번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            fit()은 모델을 학습시키고 predict()는 예측을 수행한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            fit()은 학습 단계, predict()는 예측 단계이다. 머신러닝 코드에서 매우 기본적인 사용 흐름이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q17">
+        <div class="topline">
+            <span class="num">17번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            과적합 모델은 학습 데이터에는 잘 맞지만 테스트 데이터에서는 성능이 낮을 수 있다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            과적합은 모델이 학습 데이터의 세부 특징이나 잡음까지 외운 상태이다. 그래서 학습 성능은 높지만 새로운 데이터에서는 성능이 떨어질 수 있다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q18">
+        <div class="topline">
+            <span class="num">18번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            비지도 학습은 정답 레이블 없이 데이터 구조를 찾는 방식이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            비지도 학습은 정답 y 없이 데이터의 군집, 패턴, 구조를 찾는다. 예: 군집화, 차원 축소.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q19">
+        <div class="topline">
+            <span class="num">19번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            scikit-learn은 파이썬의 기본 내장 라이브러리이므로 설치가 전혀 필요 없다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            scikit-learn은 파이썬 기본 내장 라이브러리가 아니다. 별도로 설치해야 사용할 수 있는 외부 라이브러리이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q20">
+        <div class="topline">
+            <span class="num">20번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            Garbage In, Garbage Out은 데이터 품질이 모델 결과에 중요하다는 의미이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            품질이 낮은 데이터를 넣으면 결과도 나빠진다는 뜻이다. 기계학습에서는 데이터 품질이 모델 성능에 큰 영향을 준다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q21">
+        <div class="topline">
+            <span class="num">21번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            지능 에이전트는 환경을 인지하고 행동하는 자율적 개체이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            지능 에이전트는 센서 등을 통해 환경을 인식하고, 목표나 규칙에 따라 행동을 선택하는 개체이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q22">
+        <div class="topline">
+            <span class="num">22번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            PEAS의 P는 Programming을 의미한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            PEAS에서 P는 Performance measure, 즉 성능 척도를 의미한다. E는 Environment, A는 Actuators, S는 Sensors이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q23">
+        <div class="topline">
+            <span class="num">23번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            로봇 청소기의 먼지 감지 센서는 PEAS의 S에 해당한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            S는 Sensors이다. 먼지 감지 센서, 충돌 감지 센서, 카메라 등은 환경을 인식하는 센서에 해당한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q24">
+        <div class="topline">
+            <span class="num">24번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            로봇 청소기의 바퀴 모터는 센서에 해당한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            바퀴 모터는 행동을 수행하는 장치이므로 Actuator에 해당한다. 센서는 환경을 감지하는 장치이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q25">
+        <div class="topline">
+            <span class="num">25번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            단순 반사 에이전트는 현재 입력에 기반하여 조건-행동 규칙으로 움직인다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            단순 반사 에이전트는 현재 지각에 따라 if-then 형태의 조건-행동 규칙으로 행동한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q26">
+        <div class="topline">
+            <span class="num">26번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            모델 기반 에이전트는 내부 상태나 기억을 사용할 수 있다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            모델 기반 에이전트는 현재 보이지 않는 환경 상태를 추정하기 위해 내부 상태나 기억을 활용할 수 있다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q27">
+        <div class="topline">
+            <span class="num">27번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            목표 기반 에이전트는 목표 달성 여부를 고려하지 않는다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            목표 기반 에이전트는 특정 목표를 달성하기 위해 행동을 선택한다. 따라서 목표 달성 여부를 고려한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q28">
+        <div class="topline">
+            <span class="num">28번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            효용 기반 에이전트는 여러 행동의 만족도나 효율을 비교할 수 있다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            효용 기반 에이전트는 단순히 목표 달성 여부뿐 아니라 더 좋은 선택, 더 효율적인 선택을 비교할 수 있다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q29">
+        <div class="topline">
+            <span class="num">29번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            파이썬 클래스는 에이전트의 상태와 행동을 함께 표현하기 어렵다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            파이썬 클래스는 속성으로 상태를, 메서드로 행동을 표현할 수 있어 에이전트 구현에 적합하다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q30">
+        <div class="topline">
+            <span class="num">30번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            모든 인공지능 에이전트는 반드시 머신러닝을 사용해야 한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            규칙 기반 에이전트처럼 머신러닝 없이도 동작하는 인공지능 에이전트가 있다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q31">
+        <div class="topline">
+            <span class="num">31번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            정보 보안의 3대 목표는 기밀성, 무결성, 가용성이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            정보 보안의 3대 목표는 CIA Triad로 불리며, Confidentiality, Integrity, Availability를 의미한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q32">
+        <div class="topline">
+            <span class="num">32번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            무결성은 허가된 사용자만 정보에 접근하도록 하는 것이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            허가된 사용자만 접근하게 하는 것은 기밀성이다. 무결성은 정보가 임의로 변경되거나 훼손되지 않고 정확하게 유지되는 성질이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q33">
+        <div class="topline">
+            <span class="num">33번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            웜은 다른 파일에 기생하지 않고 네트워크를 통해 스스로 전파될 수 있다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            웜은 바이러스와 달리 다른 파일에 붙지 않고 네트워크를 통해 스스로 복제·전파될 수 있다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q34">
+        <div class="topline">
+            <span class="num">34번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            SQL 인젝션은 입력값을 이용해 SQL 쿼리 구조를 조작하는 공격이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            SQL 인젝션은 사용자가 입력한 값이 SQL 명령의 일부로 해석되게 만들어 데이터베이스를 공격하는 방법이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q35">
+        <div class="topline">
+            <span class="num">35번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            랜섬웨어는 사용자의 파일을 암호화하고 금전을 요구할 수 있다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            랜섬웨어는 파일을 암호화하거나 시스템 사용을 제한한 뒤 복구 대가로 금전을 요구할 수 있다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q36">
+        <div class="topline">
+            <span class="num">36번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            타인의 계정에 무단 로그인하는 것은 디지털 윤리에 어긋난다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            허락 없이 타인의 계정에 접근하는 것은 사생활 침해이며 법적·윤리적으로 문제가 된다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q37">
+        <div class="topline">
+            <span class="num">37번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            비밀번호 해싱은 원본 비밀번호를 그대로 저장하기 위한 방법이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            비밀번호 해싱은 원본 비밀번호를 그대로 저장하지 않기 위한 방법이다. 로그인 시 입력값을 다시 해시하여 저장된 해시와 비교한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q38">
+        <div class="topline">
+            <span class="num">38번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            화이트 해커는 합법적이고 윤리적인 방법으로 보안 취약점 개선에 기여한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            화이트 해커는 허가된 범위 안에서 취약점을 찾고 보안을 강화하는 데 기여한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q39">
+        <div class="topline">
+            <span class="num">39번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            사용자 입력값 검증은 SQL 인젝션, XSS 예방의 중요한 첫걸음이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            입력값 검증, 이스케이프 처리, 매개변수화된 쿼리 사용 등은 SQL 인젝션과 XSS 예방에 중요하다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q40">
+        <div class="topline">
+            <span class="num">40번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            기술적 능력은 윤리적 책임과 무관하다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            기술을 다루는 사람은 그 영향과 피해 가능성을 고려해야 한다. 기술적 능력에는 윤리적 책임이 따른다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q41">
+        <div class="topline">
+            <span class="num">41번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            디지털 전환은 IT 기업에만 해당하는 변화이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            디지털 전환은 제조, 의료, 교육, 농업, 행정 등 다양한 분야에서 일어나는 변화이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q42">
+        <div class="topline">
+            <span class="num">42번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            생물정보학은 생명과학과 정보과학이 결합된 융합 분야이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            생물정보학은 유전체, 단백질, 생명 데이터 등을 정보과학 기법으로 분석하는 융합 분야이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q43">
+        <div class="topline">
+            <span class="num">43번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            T자형 인재는 여러 분야를 얕게만 아는 사람을 의미한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            T자형 인재는 한 분야의 깊은 전문성과 여러 분야에 대한 폭넓은 이해를 함께 갖춘 사람을 의미한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q44">
+        <div class="topline">
+            <span class="num">44번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            pandas는 표 형태 데이터를 분석하는 데 자주 사용된다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            pandas는 DataFrame을 이용해 표 형태 데이터를 불러오고, 정리하고, 분석하는 데 널리 사용된다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q45">
+        <div class="topline">
+            <span class="num">45번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            matplotlib은 데이터 시각화에 사용되는 대표적인 파이썬 라이브러리이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            matplotlib은 그래프와 차트를 그리는 데 자주 사용되는 파이썬 시각화 라이브러리이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q46">
+        <div class="topline">
+            <span class="num">46번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            융합은 서로 다른 분야가 결합해 새로운 가치를 만드는 과정이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            융합은 여러 분야의 지식과 기술이 결합되어 새로운 문제 해결 방법이나 가치를 만들어내는 과정이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q47">
+        <div class="topline">
+            <span class="num">47번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            자신의 전공에 프로그래밍을 접목하면 새로운 진로 기회를 만들 수 있다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            프로그래밍은 다양한 전공과 결합할 수 있어 데이터 분석, 자동화, 인공지능 응용 등 새로운 진로를 만들 수 있다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q48">
+        <div class="topline">
+            <span class="num">48번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            평생 학습은 학교 졸업 후에는 더 이상 필요하지 않다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            기술과 사회가 계속 변하기 때문에 졸업 후에도 배우고 적응하는 평생 학습이 중요하다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q49">
+        <div class="topline">
+            <span class="num">49번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            진로 설계에서 현재 인기 직업만 보면 충분하다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            진로 설계는 현재 인기뿐 아니라 자신의 흥미, 역량, 사회 변화, 장기 전망을 함께 고려해야 한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q50">
+        <div class="topline">
+            <span class="num">50번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            connecting the dots는 현재의 경험이 미래에 연결될 수 있음을 의미한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            connecting the dots는 지금은 따로 보이는 경험들이 나중에 의미 있게 연결될 수 있다는 뜻으로 쓰인다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q51">
+        <div class="topline">
+            <span class="num">51번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            오픈소스 소프트웨어는 소스 코드가 공개되어 누구나 사용, 수정, 배포할 수 있는 모델이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            오픈소스는 소스 코드가 공개되어 라이선스 조건에 따라 사용, 수정, 배포할 수 있는 소프트웨어 개발·공유 모델이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q52">
+        <div class="topline">
+            <span class="num">52번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            CCL이 적용된 창작물은 저작권이 완전히 사라졌으므로 아무 조건 없이 써도 된다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            CCL은 저작권자가 일정 조건 아래 이용을 허락하는 라이선스이다. 출처 표시, 비영리, 변경 금지, 동일 조건 변경 허락 등의 조건을 확인해야 한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q53">
+        <div class="topline">
+            <span class="num">53번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            이름, 전화번호, 주소는 개인정보에 해당한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            이름, 전화번호, 주소는 개인을 식별하거나 다른 정보와 결합해 식별할 수 있으므로 개인정보에 해당한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q54">
+        <div class="topline">
+            <span class="num">54번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            데이터 비식별화는 데이터를 분석할 수 없도록 모두 삭제하는 것이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            비식별화는 개인을 알아볼 수 없도록 처리하는 것이다. 데이터를 모두 삭제하는 것과는 다르며, 분석 목적에 맞게 익명화·가명처리·마스킹 등을 사용한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q55">
+        <div class="topline">
+            <span class="num">55번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            홍길동을 홍*동으로 바꾸는 것은 마스킹의 예이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            마스킹은 개인정보 일부를 가려 식별 가능성을 낮추는 방법이다. 홍길동을 홍*동으로 바꾸는 것은 마스킹 예시이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q56">
+        <div class="topline">
+            <span class="num">56번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            웹사이트의 모든 자료는 저작권이 없으므로 마음대로 복사해도 된다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            웹에 공개되어 있어도 저작권이 있을 수 있다. 사용 전 저작권, 이용 약관, 라이선스를 확인해야 한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q57">
+        <div class="topline">
+            <span class="num">57번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            비밀번호를 해시로 저장하는 것은 정보 보호 기술의 한 예이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            비밀번호를 원문으로 저장하지 않고 해시값으로 저장하면 유출 시 피해를 줄일 수 있다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="X" id="q58">
+        <div class="topline">
+            <span class="num">58번</span>
+            <span class="answer answer-x">정답: X</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            파이썬 문자열 replace 메서드는 원본 문자열 자체를 직접 수정한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            파이썬 문자열은 불변 객체이다. replace()는 원본을 직접 바꾸지 않고 변경된 새 문자열을 반환한다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q59">
+        <div class="topline">
+            <span class="num">59번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            robots.txt는 웹 크롤러에게 수집 허용·제한 규칙을 알려주는 파일이다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            robots.txt는 검색 엔진이나 크롤러에게 어떤 경로의 수집을 허용하거나 제한할지 알려주는 규칙 파일이다.
+        </div>
+    </article>
+    
+    <article class="card" data-answer="O" id="q60">
+        <div class="topline">
+            <span class="num">60번</span>
+            <span class="answer answer-o">정답: O</span>
+        </div>
+        <div class="question">
+            <div class="label">문항</div>
+            데이터를 사용할 때는 라이선스와 개인정보 보호를 함께 확인해야 한다.
+        </div>
+        <div class="explain">
+            <div class="label">상세 설명</div>
+            데이터 활용 시 저작권·라이선스 조건과 개인정보 보호 원칙을 함께 확인해야 안전하고 윤리적으로 사용할 수 있다.
+        </div>
+    </article>
+    
+    </section>
+</div>
+
+<a class="top" href="#top">▲ 위로</a>
+
+<script>
+let currentAnswer = "ALL";
+
+function filterAnswer(answer, btn) {
+    currentAnswer = answer;
+    document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    applyFilter();
+}
+
+function applyFilter() {
+    const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+    let visible = 0;
+
+    document.querySelectorAll(".card").forEach(card => {
+        const answerOk = currentAnswer === "ALL" || card.dataset.answer === currentAnswer;
+        const textOk = !keyword || card.textContent.toLowerCase().includes(keyword);
+        const show = answerOk && textOk;
+        card.style.display = show ? "block" : "none";
+        if (show) visible++;
+    });
+
+    document.getElementById("countText").textContent =
+        (currentAnswer === "ALL" ? "전체" : "정답 " + currentAnswer) + " " + visible + "문항 표시";
+}
+</script>
+</body>
+</html>
