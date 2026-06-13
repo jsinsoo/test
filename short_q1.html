@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>평가용 단답형 60문항 - 쓰시오형</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+  background: #f4f7fb;
+  color: #1f2937;
+  line-height: 1.65;
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(135deg, #111827, #334155);
+  color: white;
+  padding: 18px 28px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.18);
+}
+header h1 { margin: 0; font-size: 24px; }
+header p { margin: 6px 0 0; opacity: .9; }
+.wrap {
+  max-width: 1100px;
+  margin: 22px auto 120px;
+  padding: 0 16px;
+}
+.panel, .question {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  margin: 14px 0;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+}
+.info {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 12px;
+}
+label {
+  display: block;
+  font-weight: 900;
+  margin-bottom: 5px;
+}
+input.info-input {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 16px;
+}
+.question {
+  border-left: 7px solid #64748b;
+}
+.q-title {
+  font-size: 17px;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+.answer {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 16px;
+}
+.type {
+  display: inline-block;
+  background: #e2e8f0;
+  color: #334155;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+.controls {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(244,247,251,.97);
+  backdrop-filter: blur(8px);
+  padding: 14px 0;
+  border-top: 1px solid #cbd5e1;
+  z-index: 20;
+}
+.control-inner {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0 16px;
+}
+button.main {
+  border: none;
+  border-radius: 12px;
+  padding: 13px 24px;
+  background: #111827;
+  color: white;
+  font-size: 17px;
+  font-weight: 900;
+  cursor: pointer;
+}
+#result {
+  margin-left: auto;
+  font-size: 18px;
+  font-weight: 900;
+}
+#output {
+  display: none;
+  border: 3px solid #2563eb;
+}
+.download-link, .copy-btn {
+  display: inline-block;
+  margin-top: 12px;
+  margin-right: 8px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 900;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+.download-link { background: #2563eb; color: white; }
+.copy-btn { background: #111827; color: white; }
+textarea {
+  width: 100%;
+  min-height: 340px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  font-family: 'Malgun Gothic', monospace;
+  font-size: 14px;
+}
+
+.type-title {
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+.type-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.type-buttons button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: #e2e8f0;
+  color: #111827;
+  font-weight: 900;
+  cursor: pointer;
+}
+.type-buttons button.active {
+  background: #2563eb;
+  color: white;
+}
+.notice {
+  margin-top: 10px;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+@media (max-width: 700px) {
+  .info { grid-template-columns: 1fr; }
+  #result { margin-left: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>평가용 단답형 60문항 - 쓰시오형</h1>
+  <p>A~F 영역이 골고루 섞인 쓰시오형 단답 평가 문항입니다. 제출 후 결과 TXT 다운로드/복사 영역이 표시됩니다.</p>
+</header>
+
+<div class="wrap">
+  <section class="panel info">
+    <div>
+      <label for="studentId">학번</label>
+      <input class="info-input" id="studentId" placeholder="예: 1100">
+    </div>
+    <div>
+      <label for="studentName">이름</label>
+      <input class="info-input" id="studentName" placeholder="예: 홍길동">
+    </div>
+  </section>
+
+
+  <section class="panel">
+    <div class="type-title">문형 선택</div>
+    <div class="type-buttons">
+      <button id="formA" class="active" onclick="setFormType('A')">A형</button>
+      <button id="formB" onclick="setFormType('B')">B형</button>
+      <button id="formC" onclick="setFormType('C')">C형</button>
+      <button id="formD" onclick="setFormType('D')">D형</button>
+      <button id="formE" onclick="setFormType('E')">E형</button>
+      <button id="formF" onclick="setFormType('F')">F형</button>
+      <button id="formG" onclick="setFormType('G')">G형</button>
+      <button id="formH" onclick="setFormType('H')">H형</button>
+      <button id="formI" onclick="setFormType('I')">I형</button>
+      <button id="formJ" onclick="setFormType('J')">J형</button>
+    </div>
+    <div class="notice" id="formNotice">현재 A형입니다. 문형마다 60문항 순서가 다르게 섞입니다.</div>
+  </section>
+
+  <main id="quiz"></main>
+
+  <section id="output" class="panel">
+    <h2>제출 결과</h2>
+    <p>아래 <b>결과 TXT 다운로드</b>를 클릭하여 파일로 저장하세요. 다운로드가 안 되면 <b>TXT 내용 복사</b>를 누르고 메모장에 붙여넣어 저장하세요.</p>
+    <div id="downloadBox"></div>
+    <textarea id="resultText" readonly></textarea>
+  </section>
+</div>
+
+<div class="controls">
+  <div class="control-inner">
+    <button class="main" onclick="submitQuiz()">제출하기</button>
+    <span id="result">제출 전</span>
+  </div>
+</div>
+
+<script>
+const questions = [{"type": "A", "q": "특성 공학의 예시를 쓰시오.", "answer": "날짜에서 요일 열을 만든다", "keywords": ["요일", "날짜에서요일", "요일열"], "no": 1}, {"type": "B", "q": "기계학습의 핵심 설명을 쓰시오.", "answer": "데이터에서 패턴을 학습해 예측한다", "keywords": ["데이터", "패턴", "학습", "예측"], "no": 2}, {"type": "C", "q": "PEAS에서 성능 척도에 해당하는 것을 쓰시오.", "answer": "청소 완료율", "keywords": ["청소완료율", "완료율"], "no": 3}, {"type": "D", "q": "디지털 전환 DX의 사례를 쓰시오.", "answer": "스마트팜에서 IoT 센서 데이터를 분석해 물과 비료를 자동 공급하기", "keywords": ["스마트팜", "IoT", "센서", "자동"], "no": 4}, {"type": "E", "q": "오픈소스에 대한 설명을 쓰시오.", "answer": "소스 코드를 공개하고 사용·수정·배포를 허용할 수 있다", "keywords": ["소스코드", "공개", "사용", "수정", "배포"], "no": 5}, {"type": "F", "q": "DDoS 공격으로 은행 웹사이트가 마비되어 사용자가 송금을 못 했을 때 침해된 보안 목표를 쓰시오.", "answer": "가용성", "keywords": ["가용성"], "no": 6}, {"type": "A", "q": "StandardScaler의 역할을 쓰시오.", "answer": "평균 0, 표준편차 1에 가깝게 변환한다", "keywords": ["평균0", "표준편차1", "평균", "표준편차"], "no": 7}, {"type": "B", "q": "지도 학습에서 X가 보통 무엇을 의미하는지 쓰시오.", "answer": "특성 데이터", "keywords": ["특성", "입력", "feature"], "no": 8}, {"type": "C", "q": "로봇 청소기의 액추에이터에 해당하는 것을 쓰시오.", "answer": "바퀴 모터", "keywords": ["바퀴", "모터"], "no": 9}, {"type": "D", "q": "생물정보학이 어떤 분야의 융합인지 쓰시오.", "answer": "생명과학 + 정보과학", "keywords": ["생명과학", "정보과학"], "no": 10}, {"type": "E", "q": "CCL의 의미를 쓰시오.", "answer": "조건부 이용 허락 라이선스", "keywords": ["조건부", "이용", "허락", "라이선스"], "no": 11}, {"type": "F", "q": "웹 게시판에 악성 스크립트를 삽입해 다른 사용자의 브라우저에서 실행되게 하는 공격을 쓰시오.", "answer": "XSS", "keywords": ["xss"], "no": 12}, {"type": "A", "q": "DecisionTreeClassifier(max_depth=3)에서 max_depth가 무엇인지 쓰시오.", "answer": "하이퍼파라미터", "keywords": ["하이퍼파라미터", "hyperparameter"], "no": 13}, {"type": "B", "q": "지도 학습에서 y가 보통 무엇을 의미하는지 쓰시오.", "answer": "정답 레이블 또는 타겟", "keywords": ["정답", "레이블", "타겟", "label", "target"], "no": 14}, {"type": "C", "q": "단순 반사 에이전트의 특징을 쓰시오.", "answer": "현재 입력에 즉시 반응한다", "keywords": ["현재입력", "즉시", "반응"], "no": 15}, {"type": "D", "q": "T자형 인재의 의미를 쓰시오.", "answer": "깊은 전공 전문성과 넓은 융합 역량을 가진 사람", "keywords": ["깊은", "전문성", "넓은", "융합"], "no": 16}, {"type": "E", "q": "010-1234-5678의 가운데 번호를 마스킹하는 일반적인 방식을 쓰시오.", "answer": "parts=phone.split('-'); parts[1]='****'; '-'.join(parts)", "keywords": ["split", "parts", "****", "join"], "no": 17}, {"type": "F", "q": "디지털 시민 의식에 맞는 행동을 쓰시오.", "answer": "유해 정보 발견 시 신고", "keywords": ["유해", "신고"], "no": 18}, {"type": "A", "q": "기계학습 워크플로우의 일반적인 순서를 쓰시오.", "answer": "문제정의 → 데이터준비 → 전처리 → 학습 → 평가", "keywords": ["문제정의", "데이터준비", "전처리", "학습", "평가"], "no": 19}, {"type": "B", "q": "분류 문제의 예시를 쓰시오.", "answer": "사진 속 동물이 개인지 고양이인지 구분", "keywords": ["개", "고양이", "구분", "분류"], "no": 20}, {"type": "C", "q": "모델 기반 에이전트가 단순 반사 에이전트와 다른 점을 쓰시오.", "answer": "내부 상태를 활용할 수 있다", "keywords": ["내부상태", "상태", "기억"], "no": 21}, {"type": "D", "q": "pandas의 주요 역할을 쓰시오.", "answer": "표 형태 데이터 분석", "keywords": ["표", "데이터", "분석"], "no": 22}, {"type": "E", "q": "데이터 비식별화의 목적을 쓰시오.", "answer": "개인을 특정하기 어렵게 하면서 데이터를 안전하게 활용하기", "keywords": ["개인", "특정", "어렵", "안전", "활용"], "no": 23}, {"type": "F", "q": "나중에 특정 행위를 부인할 수 없게 하는 보안 목표를 쓰시오.", "answer": "부인 방지", "keywords": ["부인", "방지"], "no": 24}, {"type": "A", "q": "모델 평가 단계의 주된 목적을 쓰시오.", "answer": "새로운 데이터에서 성능을 객관적으로 측정한다", "keywords": ["새로운데이터", "성능", "객관", "측정"], "no": 25}, {"type": "B", "q": "회귀 문제의 예시를 쓰시오.", "answer": "내일 기온 예측", "keywords": ["기온", "예측", "수치"], "no": 26}, {"type": "C", "q": "목표 기반 에이전트의 예를 쓰시오.", "answer": "모든 방을 청소하기 위해 이동 계획 수립", "keywords": ["모든방", "청소", "계획"], "no": 27}, {"type": "D", "q": "matplotlib의 주요 역할을 쓰시오.", "answer": "데이터 시각화", "keywords": ["데이터", "시각화"], "no": 28}, {"type": "E", "q": "개인정보에 해당하는 것을 쓰시오.", "answer": "이름과 전화번호", "keywords": ["이름", "전화번호"], "no": 29}, {"type": "F", "q": "SQL 인젝션 방어의 기본을 쓰시오.", "answer": "입력값 검증과 준비된 구문 사용", "keywords": ["입력값", "검증", "준비된구문", "prepared"], "no": 30}, {"type": "A", "q": "하이퍼파라미터 튜닝을 하는 이유를 쓰시오.", "answer": "모델의 일반화 성능을 개선하기 위해", "keywords": ["일반화", "성능", "개선"], "no": 31}, {"type": "B", "q": "train_test_split의 주된 목적을 쓰시오.", "answer": "데이터를 학습용과 테스트용으로 나누기 위해", "keywords": ["학습용", "테스트용", "나누"], "no": 32}, {"type": "C", "q": "효용 기반 에이전트의 판단 기준을 쓰시오.", "answer": "효율·안전·만족도 등 종합 가치", "keywords": ["효율", "안전", "만족", "가치"], "no": 33}, {"type": "D", "q": "df['major'].str.contains('컴공')의 의미를 쓰시오.", "answer": "major 열 값이 컴공을 포함하는지 True/False로 검사한다", "keywords": ["major", "컴공", "포함", "true", "false"], "no": 34}, {"type": "E", "q": "BY-NC 조건의 CCL 의미를 쓰시오.", "answer": "저작자 표시와 비영리 조건", "keywords": ["저작자", "표시", "비영리", "by", "nc"], "no": 35}, {"type": "F", "q": "비밀번호 저장 방식으로 가장 적절한 것을 쓰시오.", "answer": "단방향 해시로 저장", "keywords": ["단방향", "해시"], "no": 36}, {"type": "A", "q": "테스트 데이터에 StandardScaler를 적용할 때 올바른 방식을 쓰시오.", "answer": "학습 데이터로 fit한 scaler로 transform만 한다", "keywords": ["학습데이터", "fit", "transform", "transform만"], "no": 37}, {"type": "B", "q": "scikit-learn에서 모델 학습에 사용하는 대표 메서드를 쓰시오.", "answer": "fit", "keywords": ["fit"], "no": 38}, {"type": "C", "q": "파이썬 코드에서 perceive 메서드의 역할을 쓰시오.", "answer": "환경 인지", "keywords": ["환경", "인지"], "no": 39}, {"type": "D", "q": "과학고 학생이 IT 기술을 대하는 바람직한 태도를 쓰시오.", "answer": "전공 문제 해결 도구로 활용한다", "keywords": ["전공", "문제해결", "도구", "활용"], "no": 40}, {"type": "E", "q": ".gitignore의 주된 역할을 쓰시오.", "answer": "민감 파일이 Git에 추적되지 않도록 제외하기", "keywords": ["민감", "git", "추적", "제외"], "no": 41}, {"type": "F", "q": "스스로 네트워크를 통해 복제·전파되는 악성코드를 쓰시오.", "answer": "웜", "keywords": ["웜", "worm"], "no": 42}, {"type": "A", "q": "df.fillna(0)의 의미를 쓰시오.", "answer": "결측치를 0으로 채운다", "keywords": ["결측치", "0"], "no": 43}, {"type": "B", "q": "scikit-learn에서 학습된 모델로 예측할 때 사용하는 대표 메서드를 쓰시오.", "answer": "predict", "keywords": ["predict"], "no": 44}, {"type": "C", "q": "파이썬 코드에서 act 메서드의 역할을 쓰시오.", "answer": "행동 결정", "keywords": ["행동", "결정"], "no": 45}, {"type": "D", "q": "평생 학습이 중요한 이유를 쓰시오.", "answer": "기술 환경이 빠르게 변하기 때문", "keywords": ["기술", "환경", "변"], "no": 46}, {"type": "E", "q": "파이썬 문자열 처리가 편리한 이유를 쓰시오.", "answer": "split, join, slicing 같은 고수준 기능이 풍부하기 때문", "keywords": ["split", "join", "slicing", "슬라이싱"], "no": 47}, {"type": "F", "q": "버퍼 오버플로우가 주로 발생하는 이유를 쓰시오.", "answer": "할당된 메모리보다 큰 데이터를 경계 검사 없이 처리하기 때문", "keywords": ["메모리", "큰데이터", "경계검사", "버퍼"], "no": 48}, {"type": "A", "q": "과적합에 대한 올바른 설명을 쓰시오.", "answer": "학습 성능은 높지만 테스트 성능이 낮을 수 있다", "keywords": ["학습성능", "테스트성능", "낮", "과적합"], "no": 49}, {"type": "B", "q": "과적합에 대한 설명을 쓰시오.", "answer": "학습 데이터에 지나치게 맞아 새 데이터에 약해진다", "keywords": ["학습데이터", "새데이터", "약", "과적합"], "no": 50}, {"type": "C", "q": "자율주행차의 센서에 해당하는 것을 쓰시오.", "answer": "카메라와 라이다", "keywords": ["카메라", "라이다"], "no": 51}, {"type": "D", "q": "진로 데이터 분석 프로젝트의 첫 단계를 쓰시오.", "answer": "분석할 진로 질문과 필요한 데이터 정하기", "keywords": ["진로질문", "필요한데이터", "정하기"], "no": 52}, {"type": "E", "q": "오픈 데이터의 가치에 해당하는 사례를 쓰시오.", "answer": "공공 버스 위치 API를 공개해 다양한 앱 개발에 활용", "keywords": ["공공", "버스", "api", "앱"], "no": 53}, {"type": "F", "q": "유료 게임 설치 파일을 무단 복사해주는 행동이 무엇인지 쓰시오.", "answer": "저작권 침해", "keywords": ["저작권", "침해"], "no": 54}, {"type": "A", "q": "머신러닝 프로젝트의 최종 목표를 쓰시오.", "answer": "정의한 문제를 잘 해결하는 일반화 성능 좋은 모델 만들기", "keywords": ["문제", "일반화", "성능", "모델"], "no": 55}, {"type": "B", "q": "scikit-learn의 일관된 API 장점을 쓰시오.", "answer": "fit, predict 같은 비슷한 방식으로 다양한 모델을 사용할 수 있다", "keywords": ["fit", "predict", "다양한모델"], "no": 56}, {"type": "C", "q": "지능 에이전트 수업에서 클래스를 사용하는 이유를 쓰시오.", "answer": "상태와 행동을 하나의 단위로 묶기 위해", "keywords": ["상태", "행동", "묶"], "no": 57}, {"type": "D", "q": "프로그래밍 기술 사용에서 가장 중요한 윤리 원칙을 쓰시오.", "answer": "남에게 피해를 주지 않고 책임 있게 사용한다", "keywords": ["피해", "책임", "윤리"], "no": 58}, {"type": "E", "q": "비밀번호 저장 방식으로 가장 안전한 표준에 가까운 것을 쓰시오.", "answer": "단방향 해시 값으로 저장", "keywords": ["단방향", "해시"], "no": 59}, {"type": "F", "q": "보안 취약점을 발견했을 때 책임감 있는 공개 원칙에 맞는 행동을 쓰시오.", "answer": "관리자나 보안팀에 비공개로 알리고 수정 시간을 준다", "keywords": ["관리자", "보안팀", "비공개", "수정시간"], "no": 60}];
+let questionBank = questions.slice();
+let currentForm = "A";
+let answers = [];
+let answerTimes = [];
+let startTime = nowText();
+let lastScore = 0;
+
+const formSeeds = {
+  A: 101, B: 211, C: 307, D: 401, E: 503,
+  F: 601, G: 701, H: 809, I: 907, J: 1009
+};
+
+function seededRandom(seed) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+function shuffledQuestions(form) {
+  const arr = questionBank.map(item => ({...item}));
+  let seed = formSeeds[form] || 101;
+  for (let i = arr.length - 1; i > 0; i--) {
+    seed += i * 97;
+    const j = Math.floor(seededRandom(seed) * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr.map((item, idx) => ({...item, no: idx + 1}));
+}
+
+function setFormType(form) {
+  currentForm = form;
+  questions.length = 0;
+  shuffledQuestions(form).forEach(q => questions.push(q));
+  answers = Array(questions.length).fill("");
+  answerTimes = Array(questions.length).fill("");
+  startTime = nowText();
+
+  "ABCDEFGHIJ".split("").forEach(t => {
+    document.getElementById("form" + t).classList.toggle("active", t === form);
+  });
+
+  document.getElementById("formNotice").textContent =
+    "현재 " + form + "형입니다. 60문항 순서가 " + form + "형 순서로 섞였습니다.";
+  document.getElementById("result").textContent = "제출 전";
+  document.getElementById("output").style.display = "none";
+  renderQuiz();
+}
+
+function norm(s) {
+  return (s || "").toLowerCase().replace(/\s+/g, "").trim();
+}
+
+function renderQuiz() {
+  const quiz = document.getElementById("quiz");
+  quiz.innerHTML = questions.map((item, i) => `
+    <article class="question">
+      <div class="type">${item.type} 영역</div>
+      <div class="q-title">${i + 1}. ${item.q}</div>
+      <input class="answer" id="ans${i}" oninput="recordAnswer(${i})" placeholder="단답형 답안 입력">
+    </article>
+  `).join("");
+}
+
+function recordAnswer(i) {
+  answers[i] = document.getElementById("ans" + i).value;
+  answerTimes[i] = nowText();
+}
+
+function isCorrect(user, item) {
+  const u = norm(user);
+  if (!u) return false;
+  if (norm(item.answer) === u) return true;
+  return item.keywords.some(k => {
+    const kk = norm(k);
+    return u.includes(kk) || kk.includes(u);
+  });
+}
+
+function nowText() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function safeName(s) {
+  return (s || "미입력").replace(/[\\/:*?"<>|\s]+/g, "_");
+}
+
+function makeResultText(correctCount, submitTime) {
+  const sid = document.getElementById("studentId").value || "미입력";
+  const name = document.getElementById("studentName").value || "미입력";
+  lastScore = Math.round(correctCount / questions.length * 100);
+
+  let text = "";
+  text += "학번: " + sid + "\n";
+  text += "이름: " + name + "\n";
+  text += "문형: " + currentForm + "형\n";
+  text += "문항 구성: A~F 영역 골고루 혼합 단답형 60문항\n";
+  text += "점수: " + lastScore + "점 (" + correctCount + "/" + questions.length + ")\n";
+  text += "시작시각: " + startTime + "\n";
+  text += "제출시각: " + submitTime + "\n";
+  text += "========================================\n\n";
+
+  questions.forEach((item, i) => {
+    const user = document.getElementById("ans" + i).value || "미응답";
+    const ok = isCorrect(user, item) ? "정답 인정" : "오답";
+    const atime = answerTimes[i] || "미응답";
+    text += (i + 1) + "번 [" + item.type + " 영역]\n";
+    text += "문제: " + item.q + "\n";
+    text += "내 답: " + user + "\n";
+    text += "모범 답안: " + item.answer + "\n";
+    text += "정오답: " + ok + "\n";
+    text += "문항 응답시각: " + atime + "\n";
+    text += "----------------------------------------\n\n";
+  });
+
+  return text;
+}
+
+function submitQuiz() {
+  const unanswered = [];
+  questions.forEach((q, i) => {
+    const v = document.getElementById("ans" + i).value.trim();
+    if (!v) unanswered.push(i + 1);
+  });
+
+  if (unanswered.length > 0) {
+    const go = confirm("미응답 문항이 있습니다.\n미응답 번호: " + unanswered.join(", ") + "\n그래도 제출할까요?");
+    if (!go) return;
+  }
+
+  let correctCount = 0;
+  questions.forEach((item, i) => {
+    const user = document.getElementById("ans" + i).value;
+    if (isCorrect(user, item)) correctCount++;
+  });
+
+  const submitTime = nowText();
+  const text = makeResultText(correctCount, submitTime);
+  const sid = document.getElementById("studentId").value || "미입력";
+  const name = document.getElementById("studentName").value || "미입력";
+  const stamp = submitTime.replace(/[-: ]/g, "");
+  const fileName = safeName(sid) + "_" + safeName(name) + "_" + currentForm + "형_" + lastScore + "점_" + stamp + ".txt";
+
+  document.getElementById("result").textContent = "제출 완료: " + lastScore + "점 (" + correctCount + "/" + questions.length + ")";
+  document.getElementById("resultText").value = text;
+
+  const encoded = encodeURIComponent("\ufeff" + text);
+  const downloadBox = document.getElementById("downloadBox");
+  downloadBox.innerHTML = "";
+
+  const link = document.createElement("a");
+  link.className = "download-link";
+  link.textContent = "결과 TXT 다운로드";
+  link.download = fileName;
+  link.href = "data:text/plain;charset=utf-8," + encoded;
+  downloadBox.appendChild(link);
+
+  const copyBtn = document.createElement("button");
+  copyBtn.className = "copy-btn";
+  copyBtn.textContent = "TXT 내용 복사";
+  copyBtn.onclick = function() {
+    const box = document.getElementById("resultText");
+    box.focus();
+    box.select();
+    document.execCommand("copy");
+    copyBtn.textContent = "복사 완료";
+  };
+  downloadBox.appendChild(copyBtn);
+
+  document.getElementById("output").style.display = "block";
+  document.getElementById("output").scrollIntoView({ behavior: "smooth" });
+}
+
+setFormType("A");
+</script>
+</body>
+</html>

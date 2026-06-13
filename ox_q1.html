@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>평가용 OX 퀴즈</title>
+<style>
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+    line-height: 1.6;
+}
+header {
+    background: linear-gradient(135deg, #243b55, #141e30);
+    color: white;
+    padding: 18px 28px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 3px 12px rgba(0,0,0,.18);
+}
+header h1 { margin: 0; font-size: 24px; }
+header p { margin: 6px 0 0; opacity: .9; }
+.wrap {
+    max-width: 1100px;
+    margin: 20px auto 120px;
+    padding: 0 16px;
+}
+.panel {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.08);
+}
+.info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    gap: 12px;
+}
+label {
+    display: block;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+input {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 16px;
+}
+.type-title { font-weight: 900; margin-bottom: 10px; }
+.type-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+.type-buttons button {
+    border: none;
+    border-radius: 999px;
+    padding: 10px 22px;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    background: #e2e8f0;
+    color: #111827;
+}
+.type-buttons button.active {
+    background: #2563eb;
+    color: white;
+}
+.notice {
+    margin-top: 10px;
+    color: #475569;
+    font-size: 14px;
+}
+.question {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    margin: 15px 0;
+    box-shadow: 0 3px 12px rgba(0,0,0,.07);
+    border-left: 7px solid #64748b;
+}
+.q-title {
+    font-size: 17px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+.choices button {
+    border: none;
+    border-radius: 999px;
+    padding: 9px 24px;
+    font-size: 16px;
+    font-weight: 900;
+    margin-right: 8px;
+    cursor: pointer;
+    background: #e2e8f0;
+    color: #111827;
+}
+.choices button.selected {
+    background: #2563eb;
+    color: white;
+}
+.controls {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(244,247,251,.97);
+    backdrop-filter: blur(8px);
+    padding: 14px 0;
+    border-top: 1px solid #cbd5e1;
+    z-index: 20;
+}
+.control-inner {
+    max-width: 1100px;
+    margin: auto;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0 16px;
+}
+.main-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 13px 24px;
+    background: #111827;
+    color: white;
+    font-size: 17px;
+    font-weight: 900;
+    cursor: pointer;
+}
+#result {
+    font-size: 18px;
+    font-weight: 900;
+    margin-left: auto;
+}
+#output {
+    display: none;
+    border: 3px solid #2563eb;
+}
+.download-link, .copy-btn {
+    display: inline-block;
+    margin-top: 12px;
+    margin-right: 8px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 900;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+.download-link { background: #2563eb; color: white; }
+.copy-btn { background: #111827; color: white; }
+textarea {
+    width: 100%;
+    min-height: 320px;
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    font-family: 'Malgun Gothic', monospace;
+    font-size: 14px;
+}
+@media (max-width: 700px) {
+    .info { grid-template-columns: 1fr; }
+    #result { margin-left: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+<header>
+    <h1>평가용 OX 퀴즈</h1>
+    <p>A~E 유형을 선택한 뒤 답안을 선택하고 제출하세요. 제출 후 결과 TXT 다운로드/복사 영역이 표시됩니다.</p>
+</header>
+
+<div class="wrap">
+    <section class="panel info">
+        <div>
+            <label for="studentId">학번</label>
+            <input id="studentId" placeholder="예: 1100">
+        </div>
+        <div>
+            <label for="studentName">이름</label>
+            <input id="studentName" placeholder="예: 홍길동">
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="type-title">출제 유형 선택</div>
+        <div class="type-buttons">
+            <button id="typeA" class="active" onclick="setQuizType('A')">A 유형</button>
+            <button id="typeB" onclick="setQuizType('B')">B 유형</button>
+            <button id="typeC" onclick="setQuizType('C')">C 유형</button>
+            <button id="typeD" onclick="setQuizType('D')">D 유형</button>
+            <button id="typeE" onclick="setQuizType('E')">E 유형</button>
+        </div>
+        <div class="notice" id="typeNotice">현재 A 유형입니다.</div>
+    </section>
+
+    <main id="quiz"></main>
+
+    <section id="output" class="panel">
+        <h2>제출 결과</h2>
+        <p>아래 <b>결과 TXT 다운로드</b>를 클릭하여 파일로 저장하세요. 다운로드가 안 되면 <b>TXT 내용 복사</b>를 누르고 메모장에 붙여넣어 저장하세요.</p>
+        <div id="downloadBox"></div>
+        <textarea id="resultText" readonly></textarea>
+    </section>
+</div>
+
+<div class="controls">
+    <div class="control-inner">
+        <button class="main-btn" onclick="submitQuiz()">제출하기</button>
+        <span id="result">제출 전</span>
+    </div>
+</div>
+
+<script>
+const questionBank = [{"q": "기계학습 워크플로우에서 데이터 전처리는 모델 학습 전에 수행하는 것이 일반적이다.", "a": "O"}, {"q": "특성 스케일링은 특성 간 값의 범위 차이를 줄이는 데 사용된다.", "a": "O"}, {"q": "하이퍼파라미터는 모델이 학습 과정에서 자동으로 찾아내는 값이다.", "a": "X"}, {"q": "StandardScaler는 데이터를 평균 0, 표준편차 1에 가깝게 변환한다.", "a": "O"}, {"q": "MinMaxScaler와 StandardScaler는 완전히 같은 변환을 수행한다.", "a": "X"}, {"q": "특성 공학은 기존 데이터에서 새로운 특성을 만들어내는 과정이다.", "a": "O"}, {"q": "모델 평가는 학습 데이터만으로 하는 것이 가장 객관적이다.", "a": "X"}, {"q": "분류와 회귀는 모두 지도 학습에 속할 수 있다.", "a": "O"}, {"q": "fit은 학습, predict는 예측을 수행한다.", "a": "O"}, {"q": "좋은 기계학습 모델은 평가와 튜닝을 반복하며 개선될 수 있다.", "a": "O"}, {"q": "기계학습은 개발자가 모든 세부 규칙을 직접 프로그래밍하는 방식이다.", "a": "X"}, {"q": "지도 학습에는 특성 X와 레이블 y가 함께 필요하다.", "a": "O"}, {"q": "회귀는 개/고양이처럼 범주를 예측하는 문제이다.", "a": "X"}, {"q": "분류는 정해진 범주 중 하나를 예측하는 문제이다.", "a": "O"}, {"q": "학습 데이터와 테스트 데이터를 나누는 이유는 일반화 성능을 평가하기 위해서이다.", "a": "O"}, {"q": "fit()은 모델을 학습시키고 predict()는 예측을 수행한다.", "a": "O"}, {"q": "과적합 모델은 학습 데이터에는 잘 맞지만 테스트 데이터에서는 성능이 낮을 수 있다.", "a": "O"}, {"q": "비지도 학습은 정답 레이블 없이 데이터 구조를 찾는 방식이다.", "a": "O"}, {"q": "scikit-learn은 파이썬의 기본 내장 라이브러리이므로 설치가 전혀 필요 없다.", "a": "X"}, {"q": "Garbage In, Garbage Out은 데이터 품질이 모델 결과에 중요하다는 의미이다.", "a": "O"}, {"q": "지능 에이전트는 환경을 인지하고 행동하는 자율적 개체이다.", "a": "O"}, {"q": "PEAS의 P는 Programming을 의미한다.", "a": "X"}, {"q": "로봇 청소기의 먼지 감지 센서는 PEAS의 S에 해당한다.", "a": "O"}, {"q": "로봇 청소기의 바퀴 모터는 센서에 해당한다.", "a": "X"}, {"q": "단순 반사 에이전트는 현재 입력에 기반하여 조건-행동 규칙으로 움직인다.", "a": "O"}, {"q": "모델 기반 에이전트는 내부 상태나 기억을 사용할 수 있다.", "a": "O"}, {"q": "목표 기반 에이전트는 목표 달성 여부를 고려하지 않는다.", "a": "X"}, {"q": "효용 기반 에이전트는 여러 행동의 만족도나 효율을 비교할 수 있다.", "a": "O"}, {"q": "파이썬 클래스는 에이전트의 상태와 행동을 함께 표현하기 어렵다.", "a": "X"}, {"q": "모든 인공지능 에이전트는 반드시 머신러닝을 사용해야 한다.", "a": "X"}, {"q": "정보 보안의 3대 목표는 기밀성, 무결성, 가용성이다.", "a": "O"}, {"q": "무결성은 허가된 사용자만 정보에 접근하도록 하는 것이다.", "a": "X"}, {"q": "웜은 다른 파일에 기생하지 않고 네트워크를 통해 스스로 전파될 수 있다.", "a": "O"}, {"q": "SQL 인젝션은 입력값을 이용해 SQL 쿼리 구조를 조작하는 공격이다.", "a": "O"}, {"q": "랜섬웨어는 사용자의 파일을 암호화하고 금전을 요구할 수 있다.", "a": "O"}, {"q": "타인의 계정에 무단 로그인하는 것은 디지털 윤리에 어긋난다.", "a": "O"}, {"q": "비밀번호 해싱은 원본 비밀번호를 그대로 저장하기 위한 방법이다.", "a": "X"}, {"q": "화이트 해커는 합법적이고 윤리적인 방법으로 보안 취약점 개선에 기여한다.", "a": "O"}, {"q": "사용자 입력값 검증은 SQL 인젝션, XSS 예방의 중요한 첫걸음이다.", "a": "O"}, {"q": "기술적 능력은 윤리적 책임과 무관하다.", "a": "X"}, {"q": "디지털 전환은 IT 기업에만 해당하는 변화이다.", "a": "X"}, {"q": "생물정보학은 생명과학과 정보과학이 결합된 융합 분야이다.", "a": "O"}, {"q": "T자형 인재는 여러 분야를 얕게만 아는 사람을 의미한다.", "a": "X"}, {"q": "pandas는 표 형태 데이터를 분석하는 데 자주 사용된다.", "a": "O"}, {"q": "matplotlib은 데이터 시각화에 사용되는 대표적인 파이썬 라이브러리이다.", "a": "O"}, {"q": "융합은 서로 다른 분야가 결합해 새로운 가치를 만드는 과정이다.", "a": "O"}, {"q": "자신의 전공에 프로그래밍을 접목하면 새로운 진로 기회를 만들 수 있다.", "a": "O"}, {"q": "평생 학습은 학교 졸업 후에는 더 이상 필요하지 않다.", "a": "X"}, {"q": "진로 설계에서 현재 인기 직업만 보면 충분하다.", "a": "X"}, {"q": "connecting the dots는 현재의 경험이 미래에 연결될 수 있음을 의미한다.", "a": "O"}, {"q": "오픈소스 소프트웨어는 소스 코드가 공개되어 누구나 사용, 수정, 배포할 수 있는 모델이다.", "a": "O"}, {"q": "CCL이 적용된 창작물은 저작권이 완전히 사라졌으므로 아무 조건 없이 써도 된다.", "a": "X"}, {"q": "이름, 전화번호, 주소는 개인정보에 해당한다.", "a": "O"}, {"q": "데이터 비식별화는 데이터를 분석할 수 없도록 모두 삭제하는 것이다.", "a": "X"}, {"q": "홍길동을 홍*동으로 바꾸는 것은 마스킹의 예이다.", "a": "O"}, {"q": "웹사이트의 모든 자료는 저작권이 없으므로 마음대로 복사해도 된다.", "a": "X"}, {"q": "비밀번호를 해시로 저장하는 것은 정보 보호 기술의 한 예이다.", "a": "O"}, {"q": "파이썬 문자열 replace 메서드는 원본 문자열 자체를 직접 수정한다.", "a": "X"}, {"q": "robots.txt는 웹 크롤러에게 수집 허용·제한 규칙을 알려주는 파일이다.", "a": "O"}, {"q": "데이터를 사용할 때는 라이선스와 개인정보 보호를 함께 확인해야 한다.", "a": "O"}];
+
+let currentType = "A";
+let questions = [];
+let answers = [];
+let lastScore = 0;
+
+const typeSeeds = { A: 101, B: 203, C: 307, D: 409, E: 509 };
+
+function seededRandom(seed) {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+}
+
+function shuffledByType(type) {
+    const arr = questionBank.map(item => ({ q: item.q, a: item.a }));
+    let seed = typeSeeds[type] || 101;
+    for (let i = arr.length - 1; i > 0; i--) {
+        seed += i * 97;
+        const j = Math.floor(seededRandom(seed) * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function setQuizType(type) {
+    currentType = type;
+    questions = shuffledByType(type);
+    answers = Array(questions.length).fill(null);
+
+    ["A", "B", "C", "D", "E"].forEach(t => {
+        document.getElementById("type" + t).classList.toggle("active", t === type);
+    });
+
+    document.getElementById("typeNotice").textContent = "현재 " + type + " 유형입니다.";
+    document.getElementById("result").textContent = "제출 전";
+    document.getElementById("output").style.display = "none";
+    renderQuiz();
+}
+
+function renderQuiz() {
+    const quiz = document.getElementById("quiz");
+    quiz.innerHTML = questions.map((item, i) => `
+        <article class="question">
+            <div class="q-title">${i + 1}. ${item.q}</div>
+            <div class="choices">
+                <button id="o${i}" onclick="selectAnswer(${i}, 'O')">O</button>
+                <button id="x${i}" onclick="selectAnswer(${i}, 'X')">X</button>
+            </div>
+        </article>
+    `).join("");
+}
+
+function selectAnswer(i, ans) {
+    answers[i] = ans;
+    document.getElementById("o" + i).classList.toggle("selected", ans === "O");
+    document.getElementById("x" + i).classList.toggle("selected", ans === "X");
+}
+
+function nowText() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function safeName(s) {
+    return (s || "미입력").replace(/[\/:*?"<>|\s]+/g, "_");
+}
+
+function makeResultText(correctCount) {
+    const sid = document.getElementById("studentId").value || "미입력";
+    const name = document.getElementById("studentName").value || "미입력";
+    lastScore = Math.round(correctCount / questions.length * 100);
+
+    let text = "";
+    text += "학번: " + sid + "\n";
+    text += "이름: " + name + "\n";
+    text += "유형: " + currentType + " 유형\n";
+    text += "점수: " + lastScore + "점 (" + correctCount + "/" + questions.length + ")\n";
+    text += "응시시각: " + nowText() + "\n";
+    text += "========================================\n\n";
+
+    questions.forEach((item, i) => {
+        const user = answers[i] || "미응답";
+        const ok = user === item.a ? "정답" : "오답";
+        text += (i + 1) + "번\n";
+        text += "내 답: " + user + " / 정답: " + item.a + " / 결과: " + ok + "\n\n";
+    });
+
+    return text;
+}
+
+function submitQuiz() {
+    const unanswered = [];
+    answers.forEach((v, i) => {
+        if (v === null) unanswered.push(i + 1);
+    });
+
+    if (unanswered.length > 0) {
+        const go = confirm("미응답 문항이 있습니다.\n미응답 번호: " + unanswered.join(", ") + "\n그래도 제출할까요?");
+        if (!go) return;
+    }
+
+    let correctCount = 0;
+    questions.forEach((q, i) => {
+        if (answers[i] === q.a) correctCount++;
+    });
+
+    const text = makeResultText(correctCount);
+    const sid = document.getElementById("studentId").value || "미입력";
+    const name = document.getElementById("studentName").value || "미입력";
+    const stamp = nowText().replace(/[-: ]/g, "");
+    const fileName = safeName(sid) + "_" + safeName(name) + "_" + lastScore + "점_" + stamp + ".txt";
+
+    document.getElementById("result").textContent = "제출 완료: " + lastScore + "점 (" + correctCount + "/" + questions.length + ")";
+    document.getElementById("resultText").value = text;
+
+    const encoded = encodeURIComponent("\ufeff" + text);
+    const downloadBox = document.getElementById("downloadBox");
+    downloadBox.innerHTML = "";
+
+    const link = document.createElement("a");
+    link.className = "download-link";
+    link.textContent = "결과 TXT 다운로드";
+    link.download = fileName;
+    link.href = "data:text/plain;charset=utf-8," + encoded;
+    downloadBox.appendChild(link);
+
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "copy-btn";
+    copyBtn.textContent = "TXT 내용 복사";
+    copyBtn.onclick = function() {
+        const box = document.getElementById("resultText");
+        box.focus();
+        box.select();
+        document.execCommand("copy");
+        copyBtn.textContent = "복사 완료";
+    };
+    downloadBox.appendChild(copyBtn);
+
+    document.getElementById("output").style.display = "block";
+    document.getElementById("output").scrollIntoView({ behavior: "smooth" });
+}
+
+setQuizType("A");
+</script>
+</body>
+</html>
