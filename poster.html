@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지속가능 발전과 대한민국 인구소멸 분석 포스터</title>
+<style>
+  :root{--bg:#f5f7fb;--ink:#182033;--card:#fff;--green:#16a085;--blue:#2563eb;--orange:#f59e0b;--red:#ef4444;--muted:#667085;--line:#d9e2ec;}
+  *{box-sizing:border-box} body{margin:0;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+  header{background:linear-gradient(135deg,#0f766e,#2563eb);color:#fff;padding:34px 26px;text-align:center}
+  header h1{margin:0;font-size:34px;letter-spacing:-1px} header p{margin:10px auto 0;max-width:980px;font-size:17px;opacity:.95}
+  nav{position:sticky;top:0;z-index:10;background:#ffffffee;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:9px 14px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  nav a{font-size:13px;text-decoration:none;color:#123;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#fff}
+  main{max-width:1180px;margin:24px auto;padding:0 18px 60px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 10px 25px rgba(18,32,51,.06)}
+  h2{margin:0 0 12px;font-size:24px;color:#0f172a;border-left:8px solid var(--green);padding-left:10px} h3{margin:18px 0 8px;color:#1e3a8a}.tag{display:inline-block;padding:5px 10px;border-radius:999px;background:#e0f2fe;color:#075985;font-weight:700;font-size:12px;margin:4px 4px 4px 0}.big{font-size:32px;font-weight:900;color:#0f766e}.warn{color:#b91c1c;font-weight:800}.ok{color:#047857;font-weight:800}
+  pre{background:#0b1020;color:#e5e7eb;padding:18px;border-radius:14px;overflow:auto;font-size:13px;line-height:1.55}.copy{float:right;border:0;border-radius:10px;background:#111827;color:white;padding:8px 12px;cursor:pointer}.policy{border-left:6px solid var(--orange);background:#fffbeb}.insight{border-left:6px solid var(--blue);background:#eff6ff}.danger{border-left:6px solid var(--red);background:#fef2f2}.steps li{margin:8px 0}.small{color:var(--muted);font-size:13px}.poster{background:linear-gradient(160deg,#ecfeff,#ffffff 40%,#fef3c7);border:3px solid #0f766e}.poster-title{font-size:34px;font-weight:900;letter-spacing:-1px}.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.kpi div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px;text-align:center}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.flow div{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center;font-weight:700}@media(max-width:850px){.grid,.kpi,.flow{grid-template-columns:1fr}header h1{font-size:26px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>지속가능 발전과 대한민국 인구소멸</h1>
+  <p>공공데이터포털 주민등록 인구데이터를 활용해 2005~2025년 변화를 분석하고, 2035년까지 추세선을 예측하여 지역 지속가능 정책을 설계하는 데이터 과학 프로젝트</p>
+</header>
+<nav>
+  <a href="#goal">목표</a><a href="#data">데이터</a><a href="#code">파이썬 코드</a><a href="#insight">인사이트</a><a href="#policy">정책</a><a href="#poster">포스터</a><a href="#rubric">평가</a>
+</nav>
+<main>
+<section id="goal" class="card">
+  <h2>1. 프로젝트 목표</h2>
+  <p><b>기준연도는 2025년</b>으로 설정합니다. 과거 20년은 <b>2005~2025년</b>, 미래 10년은 <b>2026~2035년</b>입니다. 전국 및 시도별 주민등록 인구 변화율을 계산하고, 선형 추세선으로 미래 인구를 예측합니다.</p>
+  <span class="tag">SDGs 11 지속가능한 도시</span><span class="tag">SDGs 3 건강과 복지</span><span class="tag">SDGs 4 교육</span><span class="tag">SDGs 8 양질의 일자리</span><span class="tag">SDGs 10 불평등 완화</span>
+</section>
+
+<section id="data" class="grid">
+  <div class="card">
+    <h2>2. 활용 데이터</h2>
+    <p><b>추천 데이터:</b> 행정안전부_통계연보_연도별 주민등록인구</p>
+    <p class="small">공공데이터포털에서 활용신청 후 발급받은 일반 인증키를 <code>SERVICE_KEY</code>에 입력합니다.</p>
+    <ul class="steps">
+      <li>출처: 공공데이터포털(data.go.kr)</li>
+      <li>제공기관: 행정안전부</li>
+      <li>주요 항목: 연도, 서울, 부산, 대구, 인천, 대전, 세종, 경기, 강원, 충북, 충남, 전북, 전남, 경북, 경남, 제주 등</li>
+      <li>분석 기간: 2005년~2025년</li>
+      <li>예측 기간: 2026년~2035년</li>
+    </ul>
+  </div>
+  <div class="card danger">
+    <h2>주의</h2>
+    <p>공공데이터포털 API는 서비스별 요청 URL, 파라미터명, 응답 XML 태그명이 조금씩 다릅니다. 아래 코드는 <b>자동 태그 탐색 함수</b>를 넣어 두어 XML 구조가 조금 달라도 최대한 DataFrame으로 변환되도록 만들었습니다.</p>
+    <p class="small">인증키 오류가 나면 “활용신청 승인”, “일반 인증키/디코딩 인증키”, “요청 주소”를 확인하세요.</p>
+  </div>
+</section>
+
+<section id="code" class="card">
+  <h2>3. 파이썬 분석 코드</h2>
+  <button class="copy" onclick="copyCode('pycode')">코드 복사</button>
+<pre id="pycode"><code># 지속가능 발전과 대한민국 인구소멸 분석
+# 기준: 2025년 / 과거 20년: 2005~2025 / 미래 10년: 2026~2035
+# 필요 라이브러리: pandas, numpy, matplotlib, requests
+
+import requests
+import xml.etree.ElementTree as ET
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+plt.rcParams["font.family"] = "Malgun Gothic"   # Windows: 맑은 고딕
+plt.rcParams["axes.unicode_minus"] = False
+plt.rcParams["figure.dpi"] = 130
+
+# 1) 공공데이터포털 인증키 입력
+SERVICE_KEY = "여기에_공공데이터포털_인증키를_붙여넣으세요"
+
+# 2) 공공데이터포털 API 주소
+# 공공데이터포털 > 행정안전부_통계연보_연도별 주민등록인구 > 상세기능 > 요청주소를 확인해 교체 가능
+BASE_URL = "https://apis.data.go.kr/1741000/ResidentPopulationByYear/getResidentPopulationByYear"
+
+params = {
+    "serviceKey": SERVICE_KEY,
+    "pageNo": 1,
+    "numOfRows": 100,
+    "type": "xml"
+}
+
+# 3) XML 응답을 DataFrame으로 바꾸는 함수
+def xml_to_dataframe(xml_text):
+    root = ET.fromstring(xml_text)
+    rows = []
+
+    # item, row 태그를 모두 후보로 탐색
+    candidates = []
+    for tag in ["item", "row"]:
+        candidates.extend(root.findall(f".//{tag}"))
+
+    # item/row가 없으면 하위 노드 중 자식이 많은 노드를 후보로 사용
+    if not candidates:
+        candidates = [node for node in root.iter() if len(list(node)) >= 3]
+
+    for item in candidates:
+        record = {}
+        for child in list(item):
+            record[child.tag] = child.text
+        if record:
+            rows.append(record)
+
+    return pd.DataFrame(rows).drop_duplicates()
+
+# 4) API 호출
+res = requests.get(BASE_URL, params=params, timeout=20)
+res.raise_for_status()
+
+df_raw = xml_to_dataframe(res.text)
+print("원본 컬럼:", df_raw.columns.tolist())
+print(df_raw.head())
+
+# 5) 컬럼명 자동 정리
+# 실제 API 컬럼명이 다르면 아래 후보 목록에 컬럼명을 추가하세요.
+year_candidates = ["year", "statsYear", "stdrYear", "연도", "통계연도"]
+region_candidates = ["region", "ctpv", "sido", "시도", "지역", "구분"]
+pop_candidates = ["population", "totPop", "totalPopulation", "인구수", "총인구수", "계"]
+
+def find_col(df, candidates):
+    lower_map = {c.lower(): c for c in df.columns}
+    for cand in candidates:
+        if cand in df.columns:
+            return cand
+        if cand.lower() in lower_map:
+            return lower_map[cand.lower()]
+    return None
+
+year_col = find_col(df_raw, year_candidates)
+region_col = find_col(df_raw, region_candidates)
+pop_col = find_col(df_raw, pop_candidates)
+
+# 6) 넓은 형태 자료 처리: 연도 컬럼 + 지역별 컬럼 형태인 경우
+if year_col and not region_col:
+    df = df_raw.copy()
+    df[year_col] = pd.to_numeric(df[year_col].astype(str).str.extract(r"(\d{4})")[0], errors="coerce")
+    value_cols = [c for c in df.columns if c != year_col]
+    long_df = df.melt(id_vars=year_col, value_vars=value_cols, var_name="지역", value_name="인구")
+    long_df = long_df.rename(columns={year_col: "연도"})
+else:
+    # 긴 형태 자료 처리: 연도, 지역, 인구 컬럼이 각각 있는 경우
+    long_df = df_raw.rename(columns={year_col: "연도", region_col: "지역", pop_col: "인구"})
+
+# 7) 숫자 정리
+long_df["연도"] = pd.to_numeric(long_df["연도"].astype(str).str.extract(r"(\d{4})")[0], errors="coerce")
+long_df["인구"] = (
+    long_df["인구"].astype(str)
+    .str.replace(",", "", regex=False)
+    .str.replace(" ", "", regex=False)
+)
+long_df["인구"] = pd.to_numeric(long_df["인구"], errors="coerce")
+long_df = long_df.dropna(subset=["연도", "인구"])
+long_df["연도"] = long_df["연도"].astype(int)
+
+# 8) 분석 기간 필터링
+base_year = 2025
+start_year = base_year - 20
+end_year = base_year + 10
+past = long_df[(long_df["연도"] >= start_year) & (long_df["연도"] <= base_year)].copy()
+
+# 9) 전국 합계 만들기
+national = past.groupby("연도", as_index=False)["인구"].sum()
+national["지역"] = "전국"
+
+# 10) 지역 선택: 전국, 전북, 서울, 경기 예시
+selected_regions = ["전국", "전북", "전라북도", "서울", "서울특별시", "경기", "경기도"]
+plot_df = pd.concat([national, past], ignore_index=True)
+plot_df = plot_df[plot_df["지역"].isin(selected_regions)].copy()
+
+# 11) 지역별 추세선 예측 함수
+def make_forecast(data, region_name):
+    d = data[data["지역"] == region_name].sort_values("연도")
+    if len(d) < 2:
+        return None
+
+    x = d["연도"].to_numpy()
+    y = d["인구"].to_numpy()
+
+    # 1차 선형 회귀: y = ax + b
+    a, b = np.polyfit(x, y, 1)
+
+    years = np.arange(start_year, end_year + 1)
+    pred = a * years + b
+
+    result = pd.DataFrame({
+        "연도": years,
+        "예측인구": pred,
+        "지역": region_name,
+        "기울기_연평균증감": a
+    })
+    return result
+
+forecasts = []
+for region in plot_df["지역"].unique():
+    f = make_forecast(plot_df, region)
+    if f is not None:
+        forecasts.append(f)
+
+forecast_df = pd.concat(forecasts, ignore_index=True)
+
+# 12) 시각화: 전국 추세선
+region = "전국"
+actual = plot_df[plot_df["지역"] == region]
+pred = forecast_df[forecast_df["지역"] == region]
+
+plt.figure(figsize=(10, 5.8))
+plt.plot(actual["연도"], actual["인구"], marker="o", linewidth=2.5, label="실제 인구")
+plt.plot(pred["연도"], pred["예측인구"], linestyle="--", linewidth=2.5, label="추세선 예측")
+plt.axvline(2025, linestyle=":", linewidth=2, label="기준연도 2025")
+plt.title("대한민국 주민등록 인구 추세와 2035년 예측")
+plt.xlabel("연도")
+plt.ylabel("인구")
+plt.grid(True, linestyle=":", alpha=0.5)
+plt.legend()
+plt.tight_layout()
+plt.savefig("korea_population_trend_2035.png")
+plt.show()
+
+# 13) 지역별 감소 위험도 계산
+region_summary = []
+for region in plot_df["지역"].unique():
+    d = plot_df[plot_df["지역"] == region]
+    f = forecast_df[forecast_df["지역"] == region]
+    if d.empty or f.empty:
+        continue
+
+    pop_2005 = d.loc[d["연도"].idxmin(), "인구"]
+    pop_2025 = d.loc[d["연도"].idxmax(), "인구"]
+    pop_2035 = f[f["연도"] == 2035]["예측인구"].iloc[0]
+    slope = f["기울기_연평균증감"].iloc[0]
+
+    past_rate = (pop_2025 - pop_2005) / pop_2005 * 100
+    future_rate = (pop_2035 - pop_2025) / pop_2025 * 100
+
+    if future_rate <= -10:
+        risk = "고위험"
+    elif future_rate <= -5:
+        risk = "주의"
+    else:
+        risk = "상대안정"
+
+    region_summary.append({
+        "지역": region,
+        "2005인구": round(pop_2005),
+        "2025인구": round(pop_2025),
+        "2035예측": round(pop_2035),
+        "2005_2025변화율(%)": round(past_rate, 2),
+        "2025_2035예측변화율(%)": round(future_rate, 2),
+        "연평균증감": round(slope),
+        "위험도": risk
+    })
+
+summary_df = pd.DataFrame(region_summary).sort_values("2025_2035예측변화율(%)")
+print(summary_df)
+summary_df.to_csv("population_extinction_summary.csv", index=False, encoding="utf-8-sig")
+
+# 14) 정책 제안 자동 문장 만들기
+def policy_message(row):
+    if row["위험도"] == "고위험":
+        return "생활인구 유입, 청년 주거, 지역대학-기업 연계, 의료·돌봄 거점 확충이 시급합니다."
+    elif row["위험도"] == "주의":
+        return "일자리 질 개선, 교통 접근성 강화, 보육·교육 인프라 유지 정책이 필요합니다."
+    else:
+        return "인구 집중에 따른 주거·교통·환경 부담을 줄이는 지속가능 도시정책이 필요합니다."
+
+summary_df["정책제안"] = summary_df.apply(policy_message, axis=1)
+print(summary_df[["지역", "위험도", "정책제안"]])</code></pre>
+</section>
+
+<section id="insight" class="grid">
+  <div class="card insight">
+    <h2>4. 분석 인사이트 예시</h2>
+    <ol class="steps">
+      <li><b>총량 감소:</b> 전국 인구가 감소 추세이면 노동력, 소비시장, 병역자원, 지방재정 기반이 함께 약화될 수 있습니다.</li>
+      <li><b>지역 격차:</b> 수도권은 상대적으로 안정적이지만 비수도권 일부 지역은 청년 유출과 고령화가 동시에 진행될 수 있습니다.</li>
+      <li><b>학교와 지역:</b> 학령인구 감소는 학교 통폐합, 지역 교육격차, 지역대학 위기로 이어질 수 있습니다.</li>
+      <li><b>돌봄 수요 증가:</b> 인구 감소 지역일수록 의료·교통·돌봄 접근성이 지속가능성의 핵심 지표가 됩니다.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h2>핵심 질문</h2>
+    <p class="big">“사람이 줄어드는 지역을 어떻게 살기 좋은 지역으로 바꿀 것인가?”</p>
+    <p>인구소멸 문제는 단순히 출생률 문제가 아니라 <b>일자리, 주거, 교육, 교통, 의료, 문화, 기후위기 대응</b>이 연결된 지속가능 발전 문제입니다.</p>
+  </div>
+</section>
+
+<section id="policy" class="card policy">
+  <h2>5. 정책 개발안: 지역소멸 대응 5대 패키지</h2>
+  <div class="flow">
+    <div>① 청년 정착<br>월세·창업·원격근무</div>
+    <div>② 교육 유지<br>작은학교+AI 원격수업</div>
+    <div>③ 의료·돌봄<br>공공의료 버스·방문돌봄</div>
+    <div>④ 생활인구<br>워케이션·관계인구</div>
+  </div>
+  <h3>정책 1. 청년 로컬 정착 바우처</h3>
+  <p>지역 기업 취업, 창업, 농생명·에너지·AI 분야 프로젝트 참여 청년에게 주거비와 교육비를 연계 지원합니다.</p>
+  <h3>정책 2. 학교-지역대학-기업 연계 캠퍼스</h3>
+  <p>고등학교, 지역대학, 공공기관, 기업이 함께 데이터 분석·AI·스마트팜·재생에너지 프로젝트를 운영합니다.</p>
+  <h3>정책 3. 15분 생활권 의료·돌봄망</h3>
+  <p>인구가 적은 읍면 지역에도 이동형 진료, 원격진료 보조, 고령자 교통 서비스를 제공해 삶의 질을 보장합니다.</p>
+  <h3>정책 4. 생활인구 플랫폼</h3>
+  <p>관광객이 아니라 정기적으로 지역을 방문하고 소비·학습·봉사·근무하는 관계인구를 데이터로 관리합니다.</p>
+  <h3>정책 5. 빈집·폐교 재생</h3>
+  <p>빈집은 청년 주거와 창업 공간으로, 폐교는 지역 과학·문화·돌봄 복합센터로 전환합니다.</p>
+</section>
+
+<section id="poster" class="card poster">
+  <div class="poster-title">데이터로 보는 대한민국 인구소멸과 지속가능 발전</div>
+  <p>2005년부터 2025년까지의 주민등록 인구 변화를 분석하고, 2035년까지의 추세를 예측합니다.</p>
+  <div class="kpi">
+    <div><div class="big">2005~2025</div><p>과거 20년 변화</p></div>
+    <div><div class="big">2025</div><p>기준연도</p></div>
+    <div><div class="big">2035</div><p>미래 10년 예측</p></div>
+  </div>
+  <h3>문제</h3>
+  <p>청년 유출 → 출생 감소 → 학교·상권 축소 → 의료·교통 약화 → 추가 유출의 악순환</p>
+  <h3>해결 방향</h3>
+  <p><b class="ok">인구를 억지로 늘리는 정책</b>보다 <b class="warn">살고 싶고 머물고 싶은 지역</b>을 만드는 정책이 필요합니다.</p>
+  <h3>우리의 제안</h3>
+  <p>청년 정착 + 교육 혁신 + 의료·돌봄 + 생활인구 + 빈집 재생을 결합한 지역 지속가능 발전 모델</p>
+</section>
+
+<section id="rubric" class="card">
+  <h2>6. 수행평가 기준 예시</h2>
+  <ul class="steps">
+    <li>데이터 수집: 공공데이터 출처와 API 활용 과정이 명확한가?</li>
+    <li>전처리: 연도, 지역, 인구 컬럼을 올바르게 정리했는가?</li>
+    <li>분석: 2005~2025년 변화와 2035년 예측을 타당하게 제시했는가?</li>
+    <li>시각화: 실제값과 추세선을 구분하여 읽기 쉽게 표현했는가?</li>
+    <li>정책 개발: 분석 결과와 연결된 지속가능 정책을 제안했는가?</li>
+  </ul>
+</section>
+</main>
+<script>
+function copyCode(id){
+  const text=document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text).then(()=>alert('코드가 복사되었습니다.'));
+}
+</script>
+</body>
+</html>
