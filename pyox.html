@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A~J 유형 선택 OX 60문제 랜덤 퀴즈</title>
+<style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#eef3f8;font-family:-apple-system,BlinkMacSystemFont,"Malgun Gothic","맑은 고딕",Arial,sans-serif;color:#172033;line-height:1.65}
+    header{background:linear-gradient(135deg,#1d4ed8,#0f766e);color:#fff;padding:28px 18px;text-align:center}
+    header h1{margin:0 0 8px;font-size:28px}
+    header p{margin:4px 0;font-size:15px;opacity:.95}
+    .wrap{max-width:1100px;margin:24px auto;padding:0 16px 50px}
+    .card{background:#fff;border-radius:18px;padding:24px;margin-bottom:20px;box-shadow:0 8px 24px rgba(15,23,42,.09);border:1px solid #dbe4ee}
+    h2{margin:0 0 14px;border-bottom:2px solid #e5edf5;padding-bottom:10px;color:#0f3f71}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .info-group label{display:block;font-weight:700;margin-bottom:6px}
+    input[type="text"]{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px}
+    .type-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    .type-card{border:2px solid #cbd5e1;background:#f8fafc;border-radius:14px;padding:12px;cursor:pointer;transition:.15s;text-align:left}
+    .type-card:hover{transform:translateY(-2px);border-color:#2563eb;background:#eff6ff}
+    .type-card.active{border-color:#0f766e;background:#ccfbf1;box-shadow:0 0 0 3px rgba(15,118,110,.14)}
+    .type-card strong{display:block;font-size:20px;color:#123b6d}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    button{border:0;border-radius:12px;padding:13px 18px;font-size:16px;font-weight:700;cursor:pointer;background:#2563eb;color:white}
+    button:hover{filter:brightness(.95)}
+    .secondary{background:#475569}.success{background:#0f766e}.danger{background:#dc2626}
+    .notice{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;border-radius:12px;padding:12px;margin-top:12px}
+    .quiz-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.badge{padding:7px 10px;border-radius:999px;background:#e0f2fe;color:#075985;font-weight:700;font-size:13px}
+    .question{border:1px solid #dbe4ee;border-radius:16px;padding:18px;margin:14px 0;background:#fbfdff}
+    .qtop{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}.qno{font-weight:800;color:#0f3f71}.topic{font-size:13px;background:#f1f5f9;border-radius:999px;padding:5px 9px;color:#334155}
+    .qtext{white-space:pre-wrap;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;font-family:Consolas,"Courier New","Malgun Gothic",monospace;font-size:15px}
+    .options{display:flex;gap:10px;margin-top:12px}.opt{flex:1;border:1px solid #cbd5e1;border-radius:12px;padding:12px;text-align:center;cursor:pointer;background:white;font-weight:800}.opt:hover{background:#eef6ff}.opt input{margin-right:8px}
+    .result-item{border-radius:14px;padding:15px;margin:12px 0}.correct{background:#dcfce7;border-left:7px solid #16a34a}.incorrect{background:#fee2e2;border-left:7px solid #dc2626}.explanation{background:rgba(255,255,255,.7);border-radius:10px;padding:10px;margin-top:8px}.hidden{display:none}.scorebox{font-size:22px;font-weight:900;color:#0f766e;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:14px;padding:16px;margin-bottom:14px;text-align:center}
+    code{background:#e2e8f0;padding:2px 5px;border-radius:5px}.small{font-size:13px;color:#64748b}.copy{user-select:all}
+    @media(max-width:800px){.grid,.type-grid{grid-template-columns:1fr}.options{flex-direction:column}header h1{font-size:23px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>A~J 유형 선택 OX 60문제 랜덤 퀴즈</h1>
+  <p>유형을 선택하면 파이썬 OX 문제 60개가 랜덤 순서로 출제됩니다.</p>
+  <p>제출 후 학번_이름_점수_OX퀴즈_응시시각.txt 파일이 자동 생성됩니다.</p>
+</header>
+<div class="wrap">
+<form id="quizForm" onsubmit="gradeQuiz(event)">
+  <section class="card">
+    <h2>1. 인적사항 입력</h2>
+    <div class="grid">
+      <div class="info-group"><label for="studentId">학번</label><input id="studentId" type="text" required placeholder=""></div>
+      <div class="info-group"><label for="name">이름</label><input id="name" type="text" required placeholder=""></div>
+      <div class="info-group"><label for="className">반 / 수업명</label><input id="className" type="text" placeholder="선택 입력"></div>
+    </div>
+  </section>
+  <section class="card">
+    <h2>2. 문제 유형 선택</h2>
+    <div id="typeGrid" class="type-grid"></div>
+    <div class="notice">A~J 중 유형 선택</div>
+    <div class="controls">
+      <button type="button" class="success" onclick="startQuiz()">60문제 랜덤 출제</button>
+      <button type="button" class="secondary" onclick="window.location.reload()">처음부터 다시</button>
+    </div>
+  </section>
+  <section id="quizCard" class="card hidden">
+    <h2>3. OX 퀴즈 60문항</h2>
+    <div class="quiz-meta"><span class="badge" id="selectedTypeBadge"></span><span class="badge">총 60문항</span><span class="badge">문항당 1점 환산</span></div>
+    <div id="questionsArea"></div>
+    <div class="controls"><button type="submit" class="danger">채점하고 TXT 저장</button></div>
+  </section>
+</form>
+<section id="resultCard" class="card hidden"><h2>4. 채점 결과 및 상세 풀이</h2><div id="results"></div></section>
+</div>
+<script>
+const BASE_QUESTIONS = [{"topic": "딕셔너리", "text": "파이썬 딕셔너리는 순서가 없는(unordered) 자료구조이다.", "answer": "X", "explanation": "Python 3.7 버전부터 딕셔너리는 입력된 순서를 유지하는(ordered) 자료구조가 되었습니다. 그 이전 버전에서는 순서를 보장하지 않았습니다."}, {"topic": "딕셔너리", "text": "딕셔너리의 키(key)는 중복될 수 없다.", "answer": "O", "explanation": "딕셔너리의 키는 고유해야 합니다. 만약 중복된 키를 사용해 값을 할당하면, 기존의 값은 새로운 값으로 덮어써집니다."}, {"topic": "딕셔너리", "text": "딕셔너리의 값(value)으로는 리스트나 다른 딕셔너리를 사용할 수 있다.", "answer": "O", "explanation": "딕셔너리의 값으로는 정수, 문자열, 리스트, 튜플, 다른 딕셔너리 등 어떠한 파이썬 객체라도 올 수 있습니다."}, {"topic": "딕셔너리", "text": "`my_dict['key']` 와 `my_dict.get('key')`는 존재하지 않는 키에 접근할 때 동일하게 KeyError를 발생시킨다.", "answer": "X", "explanation": "`my_dict['key']`는 키가 없으면 KeyError를 발생시키지만, `my_dict.get('key')`는 기본값인 None을 반환하여 오류를 방지합니다."}, {"topic": "딕셔너리", "text": "`del my_dict['key']`는 딕셔너리에서 특정 키-값 쌍을 삭제하는 명령어이다.", "answer": "O", "explanation": "`del` 키워드는 딕셔너리에서 지정된 키에 해당하는 아이템(키와 값)을 영구적으로 제거합니다."}, {"topic": "딕셔너리", "text": "딕셔너리의 키(key)로는 가변(mutable) 객체인 리스트를 사용할 수 있다.", "answer": "X", "explanation": "딕셔너리의 키는 해시 가능(hashable)해야 하므로, 불변(immutable) 객체만 사용할 수 있습니다. 리스트는 가변 객체이므로 키가 될 수 없습니다."}, {"topic": "딕셔너리", "text": "`my_dict.keys()` 메서드는 딕셔너리의 모든 키를 포함하는 튜플을 반환한다.", "answer": "X", "explanation": "`keys()` 메서드는 딕셔너리의 키들을 포함하는 '뷰(view) 객체'를 반환합니다. 튜플로 사용하려면 `tuple()` 형 변환이 필요합니다."}, {"topic": "딕셔너리", "text": "`dict1.update(dict2)`는 `dict1`에 `dict2`의 내용을 병합하며, 중복된 키가 있으면 `dict2`의 값으로 덮어쓴다.", "answer": "O", "explanation": "`update()` 메서드는 호출한 딕셔너리를 직접 수정하여 다른 딕셔너리의 내용을 병합하는 역할을 합니다."}, {"topic": "딕셔너리", "text": "딕셔너리 컴프리헨션(Comprehension)은 리스트 컴프리헨션보다 항상 실행 속도가 빠르다.", "answer": "X", "explanation": "실행 속도는 데이터 크기나 복잡도에 따라 다르며 항상 빠르지는 않습니다. 다만 코드를 더 간결하고 파이썬답게 만들어줍니다."}, {"topic": "딕셔너리", "text": "`pop()` 메서드를 사용하여 딕셔너리에서 아이템을 제거하면, 제거된 아이템의 값이 반환된다.", "answer": "O", "explanation": "`my_dict.pop('key')`는 해당 키의 아이템을 제거하고 그 아이템의 '값(value)'을 반환하여 활용할 수 있게 해줍니다."}, {"topic": "함수", "text": "파이썬에서 함수를 정의할 때 `function` 키워드를 사용한다.", "answer": "X", "explanation": "파이썬 함수는 `def` (define의 약자) 키워드를 사용하여 정의합니다."}, {"topic": "함수", "text": "함수에 `return` 문이 없으면 아무 값도 반환하지 않는다 (None을 반환한다).", "answer": "O", "explanation": "함수에서 `return`을 생략하면, 함수는 기본적으로 `None` 객체를 반환합니다."}, {"topic": "함수", "text": "`*args`는 정해지지 않은 수의 '키워드' 인자를 딕셔너리 형태로 받는다.", "answer": "X", "explanation": "`*args`는 정해지지 않은 수의 '위치' 인자를 튜플(tuple) 형태로 받습니다. 키워드 인자를 딕셔너리로 받는 것은 `**kwargs`입니다."}, {"topic": "함수", "text": "람다(lambda) 표현식은 여러 줄의 코드를 포함할 수 있는 익명 함수이다.", "answer": "X", "explanation": "람다 표현식은 단일 '표현식'으로 구성된 한 줄짜리 익명 함수입니다. 여러 줄의 코드를 포함할 수 없습니다."}, {"topic": "함수", "text": "함수 내에서 선언된 변수(지역 변수)는 함수 밖에서도 접근할 수 있다.", "answer": "X", "explanation": "함수 내에서 선언된 지역 변수는 해당 함수의 스코프(범위) 내에서만 유효하며, 함수 밖에서는 접근할 수 없습니다."}, {"topic": "함수", "text": "`def my_func(a, b=10):` 와 같이 함수 정의 시, `b`는 기본 매개변수이다.", "answer": "O", "explanation": "함수를 정의할 때 매개변수에 값을 할당해두면, 함수 호출 시 해당 인자가 전달되지 않을 경우 이 기본값이 사용됩니다."}, {"topic": "함수", "text": "`**kwargs`는 정해지지 않은 수의 '위치' 인자를 튜플 형태로 받는다.", "answer": "X", "explanation": "`**kwargs`는 키워드 인자를 딕셔너리 형태로 받습니다. 위치 인자를 튜플로 받는 것은 `*args`입니다."}, {"topic": "함수", "text": "재귀 함수는 자기 자신을 다시 호출하는 함수이다.", "answer": "O", "explanation": "재귀 함수는 함수 내부에서 자기 자신을 다시 호출하는 구조로, 특정 조건에서 멈추도록 설계해야 합니다."}, {"topic": "함수", "text": "파이썬에서 함수는 다른 함수의 인자로 전달될 수 있다.", "answer": "O", "explanation": "파이썬에서 함수는 일급 객체(first-class citizen)이므로 변수에 할당하거나, 다른 함수의 인자로 전달하거나, 반환 값으로 사용할 수 있습니다."}, {"topic": "함수", "text": "`yield` 키워드를 사용하는 함수는 제너레이터(Generator)가 된다.", "answer": "O", "explanation": "`yield` 키워드를 사용하면 함수는 제너레이터가 되어, 호출될 때마다 값을 하나씩 생성하여 반환합니다."}, {"topic": "문자열 처리", "text": "파이썬에서 문자열은 한 번 생성되면 그 내용을 직접 수정할 수 없다 (immutable).", "answer": "O", "explanation": "문자열은 변경 불가능한 자료형입니다. `.replace()` 같은 메소드는 새로운 문자열을 반환할 뿐, 원본을 바꾸지 않습니다."}, {"topic": "문자열 처리", "text": "`s = \"abc\"`일 때, `s[1] = \"B\"`와 같이 특정 문자를 변경할 수 있다.", "answer": "X", "explanation": "문자열은 변경 불가능(immutable)하므로, 인덱스를 통해 특정 문자를 직접 수정하려고 하면 `TypeError`가 발생합니다."}, {"topic": "문자열 처리", "text": "`\"apple\".split(\"p\")`의 결과는 `[\"a\", \"\", \"le\"]` 이다.", "answer": "O", "explanation": "구분자(\"p\")가 연속으로 나올 경우 그 사이에는 빈 문자열(`\"\"`)이 생성됩니다. `apple` -> `a` | `p` | `p` | `le` -> `['a', '', 'le']`"}, {"topic": "문자열 처리", "text": "`len(\"안녕하세요\")`의 결과는 5이다.", "answer": "O", "explanation": "`len()` 함수는 문자열을 구성하는 문자의 개수를 반환합니다."}, {"topic": "문자열 처리", "text": "`\" python \".strip()`은 원본 문자열 자체를 변경한다.", "answer": "X", "explanation": "문자열 메소드들은 대부분 원본을 변경하지 않고, 변경된 새로운 문자열을 반환합니다. `a = a.strip()`과 같이 다시 할당해야 합니다."}, {"topic": "문자열 처리", "text": "`s.find(\"a\")`는 문자열 `s`에 \"a\"가 없으면 `-1`을 반환한다.", "answer": "O", "explanation": "`.find()`는 찾는 문자열이 없을 경우 오류 대신 `-1`을 반환하여 프로그램이 멈추지 않게 합니다."}, {"topic": "문자열 처리", "text": "`s.index(\"a\")`는 문자열 `s`에 \"a\"가 없으면 `-1`을 반환한다.", "answer": "X", "explanation": "`.index()`는 찾는 문자열이 없을 경우 `-1`이 아닌 `ValueError` 오류를 발생시킵니다."}, {"topic": "문자열 처리", "text": "`\"1,2,3\".split()` 코드의 결과는 `[\"1\", \"2\", \"3\"]`이다.", "answer": "X", "explanation": "`.split()`에 구분자를 지정하지 않으면 공백을 기준으로 나눕니다. 쉼표로 나누려면 `.split(\",\")`을 사용해야 하므로, 위 코드의 결과는 `[\"1,2,3\"]` 입니다."}, {"topic": "문자열 처리", "text": "`\"*\".join([\"a\", \"b\", \"c\"])`의 결과는 `\"*a*b*c\"`이다.", "answer": "X", "explanation": "`.join()`은 리스트의 요소들 *사이*에 구분자를 넣어 합칩니다. 따라서 결과는 `\"a*b*c\"`가 됩니다."}, {"topic": "문자열 처리", "text": "f-string은 Python 3.6 버전부터 사용할 수 있는 기능이다.", "answer": "O", "explanation": "f-string(`f\"...\"`)은 Python 3.6에 도입된 현대적이고 가독성 높은 문자열 포매팅 방법입니다."}, {"topic": "파일 입출력", "text": "<code>open('file.txt', 'w')</code> 코드는 'file.txt' 파일이 존재하지 않으면 새로 생성한다.", "answer": "O", "explanation": "'w'(쓰기) 모드와 'a'(추가) 모드는 파일이 존재하지 않을 경우 자동으로 파일을 생성하는 기능이 있습니다."}, {"topic": "파일 입출력", "text": "파일을 <code>'r'</code>(읽기) 모드로 열 때, 해당 파일이 없으면 빈 파일이 생성된다.", "answer": "X", "explanation": "'r'(읽기) 모드는 파일이 반드시 존재해야 합니다. 파일이 없으면 `FileNotFoundError`가 발생합니다."}, {"topic": "파일 입출력", "text": "<code>'a'</code>(추가) 모드로 파일을 열면 기존 파일의 내용은 삭제되고 새로운 내용으로 덮어써진다.", "answer": "X", "explanation": "'a'(append) 모드는 기존 파일 내용의 맨 끝에 새로운 내용을 추가합니다. 기존 내용을 덮어쓰는 모드는 'w'(write) 모드입니다."}, {"topic": "파일 입출력", "text": "<code>with open(...) as f:</code> 구문을 사용하면 파일을 수동으로 <code>f.close()</code> 해줄 필요가 없다.", "answer": "O", "explanation": "`with` 블록은 코드 실행이 끝나거나 오류가 발생하여 블록을 벗어날 때, 파일 객체를 자동으로 안전하게 닫아주는 역할을 합니다."}, {"topic": "파일 입출력", "text": "<code>f.readline()</code> 메서드는 파일 전체 내용을 하나의 문자열로 읽어온다.", "answer": "X", "explanation": "<code>readline()</code>은 파일에서 한 줄만 읽어옵니다. 파일 전체를 하나의 문자열로 읽어오는 메서드는 `f.read()`입니다."}, {"topic": "파일 입출력", "text": "<code>f.readlines()</code> 메서드는 파일의 모든 줄을 요소로 하는 리스트를 반환한다.", "answer": "O", "explanation": "`readlines()`는 파일의 각 줄을 하나의 문자열 요소로 만들어 리스트 형태로 반환하므로, 반복문과 함께 사용하기 편리합니다."}, {"topic": "파일 입출력", "text": "이미지나 동영상 같은 바이너리 파일을 다룰 때는 <code>'wb'</code>, <code>'rb'</code> 같은 모드를 사용해야 한다.", "answer": "O", "explanation": "텍스트가 아닌 파일(바이너리 파일)은 데이터를 바이트 단위로 처리해야 하므로, 모드에 'b'를 추가하여 `rb`(읽기), `wb`(쓰기), `ab`(추가) 등을 사용해야 합니다."}, {"topic": "파일 입출력", "text": "<code>f.write(123)</code> 처럼 <code>write()</code> 메서드에는 숫자도 직접 인자로 전달할 수 있다.", "answer": "X", "explanation": "`write()` 메서드는 오직 문자열(string) 타입의 데이터만 인자로 받습니다. 숫자를 쓰려면 `f.write(str(123))`처럼 문자열로 변환해야 합니다."}, {"topic": "파일 입출력", "text": "한글이 포함된 파일을 다룰 때는 <code>encoding='utf-8'</code>과 같이 인코딩을 지정하는 것이 안전하다.", "answer": "O", "explanation": "운영체제나 환경에 따라 기본 인코딩이 다를 수 있어 한글이 깨지는 원인이 됩니다. `utf-8`과 같이 인코딩을 명시적으로 지정하면 호환성 문제를 예방할 수 있습니다."}, {"topic": "파일 입출력", "text": "<code>os.path.exists('file.txt')</code>는 'file.txt' 파일이 존재하면 <code>True</code>를 반환한다.", "answer": "O", "explanation": "`os` 모듈의 `path.exists()` 함수는 주어진 경로에 파일이나 디렉터리가 실제로 존재하는지 확인하는 유용한 기능입니다."}, {"topic": "객체지향", "text": "클래스(Class)는 객체(Object)를 만들기 위한 '설계도'이다.", "answer": "O", "explanation": "클래스는 속성(attribute)과 행동(method)을 정의한 설계도이며, 이 설계도를 바탕으로 실제 메모리에 생성된 실체를 객체 또는 인스턴스라고 합니다."}, {"topic": "객체지향", "text": "하나의 클래스로부터 생성된 모든 객체는 동일한 속성 값을 가진다.", "answer": "X", "explanation": "각 객체(인스턴스)는 자신만의 독립적인 인스턴스 속성을 가질 수 있습니다. 예를 들어 `Car('현대')`와 `Car('기아')` 객체는 서로 다른 브랜드 값을 가집니다."}, {"topic": "객체지향", "text": "상속(Inheritance)은 'has-a' 관계를 표현하기 위해 사용된다.", "answer": "X", "explanation": "상속은 부모-자식 관계인 'is-a' 관계를 표현합니다. 'has-a' 관계(예: 자동차는 엔진을 가진다)는 컴포지션(Composition)으로 표현합니다."}, {"topic": "객체지향", "text": "메서드를 정의할 때 첫 번째 매개변수인 <code>self</code>는 생략할 수 있다.", "answer": "X", "explanation": "`self`는 인스턴스 메서드에서 필수적인 매개변수입니다. 이를 통해 메서드를 호출한 객체 자신에게 접근할 수 있습니다."}, {"topic": "객체지향", "text": "자식 클래스에서 부모 클래스와 동일한 이름의 메서드를 정의하는 것을 '메서드 오버로딩'이라고 한다.", "answer": "X", "explanation": "부모 클래스의 메서드를 자식 클래스에서 재정의하는 것은 '메서드 오버라이딩(Method Overriding)'입니다. 파이썬은 공식적으로 오버로딩을 지원하지 않습니다."}, {"topic": "객체지향", "text": "<code>__init__</code> 메서드는 객체가 소멸될 때 자동으로 호출된다.", "answer": "X", "explanation": "`__init__`은 객체가 생성될 때 호출되는 생성자 메서드입니다. 객체가 소멸될 때 호출되는 메서드는 `__del__` 입니다."}, {"topic": "객체지향", "text": "클래스 변수는 해당 클래스의 모든 인스턴스가 공유하는 변수이다.", "answer": "O", "explanation": "클래스 변수는 클래스 자체에 속한 변수로, 모든 인스턴스에서 동일한 값을 참조할 수 있어 공통 상수를 정의하기에 적합합니다."}, {"topic": "객체지향", "text": "<code>@staticmethod</code>로 정의된 정적 메서드는 <code>self</code> 매개변수를 받지 않는다.", "answer": "O", "explanation": "정적 메서드는 인스턴스의 상태에 접근할 필요가 없는 유틸리티 함수와 같아서 `self`나 `cls`를 첫 인자로 받지 않습니다."}, {"topic": "객체지향", "text": "추상 클래스(Abstract Class)는 인스턴스를 직접 생성할 수 있다.", "answer": "X", "explanation": "추상 클래스는 자식 클래스가 따라야 할 '설계 규약' 역할을 하므로, 그 자체로는 완전하지 않아 객체를 생성할 수 없습니다."}, {"topic": "객체지향", "text": "다형성(Polymorphism)이란 같은 이름의 메서드 호출에 대해 객체마다 다르게 반응하는 특성을 말한다.", "answer": "O", "explanation": "동일한 `speak()` 메서드를 호출하더라도 `Dog` 객체는 '멍멍', `Cat` 객체는 '야옹'하고 다르게 동작하는 것이 다형성의 예입니다."}, {"topic": "Pandas 데이터 분석", "text": "Pandas의 `Series`는 1차원 배열 형태의 자료구조이다.", "answer": "O", "explanation": "`Series`는 인덱스를 가지는 1차원 데이터 구조로, Pandas의 가장 기본적인 데이터 단위입니다."}, {"topic": "Pandas 데이터 분석", "text": "`DataFrame`에서 특정 열을 선택하면 그 결과는 항상 또 다른 `DataFrame`이다.", "answer": "X", "explanation": "하나의 열만 선택하면(`df[\"col1\"]`) `Series`가 반환됩니다. 두 개 이상의 열을 선택하면(`df[[\"col1\", \"col2\"]]`) `DataFrame`이 반환됩니다."}, {"topic": "Pandas 데이터 분석", "text": "`.loc`는 인덱스의 이름(label)을 사용하여 행을 선택한다.", "answer": "O", "explanation": "`.loc`는 라벨 기반 인덱싱을 사용합니다. 반면, `.iloc`는 정수 위치 기반 인덱싱을 사용합니다."}, {"topic": "Pandas 데이터 분석", "text": "`df.sort_values(by=\"age\")`는 원본 데이터프레임 `df`를 직접 수정한다.", "answer": "X", "explanation": "기본적으로 새로운 데이터프레임을 반환합니다. 원본을 직접 수정하려면 `inplace=True` 옵션을 추가해야 합니다."}, {"topic": "Pandas 데이터 분석", "text": "`df.dropna()`는 결측치(NaN)가 포함된 모든 열(column)을 삭제한다.", "answer": "X", "explanation": "기본적으로 `dropna()`는 결측치가 포함된 행(row)을 삭제합니다. 열을 삭제하려면 `axis=1` 옵션을 주어야 합니다."}, {"topic": "Pandas 데이터 분석", "text": "`groupby()` 메소드는 데이터를 그룹으로 묶고 각 그룹에 대한 집계 함수를 적용하는 데 사용된다.", "answer": "O", "explanation": "데이터를 특정 기준으로 분할(Split)하고, 함수를 적용(Apply)한 뒤, 결과를 결합(Combine)하는 핵심 기능입니다."}, {"topic": "Pandas 데이터 분석", "text": "`pd.read_excel()` 함수는 텍스트 파일을 읽어 DataFrame으로 만드는 함수이다.", "answer": "X", "explanation": "`pd.read_excel()`은 엑셀 파일을 읽는 함수입니다. 텍스트 파일(.csv 등)을 읽을 때는 `pd.read_csv()`를 사용합니다."}, {"topic": "Pandas 데이터 분석", "text": "두 개의 DataFrame을 합칠 때 사용하는 대표적인 함수는 `pd.merge()`이다.", "answer": "O", "explanation": "`pd.merge()`는 SQL의 JOIN과 유사하게 공통 열을 기준으로 두 데이터프레임을 병합합니다."}, {"topic": "Pandas 데이터 분석", "text": "데이터프레임의 상위 5개 행을 확인하는 메소드는 `.top()` 이다.", "answer": "X", "explanation": "상위 데이터를 확인하는 메소드는 `.head()` 입니다. 하위 데이터는 `.tail()`을 사용합니다."}, {"topic": "Pandas 데이터 분석", "text": "`df[\"age\"] > 20` 과 같은 조건식을 `df[...]` 안에 넣으면 조건에 맞는 행만 필터링할 수 있다.", "answer": "O", "explanation": "이를 불리언 인덱싱(Boolean Indexing)이라고 하며, 데이터를 필터링하는 가장 일반적인 방법입니다."}];
+const TYPE_INFO = [
+  ['A',''],['B',''],['C',''],['D',''],['E',''],
+  ['F',''],['G',''],['H',''],['I',''],['J','']
+];
+let selectedType = null;
+let selectedTypeName = '';
+let quizQuestions = [];
+
+function cleanHtml(s){return String(s).replace(/`([^`]+)`/g,'<code>$1</code>');}
+function plainText(s){
+  const d=document.createElement('div'); d.innerHTML=cleanHtml(String(s));
+  return d.textContent || d.innerText || '';
+}
+function safeFileName(s){return String(s).trim().replace(/[\\/:*?"<>|\s]+/g,'_').replace(/^_+|_+$/g,'') || '미입력';}
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function renderTypes(){
+  const box=document.getElementById('typeGrid');
+  TYPE_INFO.forEach(([key,name])=>{
+    const div=document.createElement('div'); div.className='type-card'; div.dataset.type=key;
+    div.innerHTML=`<strong>${key} 유형</strong><span>${name}</span>`;
+    div.onclick=()=>selectType(key,name,div);
+    box.appendChild(div);
+  });
+}
+function selectType(key,name,el){
+  selectedType=key; selectedTypeName=name;
+  document.querySelectorAll('.type-card').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+}
+function startQuiz(){
+  if(!selectedType){alert('A~J 중 문제 유형을 먼저 선택하세요.');return;}
+  quizQuestions = shuffle(BASE_QUESTIONS).slice(0,60).map((q,i)=>({...q, no:i+1, selectedType, selectedTypeName}));
+  document.getElementById('selectedTypeBadge').textContent=`${selectedType} 유형 · ${selectedTypeName}`;
+  const area=document.getElementById('questionsArea'); area.innerHTML='';
+  quizQuestions.forEach((q,i)=>{
+    const div=document.createElement('div'); div.className='question';
+    div.innerHTML=`
+      <div class="qtop"><span class="qno">${i+1}번</span><span class="topic">${q.topic}</span></div>
+      <div class="qtext">${cleanHtml(q.text)}</div>
+      <div class="options">
+        <label class="opt"><input type="radio" name="q${i}" value="O" required> O</label>
+        <label class="opt"><input type="radio" name="q${i}" value="X" required> X</label>
+      </div>`;
+    area.appendChild(div);
+  });
+  document.getElementById('quizCard').classList.remove('hidden');
+  document.getElementById('resultCard').classList.add('hidden');
+  window.scrollTo({top:document.getElementById('quizCard').offsetTop-10,behavior:'smooth'});
+}
+function gradeQuiz(e){
+  e.preventDefault();
+  if(quizQuestions.length!==60){alert('먼저 60문제 랜덤 출제를 눌러 주세요.');return;}
+  const sid=document.getElementById('studentId').value.trim();
+  const name=document.getElementById('name').value.trim();
+  const className=document.getElementById('className').value.trim();
+  let correct=0; const rows=[];
+  const results=document.getElementById('results'); results.innerHTML='';
+  quizQuestions.forEach((q,i)=>{
+    const sel=document.querySelector(`input[name="q${i}"]:checked`);
+    const user=sel?sel.value:'미선택';
+    const ok=user===q.answer; if(ok) correct++;
+    rows.push({no:i+1, topic:q.topic, text:plainText(q.text), user, answer:q.answer, ok, exp:plainText(q.explanation)});
+  });
+  const score=Math.round((correct/quizQuestions.length)*100);
+  const now=new Date();
+  const timestamp=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}시${String(now.getMinutes()).padStart(2,'0')}분${String(now.getSeconds()).padStart(2,'0')}초`;
+  results.innerHTML=`<div class="scorebox">${sid} ${name} · ${selectedType} 유형 · ${score}점 / 정답 ${correct}개, 오답 ${quizQuestions.length-correct}개</div>`;
+  rows.forEach(r=>{
+    const div=document.createElement('div'); div.className='result-item '+(r.ok?'correct':'incorrect');
+    div.innerHTML=`<b>${r.no}번 [${r.topic}] ${r.ok?'정답':'오답'}</b><br>
+      <b>문제:</b> ${cleanHtml(r.text)}<br>
+      <b>선택:</b> ${r.user} / <b>정답:</b> ${r.answer}
+      <div class="explanation"><b>상세 풀이:</b> ${cleanHtml(r.exp)}</div>`;
+    results.appendChild(div);
+  });
+  let file=`학번: ${sid}\n이름: ${name}\n반/수업명: ${className || '-'}\n문제 유형: ${selectedType} 유형 - ${selectedTypeName}\n득점: ${score}점\n정답 수: ${correct} / ${quizQuestions.length}\n응시 시각: ${timestamp}\n\n`;
+  file += `각문항 정오답 및 상세 풀이\n${'='.repeat(50)}\n\n`;
+  rows.forEach(r=>{
+    file += `[${r.no}번] 주제: ${r.topic}\n문제: ${r.text}\n선택 답: ${r.user}\n정답: ${r.answer}\n정오답: ${r.ok?'정답':'오답'}\n상세 풀이: ${r.exp}\n\n`;
+  });
+  const fname=`${safeFileName(sid)}_${safeFileName(name)}_${score}점_OX퀴즈_${timestamp.replace(/[ :]/g,'_')}.txt`;
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(file);
+  a.download=fname; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  document.getElementById('resultCard').classList.remove('hidden');
+  window.scrollTo({top:document.getElementById('resultCard').offsetTop-10,behavior:'smooth'});
+}
+renderTypes();
+</script>
+</body>
+</html>
