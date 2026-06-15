@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<!-- saved from url=(0040)https://jsinsoo.github.io/python/15.html -->
+<html lang="ko"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>15차시: Pandas 데이터 분석 마스터하기</title>
+
+<style>
+        body { font-family: 'Pretendard', sans-serif; line-height: 1.7; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background-color: #f8f9fa; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; text-align: center; }
+        h2 { color: #e67e22; margin-top: 40px; border-left: 6px solid #e67e22; padding-left: 15px; background: #fff; padding-top: 10px; padding-bottom: 10px; }
+        h3 { color: #2980b9; margin-top: 30px; }
+        h4 { color: #2c3e50; background: #eee; padding: 5px 10px; border-radius: 4px; display: inline-block; margin-top: 15px; }
+        .intro { background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 30px; border-top: 4px solid #3498db; }
+        code { font-family: 'Consolas', monospace; }
+        .note { font-size: 0.95em; color: #666; margin-bottom: 10px; }
+        section { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .warning { background-color: #fff3cd; border-left: 5px solid #ffecb5; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+    </style>
+<style>
+.copy-btn{
+    float:right;
+    margin:5px;
+    padding:4px 10px;
+    cursor:pointer;
+    border:none;
+    border-radius:4px;
+}
+</style><style>
+.result-box{
+    background:#f4f8ff;
+    border-left:5px solid #3498db;
+    padding:14px 16px;
+    margin:10px 0 12px 0;
+    border-radius:6px;
+    white-space:pre-wrap;
+    font-family:'Consolas','D2Coding',monospace;
+    color:#1f2937;
+}
+.explain-box{
+    background:#fffaf0;
+    border-left:5px solid #f39c12;
+    padding:14px 16px;
+    margin:0 0 22px 0;
+    border-radius:6px;
+    color:#333;
+}
+.box-title{
+    font-weight:700;
+    margin-bottom:8px;
+    color:#2c3e50;
+}
+.copy-btn{
+    float:right;
+    margin:5px;
+    padding:4px 10px;
+    cursor:pointer;
+    border:none;
+    border-radius:4px;
+}
+</style><style>
+pre{
+    background:#1f2937;
+    color:#f9fafb;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    clear:both;
+    font-size:0.95em;
+    line-height:1.6;
+}
+pre code, code{
+    font-family:'Consolas','D2Coding','Courier New',monospace;
+}
+.token.keyword{color:#93c5fd;}
+.token.string{color:#fbbf24;}
+.token.number{color:#a7f3d0;}
+.token.comment{color:#9ca3af;}
+.token.operator,.token.punctuation{color:#e5e7eb;}
+.copy-btn{
+    float:right;
+    margin:8px 0 6px 6px;
+    padding:6px 12px;
+    cursor:pointer;
+    border:none;
+    border-radius:5px;
+    background:#2563eb;
+    color:white;
+    font-weight:600;
+}
+.copy-btn:hover{background:#1d4ed8;}
+.result-box{
+    background:#f4f8ff;
+    border-left:5px solid #3498db;
+    padding:14px 16px;
+    margin:10px 0 12px 0;
+    border-radius:6px;
+    white-space:pre-wrap;
+    font-family:'Consolas','D2Coding',monospace;
+    color:#1f2937;
+}
+.explain-box{
+    background:#fffaf0;
+    border-left:5px solid #f39c12;
+    padding:14px 16px;
+    margin:0 0 22px 0;
+    border-radius:6px;
+    color:#333;
+}
+.box-title{
+    font-weight:700;
+    margin-bottom:8px;
+    color:#2c3e50;
+}
+</style></head>
+<body>
+<header>
+<h1>15차시: Pandas 데이터 분석 학습 패키지</h1>
+<div class="intro">
+<p>안녕하세요! 데이터 과학의 필수 라이브러리, <strong>Pandas</strong>의 세계에 오신 것을 환영합니다. Pandas는 파이썬으로 데이터를 빠르고 효율적으로 다룰 수 있게 해주는 강력한 도구입니다. 엑셀의 표와 같은 형태인 데이터프레임(DataFrame)을 중심으로, 데이터 정제, 변환, 분석의 기초를 다져보겠습니다.</p>
+</div>
+<div class="warning">
+<strong>※ 참고:</strong> Pandas는 파이썬 표준 라이브러리가 아니므로, 사용하기 전에 설치가 필요합니다.<br/>
+<code>pip install pandas</code>
+</div>
+</header>
+<main>
+<h2>1. 파이썬 예제 코드: Pandas 데이터 분석</h2>
+<section>
+<h3>1.1. 기초 파이썬 예시 코드 (5개)</h3>
+<p class="note">Pandas의 핵심 자료구조인 Series와 DataFrame을 만들고 데이터를 선택하는 방법을 익힙니다.</p>
+<h4>1. Series 생성하기</h4>
+<p class="note"># 1차원 데이터 구조인 Series를 생성합니다.</p>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python"><span class="token keyword">import</span> pandas <span class="token keyword">as</span> pd
+
+s <span class="token operator">=</span> pd<span class="token punctuation">.</span>Series<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">40</span><span class="token punctuation">]</span><span class="token punctuation">,</span> index<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">,</span> <span class="token string">'d'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"--- Pandas Series ---"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"\n인덱스 'c'의 값:"</span><span class="token punctuation">,</span> s<span class="token punctuation">[</span><span class="token string">'c'</span><span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>--- Pandas Series ---
+a    10
+b    20
+c    30
+d    40
+dtype: int64
+
+인덱스 'c'의 값: 30</div><div class="explain-box"><div class="box-title">상세 설명</div>pd.Series()는 1차원 데이터를 만드는 명령입니다. index를 지정하면 기본 숫자 인덱스 대신 a, b, c, d처럼 이름표를 붙일 수 있습니다. s['c']는 인덱스가 c인 값 30을 선택합니다.</div>
+<h4>2. DataFrame 생성하기</h4>
+<p class="note"># 2차원 데이터 구조인 DataFrame을 생성합니다. (엑셀 시트와 유사)</p>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python"><span class="token keyword">import</span> pandas <span class="token keyword">as</span> pd
+
+data <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">'이름'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'인수샘'</span><span class="token punctuation">,</span> <span class="token string">'홍길동'</span><span class="token punctuation">,</span> <span class="token string">'구운몽'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string">'나이'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">25</span><span class="token punctuation">,</span> <span class="token number">28</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string">'도시'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'서울'</span><span class="token punctuation">,</span> <span class="token string">'부산'</span><span class="token punctuation">,</span> <span class="token string">'광주'</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+df <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"--- Pandas DataFrame ---"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>df<span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>--- Pandas DataFrame ---
+    이름  나이  도시
+0  인수샘  30  서울
+1  홍길동  25  부산
+2  구운몽  28  광주</div><div class="explain-box"><div class="box-title">상세 설명</div>딕셔너리의 key는 열 이름이 되고, value 리스트는 각 열의 데이터가 됩니다. pd.DataFrame(data)는 엑셀 표처럼 행과 열이 있는 2차원 데이터 구조를 만듭니다.</div>
+<h4>3. 특정 열(Column) 선택하기</h4>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python"><span class="token comment"># 열 이름을 사용하여 데이터를 추출합니다.</span>
+names <span class="token operator">=</span> df<span class="token punctuation">[</span><span class="token string">'이름'</span><span class="token punctuation">]</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"이름 열만 추출:"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>names<span class="token punctuation">)</span>
+
+<span class="token comment"># 여러 열 선택</span>
+subset <span class="token operator">=</span> df<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token string">'이름'</span><span class="token punctuation">,</span> <span class="token string">'도시'</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"\n이름과 도시 열 추출:"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>subset<span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>이름 열만 추출:
+0    인수샘
+1    홍길동
+2    구운몽
+Name: 이름, dtype: object
+
+이름과 도시 열 추출:
+    이름  도시
+0  인수샘  서울
+1  홍길동  부산
+2  구운몽  광주</div><div class="explain-box"><div class="box-title">상세 설명</div>df['이름']처럼 열 이름 하나를 넣으면 Series 형태로 한 열만 가져옵니다. df[['이름', '도시']]처럼 열 이름 리스트를 넣으면 여러 열을 DataFrame 형태로 가져옵니다.</div>
+<h4>4. 조건에 맞는 행 필터링</h4>
+<p class="note"># 나이가 27세 이상인 데이터만 필터링합니다.</p>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python">older_than_27 <span class="token operator">=</span> df<span class="token punctuation">[</span>df<span class="token punctuation">[</span><span class="token string">'나이'</span><span class="token punctuation">]</span> <span class="token operator">&gt;=</span> <span class="token number">27</span><span class="token punctuation">]</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"27세 이상인 사람:"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>older_than_27<span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>27세 이상인 사람:
+    이름  나이  도시
+0  인수샘  30  서울
+2  구운몽  28  광주</div><div class="explain-box"><div class="box-title">상세 설명</div>df['나이'] &gt;= 27은 각 행이 조건을 만족하는지 True/False로 판단합니다. 이 조건식을 df[...] 안에 넣으면 True인 행만 남습니다.</div>
+<h4>5. 데이터 요약 통계 확인</h4>
+<p class="note"># describe() 함수로 수치형 데이터의 통계 정보를 한눈에 확인합니다.</p>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"데이터 요약 정보:"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>df<span class="token punctuation">.</span>describe<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>데이터 요약 정보:
+              나이
+count   3.000000
+mean   27.666667
+std     2.516611
+min    25.000000
+25%    26.500000
+50%    28.000000
+75%    29.000000
+max    30.000000</div><div class="explain-box"><div class="box-title">상세 설명</div>describe()는 숫자형 열의 개수, 평균, 표준편차, 최솟값, 사분위수, 최댓값을 자동으로 계산합니다. 데이터의 전체적인 분포를 빠르게 확인할 때 유용합니다.</div>
+</section>
+<section>
+<h3>1.2. 응용 파이썬 예시 코드 (5개)</h3>
+<p class="note">데이터 정제, 결합, 그룹화 등 실질적인 데이터 가공 기법을 다룹니다.</p>
+<h4>1. 새로운 열 추가 및 계산</h4>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python"><span class="token comment"># 기존 데이터를 바탕으로 새로운 열을 생성합니다.</span>
+df<span class="token punctuation">[</span><span class="token string">'내년나이'</span><span class="token punctuation">]</span> <span class="token operator">=</span> df<span class="token punctuation">[</span><span class="token string">'나이'</span><span class="token punctuation">]</span> <span class="token operator">+</span> <span class="token number">1</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>df<span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>    이름  나이  도시  내년나이
+0  인수샘  30  서울    31
+1  홍길동  25  부산    26
+2  구운몽  28  광주    29</div><div class="explain-box"><div class="box-title">상세 설명</div>df['내년나이'] = df['나이'] + 1은 기존 나이 열에 1을 더한 결과를 새 열로 저장합니다. Pandas는 열 전체에 같은 계산을 한 번에 적용할 수 있습니다.</div>
+<h4>2. 결측치(NaN) 처리하기</h4>
+<p class="note"># 비어있는 데이터를 찾거나 채워 넣습니다.</p>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python"><span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+
+df<span class="token punctuation">.</span>loc<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'도시'</span><span class="token punctuation">]</span> <span class="token operator">=</span> np<span class="token punctuation">.</span>nan <span class="token comment"># 홍길동의 도시를 결측치로 변경</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"--- 결측치 발생 ---"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>df<span class="token punctuation">)</span>
+
+<span class="token comment"># 결측치를 '알 수 없음'으로 채우기</span>
+df_filled <span class="token operator">=</span> df<span class="token punctuation">.</span>fillna<span class="token punctuation">(</span><span class="token string">'알 수 없음'</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"\n--- 결측치 채우기 결과 ---"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>df_filled<span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>--- 결측치 발생 ---
+    이름  나이   도시  내년나이
+0  인수샘  30   서울    31
+1  홍길동  25  NaN    26
+2  구운몽  28   광주    29
+
+--- 결측치 채우기 결과 ---
+    이름  나이     도시  내년나이
+0  인수샘  30     서울    31
+1  홍길동  25  알 수 없음    26
+2  구운몽  28     광주    29</div><div class="explain-box"><div class="box-title">상세 설명</div>np.nan은 값이 비어 있음을 뜻하는 결측치입니다. fillna('알 수 없음')은 비어 있는 값을 지정한 문자열로 채운 새 DataFrame을 만듭니다.</div>
+<h4>3. 데이터 그룹화 및 집계 (groupby)</h4>
+<p class="note"># 특정 기준별로 데이터를 묶어 평균이나 합계를 구합니다.</p>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python">data <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">'부서'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'개발'</span><span class="token punctuation">,</span> <span class="token string">'기획'</span><span class="token punctuation">,</span> <span class="token string">'개발'</span><span class="token punctuation">,</span> <span class="token string">'기획'</span><span class="token punctuation">,</span> <span class="token string">'인사'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string">'급여'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">5000</span><span class="token punctuation">,</span> <span class="token number">4000</span><span class="token punctuation">,</span> <span class="token number">5500</span><span class="token punctuation">,</span> <span class="token number">4200</span><span class="token punctuation">,</span> <span class="token number">3800</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+emp_df <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+
+dept_avg <span class="token operator">=</span> emp_df<span class="token punctuation">.</span>groupby<span class="token punctuation">(</span><span class="token string">'부서'</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">'급여'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>mean<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"부서별 평균 급여:"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>dept_avg<span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>부서별 평균 급여:
+부서
+개발    5250.0
+기획    4100.0
+인사    3800.0
+Name: 급여, dtype: float64</div><div class="explain-box"><div class="box-title">상세 설명</div>groupby('부서')는 같은 부서끼리 데이터를 묶습니다. 그 뒤 ['급여'].mean()을 사용하면 부서별 급여 평균을 계산할 수 있습니다.</div>
+<h4>4. 데이터 합치기 (merge)</h4>
+<p class="note"># SQL의 Join과 유사하게 공통 열을 기준으로 합칩니다.</p>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python">df1 <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">'이름'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'인수샘'</span><span class="token punctuation">,</span> <span class="token string">'홍길동'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'성적'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">90</span><span class="token punctuation">,</span> <span class="token number">80</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+df2 <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">'이름'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'인수샘'</span><span class="token punctuation">,</span> <span class="token string">'홍길동'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'출석'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">,</span> <span class="token number">95</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+merged <span class="token operator">=</span> pd<span class="token punctuation">.</span>merge<span class="token punctuation">(</span>df1<span class="token punctuation">,</span> df2<span class="token punctuation">,</span> on<span class="token operator">=</span><span class="token string">'이름'</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"데이터 병합 결과:"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>merged<span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>데이터 병합 결과:
+    이름  성적   출석
+0  인수샘  90  100
+1  홍길동  80   95</div><div class="explain-box"><div class="box-title">상세 설명</div>pd.merge(df1, df2, on='이름')은 두 DataFrame에서 이름 열이 같은 행끼리 연결합니다. 학생 정보, 성적, 출석처럼 나뉜 표를 하나로 합칠 때 사용합니다.</div>
+<h4>5. CSV 파일 읽기 및 저장</h4>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python"><span class="token comment"># 데이터프레임을 CSV 파일로 저장</span>
+df<span class="token punctuation">.</span>to_csv<span class="token punctuation">(</span><span class="token string">'my_data.csv'</span><span class="token punctuation">,</span> index<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">'utf-8-sig'</span><span class="token punctuation">)</span>
+
+<span class="token comment"># CSV 파일 불러오기</span>
+new_df <span class="token operator">=</span> pd<span class="token punctuation">.</span>read_csv<span class="token punctuation">(</span><span class="token string">'my_data.csv'</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"불러온 데이터:"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>new_df<span class="token punctuation">.</span>head<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>불러온 데이터:
+    이름  나이   도시  내년나이
+0  인수샘  30   서울    31
+1  홍길동  25  NaN    26
+2  구운몽  28   광주    29</div><div class="explain-box"><div class="box-title">상세 설명</div>to_csv()는 DataFrame을 CSV 파일로 저장합니다. index=False는 행 번호를 파일에 저장하지 않겠다는 뜻이고, utf-8-sig는 엑셀에서 한글이 깨지지 않도록 도와줍니다. read_csv()는 CSV 파일을 다시 DataFrame으로 불러옵니다.</div>
+</section>
+<section>
+<h3>1.3. 심화 파이썬 예시 코드 (4개)</h3>
+<p class="note">고급 데이터 변형 및 분석 기법입니다.</p>
+<h4>1. 데이터 재구조화 (Pivot Table)</h4>
+<p class="note"># 복잡한 데이터를 요약하여 표 형태로 재구성합니다.</p>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python">data <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">'날짜'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'1일'</span><span class="token punctuation">,</span> <span class="token string">'1일'</span><span class="token punctuation">,</span> <span class="token string">'2일'</span><span class="token punctuation">,</span> <span class="token string">'2일'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string">'도시'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'서울'</span><span class="token punctuation">,</span> <span class="token string">'부산'</span><span class="token punctuation">,</span> <span class="token string">'서울'</span><span class="token punctuation">,</span> <span class="token string">'부산'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string">'온도'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">25</span><span class="token punctuation">,</span> <span class="token number">28</span><span class="token punctuation">,</span> <span class="token number">26</span><span class="token punctuation">,</span> <span class="token number">29</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+df <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+
+<span class="token comment"># '도시'를 행으로, '날짜'를 열로 하여 '온도' 값을 보여주는 피벗 테이블</span>
+pivot <span class="token operator">=</span> df<span class="token punctuation">.</span>pivot_table<span class="token punctuation">(</span>index<span class="token operator">=</span><span class="token string">'도시'</span><span class="token punctuation">,</span> columns<span class="token operator">=</span><span class="token string">'날짜'</span><span class="token punctuation">,</span> values<span class="token operator">=</span><span class="token string">'온도'</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"피벗 테이블 결과:"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>pivot<span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>피벗 테이블 결과:
+날짜  1일  2일
+도시        
+부산  28  29
+서울  25  26</div><div class="explain-box"><div class="box-title">상세 설명</div>pivot_table()은 데이터를 요약 표 형태로 재구성합니다. 여기서는 도시를 행, 날짜를 열, 온도를 값으로 사용하여 도시별·날짜별 온도를 한눈에 비교합니다.</div>
+<h4>2. 함수 적용하기 (.apply())</h4>
+<p class="note"># 행이나 열 단위로 복잡한 계산을 일괄 적용합니다.</p>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python">df <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">'점수1'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">80</span><span class="token punctuation">,</span> <span class="token number">90</span><span class="token punctuation">,</span> <span class="token number">70</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'점수2'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">85</span><span class="token punctuation">,</span> <span class="token number">95</span><span class="token punctuation">,</span> <span class="token number">75</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 최댓값을 구하는 함수 적용</span>
+df<span class="token punctuation">[</span><span class="token string">'최고점수'</span><span class="token punctuation">]</span> <span class="token operator">=</span> df<span class="token punctuation">.</span><span class="token builtin">apply</span><span class="token punctuation">(</span><span class="token keyword">lambda</span> row<span class="token punctuation">:</span> <span class="token builtin">max</span><span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token string">'점수1'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> row<span class="token punctuation">[</span><span class="token string">'점수2'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 평균 구하기</span>
+df<span class="token punctuation">[</span><span class="token string">'평균점수'</span><span class="token punctuation">]</span> <span class="token operator">=</span> df<span class="token punctuation">.</span><span class="token builtin">apply</span><span class="token punctuation">(</span><span class="token keyword">lambda</span> row<span class="token punctuation">:</span> <span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token string">'점수1'</span><span class="token punctuation">]</span> <span class="token operator">+</span> row<span class="token punctuation">[</span><span class="token string">'점수2'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>df<span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>   점수1  점수2  최고점수  평균점수
+0   80   85    85  82.5
+1   90   95    95  92.5
+2   70   75    75  72.5</div><div class="explain-box"><div class="box-title">상세 설명</div>apply()는 각 행이나 열에 함수를 적용합니다. axis=1은 행 단위 계산을 의미합니다. lambda row를 사용해 한 학생의 점수1, 점수2를 비교하거나 평균을 계산합니다.</div>
+<h4>3. 고유값 확인 및 빈도수 세기</h4>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python">survey <span class="token operator">=</span> pd<span class="token punctuation">.</span>Series<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'좋음'</span><span class="token punctuation">,</span> <span class="token string">'보통'</span><span class="token punctuation">,</span> <span class="token string">'좋음'</span><span class="token punctuation">,</span> <span class="token string">'나쁨'</span><span class="token punctuation">,</span> <span class="token string">'좋음'</span><span class="token punctuation">,</span> <span class="token string">'보통'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"고유값 종류:"</span><span class="token punctuation">,</span> survey<span class="token punctuation">.</span>unique<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"\n값별 빈도수:"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>survey<span class="token punctuation">.</span>value_counts<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>고유값 종류: ['좋음' '보통' '나쁨']
+
+값별 빈도수:
+좋음    3
+보통    2
+나쁨    1
+Name: count, dtype: int64</div><div class="explain-box"><div class="box-title">상세 설명</div>unique()는 중복을 제거하고 어떤 값들이 있는지 보여줍니다. value_counts()는 각 값이 몇 번 등장하는지 세어 설문 응답이나 범주형 데이터 분석에 자주 사용됩니다.</div>
+<h4>4. 인덱스 초기화 및 정렬</h4>
+<button class="copy-btn">복사하기</button><pre class="language-python" tabindex="0"><code class="language-python">df <span class="token operator">=</span> pd<span class="token punctuation">.</span>DataFrame<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">'점수'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">70</span><span class="token punctuation">,</span> <span class="token number">95</span><span class="token punctuation">,</span> <span class="token number">80</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span> index<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'다'</span><span class="token punctuation">,</span> <span class="token string">'가'</span><span class="token punctuation">,</span> <span class="token string">'나'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 인덱스 기준 정렬</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"인덱스 정렬:"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>df<span class="token punctuation">.</span>sort_index<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 값 기준 정렬</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"\n점수 기준 내림차순 정렬:"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>df<span class="token punctuation">.</span>sort_values<span class="token punctuation">(</span>by<span class="token operator">=</span><span class="token string">'점수'</span><span class="token punctuation">,</span> ascending<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre><div class="result-box"><div class="box-title">출력 결과</div>인덱스 정렬:
+   점수
+가  95
+나  80
+다  70
+
+점수 기준 내림차순 정렬:
+   점수
+가  95
+나  80
+다  70</div><div class="explain-box"><div class="box-title">상세 설명</div>sort_index()는 행 인덱스를 기준으로 정렬합니다. sort_values(by='점수', ascending=False)는 점수 값을 기준으로 큰 값부터 작은 값 순서로 정렬합니다.</div>
+</section>
+</main>
+
+
+<script>
+document.querySelectorAll('.copy-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var pre = btn.nextElementSibling;
+    var code = pre ? pre.innerText : '';
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(code).then(function(){
+        btn.innerText='복사완료!';
+        setTimeout(function(){btn.innerText='복사하기';},1000);
+      });
+    } else {
+      var textarea = document.createElement('textarea');
+      textarea.value = code;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      try { document.execCommand('copy'); btn.innerText='복사완료!'; }
+      catch(e) { btn.innerText='복사 실패'; }
+      document.body.removeChild(textarea);
+      setTimeout(function(){btn.innerText='복사하기';},1000);
+    }
+  });
+});
+</script></body></html>
